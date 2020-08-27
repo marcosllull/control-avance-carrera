@@ -1,0 +1,418 @@
+package model;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Controlador {
+	
+	private String nombreCarrera = "";
+	private Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
+	private Map<String, Asignatura> asignaturasSinSeleccionar = new HashMap<String, Asignatura>();
+	private Map<String, Materia> materias = new HashMap<String, Materia>();
+	private int creditosObtenidos = -1;
+	private int creditosMin = 0;
+	private int creditosMax = 0;
+	private String mailContacto = "";
+	
+	public Controlador() {}
+	
+	public Controlador(String nombreCarrera, Map<String, Asignatura> asignaturas, Map<String, Materia> materias, 
+			int creditosObtenidos, int creditosMin, int creditosMax, String mailContacto) {
+		this.nombreCarrera = nombreCarrera;
+		this.asignaturas.putAll(asignaturas);
+		this.materias = materias;
+		this.creditosObtenidos = creditosObtenidos;
+		this.creditosMin = creditosMin;
+		this.creditosMax = creditosMax;
+		this.mailContacto = mailContacto;
+	}
+
+	//GETTERS
+	public String getNombreCarrera() {
+		return nombreCarrera;
+	}
+
+	public Map<String, Asignatura> getAsignaturas() {
+		return asignaturas;
+	}
+
+	public Map<String, Asignatura> getAsignaturasSinSeleccionar() {
+		return asignaturasSinSeleccionar;
+	}
+
+	public Map<String, Materia> getMaterias() {
+		return materias;
+	}
+
+	public int getCreditosObtenidos() {
+		return creditosObtenidos;
+	}
+
+	public int getCreditosMin() {
+		return creditosMin;
+	}
+
+	public int getCreditosMax() {
+		return creditosMax;
+	}
+
+	public String getMailContacto() {
+		return mailContacto;
+	}
+
+	//SETTERS
+	public void setNombreCarrera(String nombreCarrera) {
+		this.nombreCarrera = nombreCarrera;
+	}
+
+	public void setAsignaturas(Map<String, Asignatura> asignaturas) {
+		for (Map.Entry<String, Asignatura> a : asignaturas.entrySet()) {
+			this.asignaturas.put(a.getKey(), a.getValue());
+		}
+	}
+
+	public void setAsignaturasSinSeleccionar(Map<String, Asignatura> asignaturasSinSeleccionar) {
+		for (Map.Entry<String, Asignatura> a : asignaturasSinSeleccionar.entrySet()) {
+			this.asignaturasSinSeleccionar.put(a.getKey(), a.getValue());
+		}
+	}
+
+	public void setMaterias(Map<String, Materia> materias) {
+		this.materias.putAll(materias);
+	}
+
+	public void setCreditosObtenidos(int creditosObtenidos) {
+		this.creditosObtenidos = creditosObtenidos;
+	}
+
+	public void setCreditosMin(int creditosMin) {
+		this.creditosMin = creditosMin;
+	}
+
+	public void setCreditosMax(int creditosMax) {
+		this.creditosMax = creditosMax;
+	}
+
+	public void setMailContacto(String mailContacto) {
+		this.mailContacto = mailContacto;
+	}
+	
+	//OTROS METODOS
+	public Map<String, Carrera> getColeccionCarreras(){
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		return mc.getCarreras();
+	}
+	
+	public Carrera getInstanciaCarrera(String nombreCarrera) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		return mc.getCarreras().get(nombreCarrera);
+	}
+	
+	public Materia getInstanciaMateria(String nombreCarrera, String nombreMateria) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		
+		if (existeCarrera) {
+			
+			Carrera c = mc.getCarreras().get(nombreCarrera);
+			
+			return c.getMaterias().get(nombreMateria);
+		}
+		return null;
+	}
+	
+	public Asignatura getInstanciaAsignatura(String nombreCarrera, String nombreMateria, 
+			String nombreAsignatura) {
+		
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		
+		if (existeCarrera) {
+			
+			Carrera c = mc.getCarreras().get(nombreCarrera);
+			boolean existeMateria = c.getMaterias().containsKey(nombreMateria);
+			
+			if (existeMateria) {
+				Materia m = c.getMaterias().get(nombreMateria);
+				
+				return m.getAsignaturas().get(nombreAsignatura);
+			}
+		}
+		return null;
+	}
+	
+	
+	//LAS ASIGNATURAS DE CADA MATERIA NO PUEDEN AGREGARSE EN EL CONSTRUCTOR DE CARRERA. DEBEN
+	//AGREGARSE LUEGO
+	public boolean agregarCarrera(String nombre, int creditosMin, int creditosMax, 
+			Map<String, Materia> materias) {
+		
+		if (MetodosAux.validarNombre(nombre) &&
+			creditosMin > 0 && creditosMin <= creditosMax) {
+					
+			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+			
+			boolean existeCarrera = mc.getCarreras().containsKey(nombre);
+			if (!existeCarrera) {
+				
+				Carrera c = new Carrera(nombre, creditosMin, creditosMax, materias);
+				mc.agregarCarrera(c);
+				
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean removerCarrera(String nombre) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		boolean existeCarrera = mc.getCarreras().containsKey(nombre);
+		
+		if (existeCarrera) {
+			mc.removerCarrera(nombre);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean agregarMateria(String nombre, String nombreCarrera, 
+			int cantCreditos, Map<String, Asignatura> asignaturas) {
+		
+		if (MetodosAux.validarNombre(nombre) &&
+			MetodosAux.validarNombre(nombreCarrera) &&
+			cantCreditos > 0) {
+				
+			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+			
+			boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+			if (existeCarrera) {
+				
+				Carrera carrera = mc.getCarreras().get(nombreCarrera);
+				
+				boolean existeMateria = carrera.getMaterias().containsKey(nombre);
+				if (!existeMateria) {
+					
+					Materia m = new Materia(nombre, nombreCarrera, cantCreditos,
+							asignaturas);
+					mc.agregarMateria(m, nombreCarrera);
+					
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	//REMUEVE UNA MATERIA DE LA COLECCION SI ESTA NO TIENE ASOCIADA NINGUNA ASIGNATURA
+	public boolean removerMateria(String nombre, String nombreCarrera) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		if (existeCarrera) {
+			
+			Carrera carrera = mc.getCarreras().get(nombreCarrera);
+			boolean existeMateria = carrera.getMaterias().containsKey(nombre);
+			
+			if (existeMateria) {
+				
+				Materia materia = carrera.getMaterias().get(nombre);
+				int cantAsignaturas = materia.getAsignaturas().size();
+				
+				if (cantAsignaturas == 0) {
+					mc.removerMateria(nombre, nombreCarrera);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean agregarAsignatura(String nombre, String nombreMateria, String nombreCarrera, 
+			int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
+		
+		if (MetodosAux.validarNombre(nombre) &&
+			MetodosAux.validarNombre(nombreMateria) &&
+			MetodosAux.validarNombre(nombreCarrera) &&
+			cantCreditos > 0){
+				
+			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+			
+			boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+			if (existeCarrera) {
+				
+				Carrera carrera = mc.getCarreras().get(nombreCarrera);
+				
+				boolean existeMateria = carrera.getMaterias().containsKey(nombreMateria);
+				if (existeMateria) {
+					
+					Materia materia = carrera.getMaterias().get(nombreMateria);
+					
+					boolean existeAsignatura = materia.getAsignaturas().containsKey(nombre);
+					if (!existeAsignatura) {
+						
+						if (!tienePrevias) {
+							Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, cantCreditos,
+									tienePrevias, previas);
+							mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+							
+							return true;
+						}
+						else {
+							
+							Map<String, Asignatura> asignaturas = materia.getAsignaturas();
+							
+							boolean existenPrevias = true;
+							for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
+								if (!asignaturas.containsKey(p.getKey())) {
+									existenPrevias = false;
+									break;
+								}
+							}
+							
+							if (existenPrevias) {
+								Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, 
+										cantCreditos, tienePrevias, previas);
+								mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+								
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	//Verifica si una asignatura de nombre 'nombre' es previa de otra asignatura
+	//nombre: nombre de la asignatura. materias: hashmap con todas las materias y cada una de sus asignaturas
+	public boolean verificarEsPrevia(String nombre, Map<String, Materia> materias) {
+		for (Map.Entry<String, Materia> m : materias.entrySet()) {
+			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
+				if (a.getValue().getPrevias().containsKey(nombre)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean removerAsignatura(String nombre, String nombreCarrera, String nombreMateria) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		if (existeCarrera) {
+			
+			Carrera carrera = mc.getCarreras().get(nombreCarrera);
+			
+			boolean existeMateria = carrera.getMaterias().containsKey(nombreMateria);
+			if (existeMateria) {
+				
+				Materia materia = carrera.getMaterias().get(nombreMateria);
+				
+				boolean existeAsignatura = materia.getAsignaturas().containsKey(nombre);
+		
+				if (existeAsignatura) {
+					
+					boolean esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
+					if (!esPrevia) {
+						mc.removerAsignatura(nombre, nombreCarrera, nombreMateria);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	//Permite modificar los datos de una carrera, incluyendo su nombre
+	//En caso de NO modificarse el nombre, 'nombreDespues' y 'nombreAntes' seran iguales
+	public boolean modificarCarrera(String nombreDespues, String nombreAntes, int creditosMin, int creditosMax) {
+		
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreAntes);
+		
+		if (existeCarrera) {
+			
+			Carrera c = mc.getCarreras().get(nombreAntes);
+			if (MetodosAux.validarNombre(nombreDespues) &&
+				creditosMin > 0 && creditosMin <= creditosMax) {
+					
+				c.setNombre(nombreDespues);
+				c.setCantCreditosMin(creditosMin);
+				c.setCantCreditosMax(creditosMax);
+				
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean modificarMateria(String nombreDespues, String nombreAntes, String nombreCarrera, int cantCreditos) {
+		
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		
+		if (existeCarrera) {
+			
+			Carrera c = mc.getCarreras().get(nombreCarrera);
+			boolean existeMateria = c.getMaterias().containsKey(nombreAntes);
+			
+			if (existeMateria) {
+				
+				Materia m = c.getMaterias().get(nombreAntes);
+				
+				if (MetodosAux.validarNombre(nombreDespues) &&
+					cantCreditos > 0) {
+					
+					m.setNombre(nombreDespues);
+					m.setCantCreditos(cantCreditos);
+					
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreMateria, 
+			String nombreCarrera, int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
+		
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+		
+		if (existeCarrera) {
+			
+			Carrera c = mc.getCarreras().get(nombreCarrera);
+			boolean existeMateria = c.getMaterias().containsKey(nombreMateria);
+			
+			if (existeMateria) {
+				
+				Materia m = c.getMaterias().get(nombreMateria);
+				boolean existeAsignatura = m.getAsignaturas().containsKey(nombreAntes);
+				
+				if (existeAsignatura) {
+					
+					Asignatura a = m.getAsignaturas().get(nombreAntes);
+					
+					if (MetodosAux.validarNombre(nombreDespues) &&
+						cantCreditos > 0) {
+						
+						a.setNombre(nombreDespues);
+						a.setCantCreditos(cantCreditos);
+						a.setTienePrevias(tienePrevias);
+						a.setPrevias(previas);
+						
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+}
