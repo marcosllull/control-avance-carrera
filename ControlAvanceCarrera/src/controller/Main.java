@@ -20,22 +20,18 @@ public class Main {
 	//*****************************************************************METODOS AUXILIARES***************************************************************
 	//*****************************************************************METODOS AUXILIARES***************************************************************
 	
-	public static boolean verifExisteAsignatura(String nombreAsignatura) {
-		for (Map.Entry<String, Carrera> c : controlador.getColeccionCarreras().entrySet()) {
-			for (Map.Entry<String, Materia> m : c.getValue().getMaterias().entrySet()) {
-				if (m.getValue().getAsignaturas().containsKey(nombreAsignatura))
-					return true;
-			}
-		}
-		return false;
+	public static boolean verifExisteAsignaturaEnMateriaEnCarrera(String nombreAsignatura, String nombreCarrera, String nombreMateria) {
+		if (controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().containsKey(nombreAsignatura))
+			return true;
+		else
+			return false;
 	}
 	
-	public static boolean verifExisteMateria(String nombreMateria) {
-		for (Map.Entry<String, Carrera> c : controlador.getColeccionCarreras().entrySet()) {
-			if (c.getValue().getMaterias().containsKey(nombreMateria))
-				return true;
-		}
-		return false;
+	public static boolean verifExisteMateriaEnCarrera(String nombreMateria, String nombreCarrera) {
+		if (controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().containsKey(nombreMateria))
+			return true;
+		else
+			return false;
 	}
 	public static boolean verifExisteCarrera(String nombreCarrera) {
 		return controlador.getColeccionCarreras().containsKey(nombreCarrera);
@@ -82,17 +78,17 @@ public class Main {
 		return nombreCarrera;
 	}
 	
-	public static String pedirMateria() {
+	public static String pedirMateria(String nombreCarrera) {
 		String nombreMateria = "";
 		String opcion = "";
 		
-		imprimirMaterias();
+		imprimirMateriasDeCarrera(nombreCarrera);
 		boolean materiaEncontrada = false;
 		while (!materiaEncontrada) {
 			
 			System.out.print("Ingrese el valor numerico de la materia: " ); opcion = entrada.nextLine();
 			try {
-				nombreMateria = buscarMateria(Integer.valueOf(opcion));
+				nombreMateria = buscarMateriaDeCarrera(Integer.valueOf(opcion), nombreCarrera);
 						
 				if (nombreMateria.equals(""))
 					System.out.println("ERROR. Debe ingresar un numero que pertenezca a una carrera");
@@ -165,7 +161,7 @@ public class Main {
 		}
 		
 		return nombre;
-	}
+	}	
 	
 	public static String ingresarNombreCarreraDisponible() {
 		String nombre = "";
@@ -190,7 +186,31 @@ public class Main {
 		return nombre;
 	}
 	
-	public static String ingresarNombreMateriaDisponible() {
+	public static String ingresarNombreMateriaDisponible(String nombreAntes, String nombreCarrera) {
+		String nombre = "";
+		
+		boolean existeMateria = true;
+			
+		while (existeMateria && !nombre.equals(nombreAntes)) {
+			//VERIFICAR NOMBRE
+			boolean valorValido = false;
+			while (!valorValido) {
+				System.out.print("Ingrese el nombre de la materia: " ); nombre = entrada.nextLine();
+				
+				if (MetodosAux.validarNombre(nombre))
+					valorValido = true;
+			}
+			
+			existeMateria = verifExisteMateriaEnCarrera(nombre, nombreCarrera);
+			
+			if (existeMateria && !nombre.equals(nombreAntes))
+				System.out.print("ERROR. La materia ingresada ya existe");
+		}
+		
+		return nombre;
+	}
+	
+	public static String ingresarNombreMateriaDisponible(String nombreCarrera) {
 		String nombre = "";
 		
 		boolean existeMateria = true;
@@ -204,7 +224,7 @@ public class Main {
 					valorValido = true;
 			}
 			
-			existeMateria = verifExisteMateria(nombre);
+			existeMateria = verifExisteMateriaEnCarrera(nombre, nombreCarrera);
 			
 			if (existeMateria)
 				System.out.print("ERROR. La materia ingresada ya existe");
@@ -213,7 +233,31 @@ public class Main {
 		return nombre;
 	}
 	
-	public static String ingresarNombreAsignaturaDisponible() {
+	public static String ingresarNombreAsignaturaDisponible(String nombreAntes, String nombreCarrera, String nombreMateria) {
+		String nombre = "";
+		
+		boolean existeAsignatura = true;
+
+		while (existeAsignatura && !nombre.equals(nombreAntes)) {
+			//VERIFICAR NOMBRE
+			boolean valorValido = false;
+			while (!valorValido) {
+				System.out.print("Ingrese el nombre de la asignatura: " ); nombre = entrada.nextLine();
+				
+				if (MetodosAux.validarNombre(nombre))
+					valorValido = true;
+			}
+			
+			existeAsignatura = verifExisteAsignaturaEnMateriaEnCarrera(nombre, nombreCarrera, nombreMateria);
+			
+			if (existeAsignatura && !nombre.equals(nombreAntes))
+				System.out.print("ERROR. La asignatura ingresada ya existe");
+		}
+		
+		return nombre;
+	}
+	
+	public static String ingresarNombreAsignaturaDisponible(String nombreCarrera, String nombreMateria) {
 		String nombre = "";
 		
 		boolean existeAsignatura = true;
@@ -227,7 +271,7 @@ public class Main {
 					valorValido = true;
 			}
 			
-			existeAsignatura = verifExisteAsignatura(nombre);
+			existeAsignatura = verifExisteAsignaturaEnMateriaEnCarrera(nombre, nombreCarrera, nombreMateria);
 			
 			if (existeAsignatura)
 				System.out.print("ERROR. La asignatura ingresada ya existe");
@@ -608,10 +652,29 @@ public class Main {
 		for (Map.Entry<String, Materia> m: c.getMaterias().entrySet()) {
 			System.out.println(m.getValue().getNombre());
 			System.out.println("   ASIGNATURAS");
-			for (Map.Entry<String, Asignatura> a: m.getValue().getAsignaturas().entrySet()) {
+			for (Map.Entry<String, Asignatura> a: m.getValue().getAsignaturas().entrySet())
 				System.out.println("   -" + a.getValue().getNombre());
-			}
 		}
+	}
+	
+	public static void mostrarMateria(Materia m) {
+		//IMPRIMIR
+		System.out.println("Carrera: " + m.getNombreCarrera());
+		System.out.println("Materia: " + m.getNombre());
+		System.out.println("Cantidad de creditos: " + Integer.toString(m.getCantCreditos()));
+		System.out.println("   ASIGNATURAS");
+		for (Map.Entry<String, Asignatura> a: m.getAsignaturas().entrySet())
+			System.out.println("   -" + a.getValue().getNombre());
+	}
+	
+	public static void mostrarAsignatura(Asignatura a) {
+		//IMPRIMIR
+		System.out.println("Carrera: " + a.getNombreCarrera());
+		System.out.println("Materia: " + a.getNombre());
+		System.out.println("Cantidad de creditos: " + Integer.toString(a.getCantCreditos()));
+		System.out.println("   PREVIAS");
+		for (Map.Entry<String, Asignatura> p: a.getPrevias().entrySet())
+			System.out.println("   -" + p.getValue().getNombre());
 	}
 	
 	public static void crearCarrera() {
@@ -658,11 +721,11 @@ public class Main {
 			int cantCreditos = -1;
 			Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
 			
-			//VERIFICAR NOMBRE
-			nombre = ingresarNombreMateriaDisponible();
-			
 			//BUSCAR CARRERA
 			nombreCarrera = pedirCarrera();
+			
+			//VERIFICAR NOMBRE
+			nombre = ingresarNombreMateriaDisponible(nombreCarrera);
 			
 			//VERIFICAR CANT CREDITOS
 			String mensajeInput = "Ingrese la cantidad de creditos de la materia: ";
@@ -695,10 +758,10 @@ public class Main {
 				String mensajeError = "La cantidad de creditos de la asignatura no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_ASIGNATURA);
 				
 				nombreCarrera = pedirCarrera();
-				nombreMateria = pedirMateria();
+				nombreMateria = pedirMateria(nombreCarrera);
 				Tipo tipo = Tipo.ASIGNATURA;
 				cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
-				nombre = ingresarNombreAsignaturaDisponible();
+				nombre = ingresarNombreAsignaturaDisponible(nombreCarrera, nombreMateria);
 				
 				
 				if (existeUnaAsignatura()) {
@@ -783,8 +846,12 @@ public class Main {
 		boolean deseaEliminar = preguntarUsuarioBoolean(mensajeInput, mensajeError);
 		
 		if (deseaEliminar) {
-			controlador.removerMateria(nombreMateria, nombreCarrera);
-			System.out.println("Se ha eliminado la materia con exito");
+			boolean seEstaModificando = false; //Se esta eliminando, no modificando
+			boolean seRemovio = controlador.removerMateria(nombreMateria, nombreCarrera, seEstaModificando);
+			if (seRemovio)
+				System.out.println("Se ha eliminado la materia con exito");
+			else
+				System.out.println("ERROR. Debe eliminar las asignaturas de la materia para poder eliminarla");
 		}
 		else
 			System.out.println("Se ha cancelado la operacion");
@@ -863,7 +930,33 @@ public class Main {
 	}
 	
 	public static void modificarMateria() {
+		String nombre = "";
+		String nombreAntes = "";
+		String nombreCarrera = "";
+		int cantCreditos = -1;
 		
+		nombreCarrera = pedirCarrera();
+		nombreAntes = pedirMateria(nombreCarrera);
+		
+		String mensajeInput = "";
+		String mensajeError = "";
+		Tipo tipo = Tipo.MATERIA;
+		
+		mensajeInput = "Ingrese la cantidad de creditos de la materia: ";
+		mensajeError = "La cantidad de creditos de la materia no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_MATERIA);
+		cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
+		
+		nombre = ingresarNombreMateriaDisponible(nombreAntes, nombreCarrera);
+		boolean materiaModificada = controlador.modificarMateria(nombre, nombreAntes, nombreCarrera, cantCreditos);
+		
+		if (materiaModificada) {
+			System.out.println("Materia modificada con exito");
+			System.out.println("-------------------------------------------------");
+			
+			mostrarMateria(controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombre));
+		}
+		else
+			System.out.println("ERROR. No se pudo modificar la materia de la coleccion");
 	}
 	public static void modificarAsignatura() {}
 	

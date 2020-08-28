@@ -213,21 +213,19 @@ public class Controlador {
 	}
 
 	//REMUEVE UNA MATERIA DE LA COLECCION SI ESTA NO TIENE ASOCIADA NINGUNA ASIGNATURA
-	public boolean removerMateria(String nombre, String nombreCarrera) {
+	public boolean removerMateria(String nombre, String nombreCarrera, boolean seEstaModificando) {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
 		if (existeCarrera) {
-			
 			Carrera carrera = mc.getCarreras().get(nombreCarrera);
 			boolean existeMateria = carrera.getMaterias().containsKey(nombre);
 			
 			if (existeMateria) {
-				
 				Materia materia = carrera.getMaterias().get(nombre);
 				int cantAsignaturas = materia.getAsignaturas().size();
 				
-				if (cantAsignaturas == 0) {
+				if (cantAsignaturas == 0 || seEstaModificando) {
 					mc.removerMateria(nombre, nombreCarrera);
 					return true;
 				}
@@ -373,13 +371,14 @@ public class Controlador {
 			
 			if (existeMateria) {
 				
-				Materia m = c.getMaterias().get(nombreAntes);
-				
 				if (MetodosAux.validarNombre(nombreDespues) &&
 					cantCreditos >= CREDITOS_MIN_MATERIA) {
 					
-					m.setNombre(nombreDespues);
-					m.setCantCreditos(cantCreditos);
+					Map<String, Asignatura> asignaturas = getCopyHashMapAsignaturas(c.getNombre(), nombreAntes);
+					
+					boolean seEstaModificando = true;
+					this.removerMateria(nombreAntes, nombreCarrera, seEstaModificando);
+					this.agregarMateria(nombreDespues, nombreCarrera, cantCreditos, asignaturas);
 					
 					return true;
 				}
@@ -422,6 +421,26 @@ public class Controlador {
 			}
 		}
 		return false;
+	}
+	
+	//DEEP COPY del hashmap asignaturas (copia creando nuevos objetos de los atributos, sin referencias)
+	public Map<String, Asignatura> getCopyHashMapAsignaturas(String nombreAntes, String nombreMateria){
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
+		for (Map.Entry<String, Asignatura> a : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().entrySet()) {
+			Asignatura original = a.getValue();
+			Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+			for (Map.Entry<String, Asignatura> p : original.getPrevias().entrySet()) {
+				Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+						p.getValue().getCantCreditos(), false, null);
+				previas.put(previa.getNombre(), previa);
+			}
+			Asignatura copia = new Asignatura(original.getNombre(), original.getNombreMateria(), original.getNombreCarrera(),
+					original.getCantCreditos(), original.getTienePrevias(), previas);
+			asignaturas.put(copia.getNombre(), copia);
+		}
+		return asignaturas;
 	}
 	
 	//DEEP COPY del hashmap materias (copia creando nuevos objetos de los atributos, sin referencias)
