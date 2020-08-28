@@ -5,6 +5,7 @@ import model.Carrera;
 import model.Controlador;
 import model.Materia;
 import model.MetodosAux;
+import model.Tipo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +107,7 @@ public class Main {
 		return nombreMateria;
 	}
 	
-	public static int pedirCantCreditos(String mensajeInput, String mensajeError) {
+	public static int pedirCantCreditos(String mensajeInput, String mensajeError, Tipo tipo) {
 		int cantCreditos = 0;
 		
 		boolean valorValido = false;
@@ -115,7 +116,9 @@ public class Main {
 			System.out.print(mensajeInput); auxCantCreditos = entrada.nextLine();
 			try {
 				cantCreditos = Integer.parseInt(auxCantCreditos);
-				if (cantCreditos > 0)
+				if (cantCreditos >= Controlador.CREDITOS_MIN_CARRERA && (tipo == Tipo.CARRERA || tipo == Tipo.MATERIA))
+					valorValido = true;
+				else if (cantCreditos >= Controlador.CREDITOS_MIN_ASIGNATURA && tipo == Tipo.ASIGNATURA)
 					valorValido = true;
 				else
 					System.out.println(mensajeError);
@@ -139,6 +142,29 @@ public class Main {
 		previa = buscarAsignatura(Integer.valueOf(opcion));
 		
 		return previa;
+	}
+	
+	public static String ingresarNombreCarreraDisponible(String nombreAntes) {
+		String nombre = "";
+		
+		boolean existeCarrera = true;
+		while (existeCarrera && !nombre.equals(nombreAntes)) {
+			//VERIFICAR NOMBRE
+			boolean valorValido = false;
+			while (!valorValido) {
+				System.out.print("Ingrese el nombre de la carrera: " ); nombre = entrada.nextLine();
+				
+				if (MetodosAux.validarNombre(nombre))
+					valorValido = true;
+			}
+			
+			existeCarrera = verifExisteCarrera(nombre);
+			
+			if (existeCarrera && !nombre.equals(nombreAntes))
+				System.out.print("ERROR. La carrera ingresada ya existe");
+		}
+		
+		return nombre;
 	}
 	
 	public static String ingresarNombreCarreraDisponible() {
@@ -598,17 +624,23 @@ public class Main {
 		
 		String mensajeInput = "";
 		String mensajeError = "";
-		
+		String mensajeErrorMax = "";
+		Tipo tipo = Tipo.CARRERA;
 		
 		//CREDITOS MINIMOS
 		mensajeInput = "Ingrese la cantidad de creditos minimos de la carrera: ";
-		mensajeError = "La cantidad de creditos minimos de la carrera no puede ser menor a 1";
-		creditosMin =  pedirCantCreditos(mensajeInput, mensajeError);
+		mensajeError = "La cantidad de creditos minimos de la carrera no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_CARRERA);
+		creditosMin =  pedirCantCreditos(mensajeInput, mensajeError, tipo);
 		
 		//CREDITOS MAXIMOS
 		mensajeInput = "Ingrese el total de creditos de la carrera: ";
-		mensajeError = "La cantidad de creditos maximos no puede ser menor que los minimos";
-		creditosMax =  pedirCantCreditos(mensajeInput, mensajeError);
+		mensajeErrorMax = "La cantidad de creditos maximos no puede ser menor que los minimos";
+		
+		while (creditosMin > creditosMax) {
+			creditosMax =  pedirCantCreditos(mensajeInput, mensajeError, tipo);
+			if (creditosMin > creditosMax)
+				System.out.println(mensajeErrorMax);
+		}
 		
 		boolean carreraAgregada = controlador.agregarCarrera(nombre, creditosMin, creditosMax, materias);
 		
@@ -634,8 +666,9 @@ public class Main {
 			
 			//VERIFICAR CANT CREDITOS
 			String mensajeInput = "Ingrese la cantidad de creditos de la materia: ";
-			String mensajeError = "La cantidad de creditos de la materia no puede ser menor a 1";
-			cantCreditos = pedirCantCreditos(mensajeInput, mensajeError);
+			String mensajeError = "La cantidad de creditos de la materia no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_MATERIA);
+			Tipo tipo = Tipo.MATERIA;
+			cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
 			
 			controlador.agregarMateria(nombre, nombreCarrera, cantCreditos, asignaturas);
 			System.out.println("Materia creada con exito");
@@ -659,11 +692,12 @@ public class Main {
 				String pregunta = "";
 				String error = "";
 				String mensajeInput = "Ingrese la cantidad de creditos de la asignatura: ";
-				String mensajeError = "La cantidad de creditos de la asignatura no puede ser menor a 1";
+				String mensajeError = "La cantidad de creditos de la asignatura no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_ASIGNATURA);
 				
 				nombreCarrera = pedirCarrera();
 				nombreMateria = pedirMateria();
-				cantCreditos = pedirCantCreditos(mensajeInput, mensajeError);
+				Tipo tipo = Tipo.ASIGNATURA;
+				cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
 				nombre = ingresarNombreAsignaturaDisponible();
 				
 				
@@ -787,31 +821,43 @@ public class Main {
 	
 	public static void modificarCarrera() {
 		String nombre = "";
+		String nombreAntes = "";
 		int creditosMin = -1;
 		int creditosMax = -1;
-		Map<String, Materia> materias = new HashMap<String, Materia>();
 		
-		nombre = pedirCarrera();
+		nombreAntes = pedirCarrera();
 		
 		String mensajeInput = "";
 		String mensajeError = "";
+		String mensajeErrorMax = "";
+		Tipo tipo = Tipo.CARRERA;
 		
 		
 		//CREDITOS MINIMOS
 		mensajeInput = "Ingrese la cantidad de creditos minimos de la carrera: ";
-		mensajeError = "La cantidad de creditos minimos de la carrera no puede ser menor a 1";
-		creditosMin =  pedirCantCreditos(mensajeInput, mensajeError);
+		mensajeError = "La cantidad de creditos minimos de la carrera no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_CARRERA);
+		creditosMin =  pedirCantCreditos(mensajeInput, mensajeError, tipo);
 		
 		//CREDITOS MAXIMOS
 		mensajeInput = "Ingrese el total de creditos de la carrera: ";
-		mensajeError = "La cantidad de creditos maximos no puede ser menor que los minimos";
-		creditosMax =  pedirCantCreditos(mensajeInput, mensajeError);
+		mensajeErrorMax = "La cantidad de creditos maximos no puede ser menor que los minimos";
 		
-		String nombreAntes = seleccionarCarrera(controlador.getColeccionCarreras());
+		while (creditosMin > creditosMax) {
+			creditosMax =  pedirCantCreditos(mensajeInput, mensajeError, tipo);
+			if (creditosMin > creditosMax)
+				System.out.println(mensajeErrorMax);
+		}
+		
+		//String nombreAntes = seleccionarCarrera(controlador.getColeccionCarreras());
+		nombre = ingresarNombreCarreraDisponible(nombreAntes);
 		boolean carreraModificada = controlador.modificarCarrera(nombre, nombreAntes, creditosMin, creditosMax);
 		
-		if (carreraModificada) 
+		if (carreraModificada) {
 			System.out.println("Carrera modificada con exito");
+			System.out.println("-------------------------------------------------");
+			
+			mostrarCarrera(controlador.getColeccionCarreras().get(nombre));
+		}
 		else
 			System.out.println("ERROR. No se pudo modificar la carrera de la coleccion");	
 	}

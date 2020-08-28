@@ -14,6 +14,11 @@ public class Controlador {
 	private int creditosMax = 0;
 	private String mailContacto = "";
 	
+	//CONSTANTES
+	public static final int CREDITOS_MIN_CARRERA = 1;
+	public static final int CREDITOS_MIN_MATERIA = 1;
+	public static final int CREDITOS_MIN_ASIGNATURA = 0;
+	
 	public Controlador() {}
 	
 	public Controlador(String nombreCarrera, Map<String, Asignatura> asignaturas, Map<String, Materia> materias, 
@@ -152,7 +157,7 @@ public class Controlador {
 			Map<String, Materia> materias) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
-			creditosMin > 0 && creditosMin <= creditosMax) {
+			creditosMin >= CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
 					
 			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 			
@@ -184,7 +189,7 @@ public class Controlador {
 		
 		if (MetodosAux.validarNombre(nombre) &&
 			MetodosAux.validarNombre(nombreCarrera) &&
-			cantCreditos > 0) {
+			cantCreditos >= CREDITOS_MIN_MATERIA) {
 				
 			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 			
@@ -237,7 +242,7 @@ public class Controlador {
 		if (MetodosAux.validarNombre(nombre) &&
 			MetodosAux.validarNombre(nombreMateria) &&
 			MetodosAux.validarNombre(nombreCarrera) &&
-			cantCreditos > 0){
+			cantCreditos >= CREDITOS_MIN_ASIGNATURA){
 				
 			ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 			
@@ -339,13 +344,16 @@ public class Controlador {
 		
 		if (existeCarrera) {
 			
-			Carrera c = mc.getCarreras().get(nombreAntes);
 			if (MetodosAux.validarNombre(nombreDespues) &&
-				creditosMin > 0 && creditosMin <= creditosMax) {
-					
-				c.setNombre(nombreDespues);
-				c.setCantCreditosMin(creditosMin);
-				c.setCantCreditosMax(creditosMax);
+				creditosMin >= CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
+				
+				//Creo una copia de las materias y sus respectivas asignaturas
+				Map<String, Materia> materias = this.getCopyHashMapMaterias(nombreAntes);
+				
+				//Elimino la carrera
+				this.removerCarrera(nombreAntes);
+				//Agrego la carrera modificada como una nueva con todas las materias que tenia antes y sus respectivas asignaturas
+				this.agregarCarrera(nombreDespues, creditosMin, creditosMax, materias);
 				
 				return true;
 			}
@@ -368,7 +376,7 @@ public class Controlador {
 				Materia m = c.getMaterias().get(nombreAntes);
 				
 				if (MetodosAux.validarNombre(nombreDespues) &&
-					cantCreditos > 0) {
+					cantCreditos >= CREDITOS_MIN_MATERIA) {
 					
 					m.setNombre(nombreDespues);
 					m.setCantCreditos(cantCreditos);
@@ -401,7 +409,7 @@ public class Controlador {
 					Asignatura a = m.getAsignaturas().get(nombreAntes);
 					
 					if (MetodosAux.validarNombre(nombreDespues) &&
-						cantCreditos > 0) {
+						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
 						
 						a.setNombre(nombreDespues);
 						a.setCantCreditos(cantCreditos);
@@ -414,5 +422,31 @@ public class Controlador {
 			}
 		}
 		return false;
+	}
+	
+	//DEEP COPY del hashmap materias (copia creando nuevos objetos de los atributos, sin referencias)
+	public Map<String, Materia> getCopyHashMapMaterias(String nombreAntes){
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		Map<String, Materia> materias = new HashMap<String, Materia>();
+		for (Map.Entry<String, Materia> m : mc.getCarreras().get(nombreAntes).getMaterias().entrySet()) {
+			Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
+			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
+				Asignatura original = a.getValue();
+				Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+				for (Map.Entry<String, Asignatura> p : original.getPrevias().entrySet()) {
+					Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+							p.getValue().getCantCreditos(), false, null);
+					previas.put(previa.getNombre(), previa);
+				}
+				Asignatura copia = new Asignatura(original.getNombre(), original.getNombreMateria(), original.getNombreCarrera(),
+						original.getCantCreditos(), original.getTienePrevias(), previas);
+				asignaturas.put(copia.getNombre(), copia);
+			}
+			Materia materia = new Materia(m.getValue().getNombre(), m.getValue().getNombreCarrera(), m.getValue().getCantCreditos(),
+					asignaturas);
+			materias.put(materia.getNombre(), materia);
+		}
+		return materias;
 	}
 }
