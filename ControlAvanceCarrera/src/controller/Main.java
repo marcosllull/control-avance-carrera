@@ -2,7 +2,6 @@ package controller;
 
 import model.Asignatura;
 import model.Carrera;
-import model.Controlador;
 import model.Materia;
 import model.MetodosAux;
 import model.Tipo;

@@ -1,7 +1,13 @@
-package model;
+package controller;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import model.Asignatura;
+import model.Carrera;
+import model.ManejadorCarrera;
+import model.Materia;
+import model.MetodosAux;
 
 public class Controlador {
 	
