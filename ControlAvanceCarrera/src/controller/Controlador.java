@@ -240,7 +240,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean agregarAsignatura(String nombre, String nombreMateria, String nombreCarrera, 
+	public boolean agregarAsignatura(String nombre, String nombreCarrera, String nombreMateria, 
 			int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
@@ -266,6 +266,7 @@ public class Controlador {
 						if (!tienePrevias) {
 							Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, cantCreditos,
 									tienePrevias, previas);
+							
 							mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
 							
 							return true;
@@ -393,8 +394,8 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreMateria, 
-			String nombreCarrera, int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
+	public boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreCarrera, 
+			String nombreMateria, int cantCreditos) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -416,10 +417,14 @@ public class Controlador {
 					if (MetodosAux.validarNombre(nombreDespues) &&
 						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
 						
-						a.setNombre(nombreDespues);
-						a.setCantCreditos(cantCreditos);
-						a.setTienePrevias(tienePrevias);
-						a.setPrevias(previas);
+						boolean tienePrevias = a.getTienePrevias();
+						Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+						
+						if (tienePrevias)
+							previas = getCopyHashMapAsignaturasPrevias(c.getNombre(), nombreMateria, nombreAntes);
+						
+						this.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
+						this.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
 						
 						return true;
 					}
@@ -427,6 +432,19 @@ public class Controlador {
 			}
 		}
 		return false;
+	}
+	
+	//DEEP COPY del hashmap asignaturas previas (copia creando nuevos objetos de los atributos, sin referencias)
+	public Map<String, Asignatura> getCopyHashMapAsignaturasPrevias(String nombreAntes, String nombreMateria, String nombreAsignatura){
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+		for (Map.Entry<String, Asignatura> p : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura).getPrevias().entrySet()) {
+			Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+						p.getValue().getCantCreditos(), false, null);
+			previas.put(previa.getNombre(), previa);
+		}
+		return previas;
 	}
 	
 	//DEEP COPY del hashmap asignaturas (copia creando nuevos objetos de los atributos, sin referencias)

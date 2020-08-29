@@ -90,7 +90,7 @@ public class Main {
 				nombreMateria = buscarMateriaDeCarrera(Integer.valueOf(opcion), nombreCarrera);
 						
 				if (nombreMateria.equals(""))
-					System.out.println("ERROR. Debe ingresar un numero que pertenezca a una carrera");
+					System.out.println("ERROR. Debe ingresar un numero que pertenezca a una materia");
 				else
 					materiaEncontrada = true;
 			}
@@ -100,6 +100,32 @@ public class Main {
 		}
 		
 		return nombreMateria;
+	}
+	
+	public static String pedirAsignatura(String nombreCarrera, String nombreMateria) {
+		
+		String nombreAsignatura = "";
+		String opcion = "";
+		
+		imprimirAsignaturasDeMateriaDeCarrera(nombreCarrera, nombreMateria);
+		boolean asignaturaEncontrada = false;
+		while (!asignaturaEncontrada) {
+			
+			System.out.print("Ingrese el valor numerico de la asignatura: " ); opcion = entrada.nextLine();
+			try {
+				nombreAsignatura = buscarAsignaturaDeMateriaDeCarrera(Integer.valueOf(opcion), nombreCarrera, nombreMateria);
+						
+				if (nombreAsignatura.equals(""))
+					System.out.println("ERROR. Debe ingresar un numero que pertenezca a una asignatura");
+				else
+					asignaturaEncontrada = true;
+			}
+			catch (NumberFormatException ex) {
+				System.out.println("ERROR. Solo puede ingresar numeros enteros");
+			}
+		}
+		
+		return nombreAsignatura;
 	}
 	
 	public static int pedirCantCreditos(String mensajeInput, String mensajeError, Tipo tipo) {
@@ -151,6 +177,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeCarrera = verifExisteCarrera(nombre);
@@ -174,6 +202,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeCarrera = verifExisteCarrera(nombre);
@@ -198,6 +228,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeMateria = verifExisteMateriaEnCarrera(nombre, nombreCarrera);
@@ -221,6 +253,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeMateria = verifExisteMateriaEnCarrera(nombre, nombreCarrera);
@@ -245,6 +279,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeAsignatura = verifExisteAsignaturaEnMateriaEnCarrera(nombre, nombreCarrera, nombreMateria);
@@ -268,6 +304,8 @@ public class Main {
 				
 				if (MetodosAux.validarNombre(nombre))
 					valorValido = true;
+				else
+					System.out.println("ERROR. Nombre invalido");
 			}
 			
 			existeAsignatura = verifExisteAsignaturaEnMateriaEnCarrera(nombre, nombreCarrera, nombreMateria);
@@ -389,7 +427,7 @@ public class Main {
 			contador++;
 		}
 		
-		return null;
+		return "";
 	}
 	
 	public static void imprimirMateriasDeCarrera(String nombreCarrera) {
@@ -735,6 +773,9 @@ public class Main {
 			controlador.agregarMateria(nombre, nombreCarrera, cantCreditos, asignaturas);
 			System.out.println("Materia creada con exito");
 		}
+		else {
+			System.out.println("ERROR. Debe crear una carrera primero");
+		}
 	}
 	
 	public static void crearAsignatura() {
@@ -770,8 +811,9 @@ public class Main {
 					tienePrevias = preguntarUsuarioBoolean(pregunta, error);
 					if (!tienePrevias) {
 						previas = new HashMap<String, Asignatura>();
-						controlador.agregarAsignatura(nombre, nombreMateria, nombreCarrera, cantCreditos, tienePrevias, 
-								previas);
+						
+						controlador.agregarAsignatura(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+						
 						System.out.println("Asignatura creada con exito");
 					}
 					else{
@@ -795,6 +837,7 @@ public class Main {
 							if (!deseaAgregarPrevia) {
 								controlador.agregarAsignatura(nombre, nombreMateria, nombreCarrera, cantCreditos, tienePrevias, 
 										previas);
+								
 								System.out.println("Asignatura creada con exito");
 							}
 						}
@@ -803,12 +846,16 @@ public class Main {
 				else {
 					tienePrevias = false;
 					previas = new HashMap<String, Asignatura>();
-					controlador.agregarAsignatura(nombre, nombreMateria, nombreCarrera, cantCreditos, tienePrevias, 
-							previas);
+					controlador.agregarAsignatura(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+					
 					System.out.println("Asignatura creada con exito");
 				}
 			}
+			else
+				System.out.println("ERROR. Debe crear una materia primero");
 		}
+		else
+			System.out.println("ERROR. Debe crear una carrera primero");
 	}
 	
 	public static void eliminarCarrera() {
@@ -957,11 +1004,40 @@ public class Main {
 		else
 			System.out.println("ERROR. No se pudo modificar la materia de la coleccion");
 	}
-	public static void modificarAsignatura() {}
+	public static void modificarAsignatura() {
+		String nombre = "";
+		String nombreAntes = "";
+		String nombreCarrera = "";
+		String nombreMateria = "";
+		int cantCreditos = -1;
+		
+		nombreCarrera = pedirCarrera();
+		nombreMateria = pedirMateria(nombreCarrera);
+		nombreAntes = pedirAsignatura(nombreCarrera, nombreMateria);
+		
+		String mensajeInput = "";
+		String mensajeError = "";
+		Tipo tipo = Tipo.ASIGNATURA;
+		
+		mensajeInput = "Ingrese la cantidad de creditos de la asignatura: ";
+		mensajeError = "La cantidad de creditos de la asignatura no puede ser menor a " + Integer.toString(Controlador.CREDITOS_MIN_ASIGNATURA);
+		cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
+		
+		nombre = ingresarNombreAsignaturaDisponible(nombreAntes, nombreCarrera, nombreMateria);
+		boolean asignaturaModificada = controlador.modificarAsignatura(nombre, nombreAntes, nombreCarrera, nombreMateria, cantCreditos);
+		
+		if (asignaturaModificada) {
+			System.out.println("Asignatura modificada con exito");
+			System.out.println("-------------------------------------------------");
+			
+			mostrarAsignatura(controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().get(nombre));
+		}
+		else
+			System.out.println("ERROR. No se pudo modificar la asignatura de la coleccion");
+	}
 	
 	public static void main(String[] args) {
 		Main.iniciarApliacion();
 		System.out.println("Ha salido del programa");
 	}
-
 }
