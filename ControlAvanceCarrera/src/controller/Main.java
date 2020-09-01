@@ -6,6 +6,8 @@ import model.Materia;
 import model.MetodosAux;
 import model.Tipo;
 
+import view.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -1036,8 +1038,14 @@ public class Main {
 			System.out.println("ERROR. No se pudo modificar la asignatura de la coleccion");
 	}
 	
+	public void iniciarVentana() {
+		Inicio ventana = new Inicio();
+	}
+	
 	public static void main(String[] args) {
 		Main.iniciarApliacion();
 		System.out.println("Ha salido del programa");
+		//Main m = new Main();
+		//m.iniciarVentana();
 	}
 }
