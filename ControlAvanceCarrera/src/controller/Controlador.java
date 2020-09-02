@@ -159,7 +159,7 @@ public class Controlador {
 	
 	//LAS ASIGNATURAS DE CADA MATERIA NO PUEDEN AGREGARSE EN EL CONSTRUCTOR DE CARRERA. DEBEN
 	//AGREGARSE LUEGO
-	public boolean agregarCarrera(String nombre, int creditosMin, int creditosMax, 
+	public static boolean agregarCarrera(String nombre, int creditosMin, int creditosMax, 
 			Map<String, Materia> materias) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
@@ -179,7 +179,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean removerCarrera(String nombre) {
+	public static boolean removerCarrera(String nombre) {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		boolean existeCarrera = mc.getCarreras().containsKey(nombre);
 		
@@ -190,7 +190,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean agregarMateria(String nombre, String nombreCarrera, 
+	public static boolean agregarMateria(String nombre, String nombreCarrera, 
 			int cantCreditos, Map<String, Asignatura> asignaturas) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
@@ -219,7 +219,7 @@ public class Controlador {
 	}
 
 	//REMUEVE UNA MATERIA DE LA COLECCION SI ESTA NO TIENE ASOCIADA NINGUNA ASIGNATURA
-	public boolean removerMateria(String nombre, String nombreCarrera, boolean seEstaModificando) {
+	public static boolean removerMateria(String nombre, String nombreCarrera, boolean seEstaModificando) {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -240,7 +240,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean agregarAsignatura(String nombre, String nombreCarrera, String nombreMateria, 
+	public static boolean agregarAsignatura(String nombre, String nombreCarrera, String nombreMateria, 
 			int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
@@ -300,7 +300,7 @@ public class Controlador {
 	
 	//Verifica si una asignatura de nombre 'nombre' es previa de otra asignatura
 	//nombre: nombre de la asignatura. materias: hashmap con todas las materias y cada una de sus asignaturas
-	public boolean verificarEsPrevia(String nombre, Map<String, Materia> materias) {
+	public static boolean verificarEsPrevia(String nombre, Map<String, Materia> materias) {
 		for (Map.Entry<String, Materia> m : materias.entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
 				if (a.getValue().getPrevias().containsKey(nombre)) {
@@ -311,7 +311,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean removerAsignatura(String nombre, String nombreCarrera, String nombreMateria) {
+	public static boolean removerAsignatura(String nombre, String nombreCarrera, String nombreMateria) {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -341,7 +341,7 @@ public class Controlador {
 	
 	//Permite modificar los datos de una carrera, incluyendo su nombre
 	//En caso de NO modificarse el nombre, 'nombreDespues' y 'nombreAntes' seran iguales
-	public boolean modificarCarrera(String nombreDespues, String nombreAntes, int creditosMin, int creditosMax) {
+	public static boolean modificarCarrera(String nombreDespues, String nombreAntes, int creditosMin, int creditosMax) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
@@ -353,12 +353,12 @@ public class Controlador {
 				creditosMin >= CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
 				
 				//Creo una copia de las materias y sus respectivas asignaturas
-				Map<String, Materia> materias = this.getCopyHashMapMaterias(nombreAntes);
+				Map<String, Materia> materias = Controlador.getCopyHashMapMaterias(nombreAntes);
 				
 				//Elimino la carrera
-				this.removerCarrera(nombreAntes);
+				Controlador.removerCarrera(nombreAntes);
 				//Agrego la carrera modificada como una nueva con todas las materias que tenia antes y sus respectivas asignaturas
-				this.agregarCarrera(nombreDespues, creditosMin, creditosMax, materias);
+				Controlador.agregarCarrera(nombreDespues, creditosMin, creditosMax, materias);
 				
 				return true;
 			}
@@ -366,7 +366,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean modificarMateria(String nombreDespues, String nombreAntes, String nombreCarrera, int cantCreditos) {
+	public static boolean modificarMateria(String nombreDespues, String nombreAntes, String nombreCarrera, int cantCreditos) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -384,8 +384,8 @@ public class Controlador {
 					Map<String, Asignatura> asignaturas = getCopyHashMapAsignaturas(c.getNombre(), nombreAntes);
 					
 					boolean seEstaModificando = true;
-					this.removerMateria(nombreAntes, nombreCarrera, seEstaModificando);
-					this.agregarMateria(nombreDespues, nombreCarrera, cantCreditos, asignaturas);
+					Controlador.removerMateria(nombreAntes, nombreCarrera, seEstaModificando);
+					Controlador.agregarMateria(nombreDespues, nombreCarrera, cantCreditos, asignaturas);
 					
 					return true;
 				}
@@ -394,7 +394,7 @@ public class Controlador {
 		return false;
 	}
 	
-	public boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreCarrera, 
+	public static boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreCarrera, 
 			String nombreMateria, int cantCreditos) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
@@ -423,8 +423,8 @@ public class Controlador {
 						if (tienePrevias)
 							previas = getCopyHashMapAsignaturasPrevias(c.getNombre(), nombreMateria, nombreAntes);
 						
-						this.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
-						this.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+						Controlador.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
+						Controlador.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
 						
 						return true;
 					}
@@ -435,7 +435,7 @@ public class Controlador {
 	}
 	
 	//DEEP COPY del hashmap asignaturas previas (copia creando nuevos objetos de los atributos, sin referencias)
-	public Map<String, Asignatura> getCopyHashMapAsignaturasPrevias(String nombreAntes, String nombreMateria, String nombreAsignatura){
+	public static Map<String, Asignatura> getCopyHashMapAsignaturasPrevias(String nombreAntes, String nombreMateria, String nombreAsignatura){
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
@@ -448,7 +448,7 @@ public class Controlador {
 	}
 	
 	//DEEP COPY del hashmap asignaturas (copia creando nuevos objetos de los atributos, sin referencias)
-	public Map<String, Asignatura> getCopyHashMapAsignaturas(String nombreAntes, String nombreMateria){
+	public static Map<String, Asignatura> getCopyHashMapAsignaturas(String nombreAntes, String nombreMateria){
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
@@ -468,7 +468,7 @@ public class Controlador {
 	}
 	
 	//DEEP COPY del hashmap materias (copia creando nuevos objetos de los atributos, sin referencias)
-	public Map<String, Materia> getCopyHashMapMaterias(String nombreAntes){
+	public static Map<String, Materia> getCopyHashMapMaterias(String nombreAntes){
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		Map<String, Materia> materias = new HashMap<String, Materia>();

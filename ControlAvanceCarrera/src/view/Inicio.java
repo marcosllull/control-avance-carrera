@@ -18,11 +18,6 @@ public class Inicio{
 	private JMenuItem itemModificarCarrera, itemModificarMateria, itemModificarAsignatura;
 	private JMenuItem itemAyudaSobre;
 	
-	private JPanel panelPrograma;
-	private JLabel labelPruebaPrograma;
-	
-	private int filas, columnas; //Cantidad de filas y columnas del panel central 
-	
 	public Inicio() {
 		getVentana();
 	}
@@ -33,18 +28,18 @@ public class Inicio{
 			ventana.setLayout(new BorderLayout());
 			ventana.add(getMenuBarra(), BorderLayout.NORTH);
 			ventana.setJMenuBar(getMenuBarra());
-			//ventana.add(getPanelCentral(5,5), BorderLayout.CENTER);	//LA CANTIDAD DE FILAS Y COLUMNAS DEBE DARSE DEPENDIENDO DE LA OPCION DEL PROGRAMA
-			ventana.pack(); //Da las dimensiones correctas a la ventana
+			ventana.add(getPanelCentral());	//LA CANTIDAD DE FILAS Y COLUMNAS DEBE DARSE DEPENDIENDO DE LA OPCION DEL PROGRAMA
+			ventana.setSize(640, 480);
+			//ventana.pack(); //Da las dimensiones correctas a la ventana
 			ventana.setVisible(true);
 		}
 		return ventana;
 	}
 
-	public JPanel getPanelCentral(int filas, int columnas) {
+	public JPanel getPanelCentral() {
 		if (panelCentral == null) {
 			panelCentral = new JPanel();
-			panelCentral.setLayout(new GridLayout(filas, columnas));
-			panelCentral.add(getPanelPrograma());
+			panelCentral.setLayout(new GridLayout(4,2));
 		}
 		return panelCentral;
 	}
@@ -52,7 +47,6 @@ public class Inicio{
 	public JMenuBar getMenuBarra() {
 		if (menuBarra == null) {
 			menuBarra = new JMenuBar();
-			//ventana.setJMenuBar(menuBarra);
 			menuBarra.add(getMenuArchivo());
 			menuBarra.add(getMenuFunciones());
 			menuBarra.add(getMenuAyuda());
@@ -146,14 +140,17 @@ public class Inicio{
 		}
 		return itemsSeleccionar;
 	}
-
+	
 	public JMenuItem getItemCrearCarrera() {
 		if (itemCrearCarrera == null) {
 			itemCrearCarrera = new JMenuItem("Crear carrera");
 			
 			ActionListener actionListenerICC = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new CrearCarrera();
+					
+					getPanelCentral().add(CrearCarrera.getInstancia());
+					getPanelCentral().revalidate();
+					getPanelCentral().repaint();
 			    }
 			};
 			itemCrearCarrera.addActionListener(actionListenerICC);
@@ -285,23 +282,6 @@ public class Inicio{
 			itemAyudaSobre.addActionListener(actionListenerIAS);
 		}
 		return itemAyudaSobre;
-	}
-	
-	public JPanel getPanelPrograma() {
-		if (panelPrograma == null) {
-			panelPrograma = new JPanel();
-			//AGREGAR TODOS LOS CONTROLES DE LA CALCULADORA DE CREDITOS - CONTROL AVANCE CARRERA
-		}
-		return panelPrograma;
-	}
-	
-	public JLabel getLabelPruebaPrograma() {
-		if (labelPruebaPrograma == null) {
-			labelPruebaPrograma = new JLabel("LABEL DE PRUEBA PARA EL PANEL DE LA CALCULADORA DE CREDITOS");
-			//SETEAR FUENTE *****************************************************************************************
-		}
-		
-		return labelPruebaPrograma;
 	}
 	
 	public void setearItemsSeleccionarBD() {
