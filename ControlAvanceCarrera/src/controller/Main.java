@@ -1039,13 +1039,36 @@ public class Main {
 	}
 	
 	public void iniciarVentana() {
-		Inicio ventana = new Inicio();
+		Inicio ventana = Inicio.getInstancia();
 	}
 	
 	public static void main(String[] args) {
-		Main.iniciarApliacion();
-		System.out.println("Ha salido del programa");
-		//Main m = new Main();
-		//m.iniciarVentana();
+		//Main.iniciarApliacion();
+		//System.out.println("Ha salido del programa");
+		Main m = new Main();
+		Controlador.agregarCarrera("Tecnologo en informatica", 150, 250, new HashMap<String, Materia>());
+		Controlador.agregarMateria("Programacion", "Tecnologo en informatica", 60, new HashMap<String, Asignatura>());
+		Controlador.agregarMateria("Matematicas", "Tecnologo en informatica", 30, new HashMap<String, Asignatura>());
+		Controlador.agregarCarrera("Ingenieria en sistemas", 210, 350, new HashMap<String, Materia>());
+		Controlador.agregarMateria("Programacion", "Ingenieria en sistemas", 100, new HashMap<String, Asignatura>());
+		Controlador.agregarMateria("Ciencias humanas", "Ingenieria en sistemas", 100, new HashMap<String, Asignatura>());
+		Controlador.agregarCarrera("Ingenieria de software", 230, 360, new HashMap<String, Materia>());
+		Controlador.agregarMateria("Bases de datos", "Ingenieria de software", 110, new HashMap<String, Asignatura>());
+		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+		Controlador.agregarAsignatura("Principios de programacion", "Tecnologo en informatica", "Programacion", 0, false, previas);
+		Asignatura a = Controlador.getColeccionCarreras().get("Tecnologo en informatica").getMaterias().get("Programacion").getAsignaturas().get("Principios de programacion");
+		previas.put("Principios de programacion", a);
+		Controlador.agregarAsignatura("Estructuras de datos y algoritmos", "Tecnologo en informatica", "Programacion", 6, true, previas);
+		Controlador.agregarAsignatura("Bases de datos I", "Tecnologo en informatica", "Programacion", 12, false, new HashMap<String, Asignatura>());
+		Controlador.agregarAsignatura("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematicas", 12, false, new HashMap<String, Asignatura>());
+		
+		/*System.out.println("-------------------------------------------------------------");
+		for (Map.Entry<String, Carrera> c : Controlador.getColeccionCarreras().entrySet()) {
+			System.out.println("Carrera: " + c.getValue().getNombre());
+			for (Map.Entry<String, Materia> ma : c.getValue().getMaterias().entrySet())
+				System.out.println("	Materia: " + ma.getValue().getNombre());
+		}
+		System.out.println("-------------------------------------------------------------");*/
+		m.iniciarVentana();
 	}
 }

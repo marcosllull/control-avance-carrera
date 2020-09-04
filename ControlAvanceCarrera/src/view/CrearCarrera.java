@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -21,7 +20,7 @@ import model.MostrarMensaje;
 public class CrearCarrera extends JPanel{
 	
 	private static CrearCarrera instancia;
-	private static JFrame padre;
+	private Inicio ventanaPrincipal;
 	private JTextField nombreJTF;
 	private JLabel nombreJL;
 	private JTextField cantCreditosMinJTF;
@@ -43,15 +42,15 @@ public class CrearCarrera extends JPanel{
 		this.add(getConfirmarJB());
 	}
 	
-	public static void setPadre(JFrame padre) {
-		CrearCarrera.padre = padre;
-	}
-	
 	public static CrearCarrera getInstancia() {
 		if (instancia == null) {
 			instancia = new CrearCarrera();
 		}
 		return instancia;
+	}
+	
+	public void setVentanaPrincipal(Inicio ventanaPrincipal) {
+		this.ventanaPrincipal = ventanaPrincipal;
 	}
 	
 	public JLabel getNombreJL() {
@@ -116,8 +115,10 @@ public class CrearCarrera extends JPanel{
 			
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					confirmarJB.setText("Presionado");
-					agregarCarrera(getNombreJTF(), getCantCreditosMinJTF(), getCantCreditosMaxJTF());
+					if (agregarCarrera(getNombreJTF(), getCantCreditosMinJTF(), getCantCreditosMaxJTF())) {
+						ventanaPrincipal.removerComponentesPanelCentral();
+						instancia = null;
+					}
 			    }
 			};
 			confirmarJB.addActionListener(confirmar);
@@ -145,25 +146,27 @@ public class CrearCarrera extends JPanel{
 					boolean existeCarrera = mc.getCarreras().containsKey(nombre);
 					if (!existeCarrera) {
 						Controlador.agregarCarrera(nombre, creditosMin, creditosMax, new HashMap<String, Materia>());
-						MostrarMensaje.carreraAgregada(CrearCarrera.padre);
+						MostrarMensaje.carreraAgregada();
 						return true;
 					}
+					else
+						MostrarMensaje.errorExisteCarrera();
 				}
 				else {
 					if (!MetodosAux.validarNombre(nombre))
-						MostrarMensaje.errorNombre(CrearCarrera.padre);
+						MostrarMensaje.errorNombre();
 					if (creditosMin < Controlador.CREDITOS_MIN_CARRERA)
-						MostrarMensaje.errorCreditosMin(CrearCarrera.padre);
+						MostrarMensaje.errorCreditosMinCarrera();
 					if (creditosMin > creditosMax)
-						MostrarMensaje.errorCreditosMax(CrearCarrera.padre);
+						MostrarMensaje.errorCreditosMax();
 				}
 			}
 			catch(NumberFormatException e) {
-				MostrarMensaje.errorFormatoCreditosMax(CrearCarrera.padre);
+				MostrarMensaje.errorFormatoCreditosMax();
 			}
 		}
 		catch(NumberFormatException e) {
-			MostrarMensaje.errorFormatoCreditosMin(CrearCarrera.padre);
+			MostrarMensaje.errorFormatoCreditosMin();
 		}
 		return false;
 	}

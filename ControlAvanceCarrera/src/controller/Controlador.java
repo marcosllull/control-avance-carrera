@@ -109,7 +109,7 @@ public class Controlador {
 	}
 	
 	//OTROS METODOS
-	public Map<String, Carrera> getColeccionCarreras(){
+	public static Map<String, Carrera> getColeccionCarreras(){
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		return mc.getCarreras();

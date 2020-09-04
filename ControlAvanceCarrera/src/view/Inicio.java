@@ -6,6 +6,7 @@ import javax.swing.*;
 
 public class Inicio{
 	
+	private static Inicio instancia;
 	private JFrame ventana;
 	private JPanel panelCentral;
 	private JMenuBar menuBarra;
@@ -18,8 +19,15 @@ public class Inicio{
 	private JMenuItem itemModificarCarrera, itemModificarMateria, itemModificarAsignatura;
 	private JMenuItem itemAyudaSobre;
 	
-	public Inicio() {
+	private Inicio() {
 		getVentana();
+	}
+	
+	public static Inicio getInstancia() {
+		if (instancia == null) {
+			instancia = new Inicio();
+		}
+		return instancia;
 	}
 	
 	public JFrame getVentana() {
@@ -28,8 +36,8 @@ public class Inicio{
 			ventana.setLayout(new BorderLayout());
 			ventana.add(getMenuBarra(), BorderLayout.NORTH);
 			ventana.setJMenuBar(getMenuBarra());
-			ventana.add(getPanelCentral());	//LA CANTIDAD DE FILAS Y COLUMNAS DEBE DARSE DEPENDIENDO DE LA OPCION DEL PROGRAMA
-			ventana.setSize(640, 480);
+			ventana.add(getPanelCentral(), BorderLayout.CENTER);	//LA CANTIDAD DE FILAS Y COLUMNAS DEBE DARSE DEPENDIENDO DE LA OPCION DEL PROGRAMA
+			ventana.setSize(800, 600);
 			//ventana.pack(); //Da las dimensiones correctas a la ventana
 			ventana.setVisible(true);
 		}
@@ -39,7 +47,7 @@ public class Inicio{
 	public JPanel getPanelCentral() {
 		if (panelCentral == null) {
 			panelCentral = new JPanel();
-			panelCentral.setLayout(new GridLayout(4,2));
+			panelCentral.setLayout(new BorderLayout());
 		}
 		return panelCentral;
 	}
@@ -148,7 +156,9 @@ public class Inicio{
 			ActionListener actionListenerICC = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					
+					removerComponentesPanelCentral();
 					getPanelCentral().add(CrearCarrera.getInstancia());
+					CrearCarrera.getInstancia().setVentanaPrincipal(getInstancia());
 					getPanelCentral().revalidate();
 					getPanelCentral().repaint();
 			    }
@@ -164,7 +174,14 @@ public class Inicio{
 			
 			ActionListener actionListenerICM = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new CrearMateria();
+					
+					removerComponentesPanelCentral();
+					if (CrearMateria.getInstancia() != null) {
+						getPanelCentral().add(CrearMateria.getInstancia());
+						CrearMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemCrearMateria.addActionListener(actionListenerICM);
@@ -178,7 +195,15 @@ public class Inicio{
 			
 			ActionListener actionListenerICA = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new CrearAsignatura();
+
+					removerComponentesPanelCentral();
+					
+					if (CrearAsignatura.getInstancia() != null) {
+						getPanelCentral().add(CrearAsignatura.getInstancia());
+						CrearAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemCrearAsignatura.addActionListener(actionListenerICA);
@@ -310,5 +335,16 @@ public class Inicio{
 		//ACA DEBERIA CREAR TODOS LOS FORMULARIOS DEL PANEL CENTRAL IGUAL QUE EN LA CALCULADORA DE CREDITOS Y COMPLETARLOS CON LOS
 		//DATOS DE LA CARRERA CONSULTANDOLO EN LA BASE DE DATOS POR SU NOMBRE
 		ventana.setTitle(nombreCarrera);
+	}
+	
+	public void removerComponentesPanelCentral() {
+		getPanelCentral().removeAll();
+		getPanelCentral().revalidate();
+		getPanelCentral().repaint();
+	}
+	
+	public void redibujarPanelCentral() {
+		getPanelCentral().revalidate();
+		getPanelCentral().repaint();
 	}
 }
