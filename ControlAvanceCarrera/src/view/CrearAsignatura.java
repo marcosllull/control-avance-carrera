@@ -389,6 +389,7 @@ public class CrearAsignatura extends JPanel{
 							MostrarMensaje.asignaturaAgregada();
 							/////
 							Asignatura a = Controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura);
+							
 							System.out.println("Nombre carrera: " + a.getNombreCarrera());
 							System.out.println("Nombre materia: " + a.getNombreMateria());
 							System.out.println("Nombre asignatura: " + a.getNombre());

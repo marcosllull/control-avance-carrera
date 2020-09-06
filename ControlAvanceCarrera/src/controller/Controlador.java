@@ -272,12 +272,19 @@ public class Controlador {
 							return true;
 						}
 						else {
-							
-							Map<String, Asignatura> asignaturas = materia.getAsignaturas();
+							//
+							Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
+							Map<String, Materia> materiasCarrera = mc.getCarreras().get(nombreCarrera).getMaterias();
+							for (Map.Entry<String, Materia> m : materiasCarrera.entrySet()) {
+								for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()){
+									asignaturasCarrera.put(a.getKey(), a.getValue());
+								}
+							}
+							//Map<String, Asignatura> asignaturas = materia.getAsignaturas();
 							
 							boolean existenPrevias = true;
 							for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
-								if (!asignaturas.containsKey(p.getKey())) {
+								if (!asignaturasCarrera.containsKey(p.getKey())) {
 									existenPrevias = false;
 									break;
 								}
