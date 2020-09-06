@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import controller.Controlador;
 import model.Asignatura;
@@ -109,6 +111,11 @@ public class CrearAsignatura extends JPanel{
 			for (Map.Entry<String, Carrera> c : carreras.entrySet())
 				carrerasJCB.addItem(c.getValue().getNombre());
 			
+			//Llenar combobox de las materias de esa carrera
+			//Llenar combobox de las asignaturas de esa carrera como las previas posibles de la asignatura
+			agregarMateriasCarrera();
+			//agregarAsignaturasCarrera();
+			
 			ActionListener elegirCarrera = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					limpiarCampos();
@@ -192,6 +199,17 @@ public class CrearAsignatura extends JPanel{
 	public JRadioButton getTienePreviasJRB_SI() {
 		if (tienePreviasJRB_SI == null) {
 			tienePreviasJRB_SI = new JRadioButton("SI");
+			
+			ChangeListener cambiarEstado = new ChangeListener() {
+				public void stateChanged (ChangeEvent e) {
+					if (tienePreviasJRB_SI.isSelected()) {
+						getAsignaturasJCB().setEnabled(true);
+						for (JButton b : getPreviasAL())
+							b.setEnabled(true);
+					}
+			    }
+			};
+			tienePreviasJRB_SI.addChangeListener(cambiarEstado);
 		}
 		return tienePreviasJRB_SI;
 	}
@@ -199,6 +217,19 @@ public class CrearAsignatura extends JPanel{
 	public JRadioButton getTienePreviasJRB_NO() {
 		if (tienePreviasJRB_NO == null) {
 			tienePreviasJRB_NO = new JRadioButton("NO");
+			
+			tienePreviasJRB_NO.setSelected(true);
+			
+			ChangeListener cambiarEstado = new ChangeListener() {
+				public void stateChanged (ChangeEvent e) {
+					if (tienePreviasJRB_NO.isSelected()) {
+						getAsignaturasJCB().setEnabled(false);
+						for (JButton b : getPreviasAL())
+							b.setEnabled(false);
+					}
+			    }
+			};
+			tienePreviasJRB_NO.addChangeListener(cambiarEstado);
 		}
 		return tienePreviasJRB_NO;
 	}
@@ -213,16 +244,28 @@ public class CrearAsignatura extends JPanel{
 	public JComboBox<String> getAsignaturasJCB(){
 		if (asignaturasJCB == null) {
 			asignaturasJCB = new JComboBox<String>();
-
-			agregarAsignaturasCarrera();
 			
 			ActionListener elegirAsignatura = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					if (asignaturasJCB.getSelectedItem() != null)
+					if (asignaturasJCB.getSelectedItem() != null && 
+						!asignaturasJCB.getSelectedItem().toString().equals("Elegir asignatura"))
+						
 						agregarPreviaAsignatura(asignaturasJCB.getSelectedItem().toString());
+						//Eliminar texto por defecto del JComboBox
+						for (int i = 0; i < asignaturasJCB.getItemCount(); i++) {
+							if (asignaturasJCB.getItemAt(i).equals("Elegir asignatura")) {
+								
+								asignaturasJCB.removeItemAt(i);
+								break;
+							}
+						}
+						///
 				}
 			};
 			asignaturasJCB.addActionListener(elegirAsignatura);
+			
+			agregarAsignaturasCarrera();
+			asignaturasJCB.setEnabled(false);
 		}
 		return asignaturasJCB;
 	}
@@ -263,7 +306,9 @@ public class CrearAsignatura extends JPanel{
 			
 			ActionListener cancelar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					cancelarJB.setText("Presionado");
+					//cancelarJB.setText("Presionado");
+					ventanaPrincipal.removerComponentesPanelCentral();
+					instancia = null;
 			    }
 			};
 			cancelarJB.addActionListener(cancelar);
@@ -316,24 +361,52 @@ public class CrearAsignatura extends JPanel{
 					
 					boolean existeMateria = mc.getCarreras().get(nombreCarrera).getMaterias().containsKey(nombreMateria);
 					if (existeMateria) {
-						
-						Map<String, Asignatura> asignaturas = mc.getCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas();
-						boolean existeAsignatura = asignaturas.containsKey(nombreAsignatura);
+						//
+						Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
+						Map<String, Materia> materiasCarrera = mc.getCarreras().get(nombreCarrera).getMaterias();
+						for (Map.Entry<String, Materia> m : materiasCarrera.entrySet()) {
+							for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()){
+								asignaturasCarrera.put(a.getKey(), a.getValue());
+							}
+						}
+						//Map<String, Asignatura> asignaturas = mc.getCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas();
+						boolean existeAsignatura = asignaturasCarrera.containsKey(nombreAsignatura);
 						if (!existeAsignatura) {
 							
-							for (Map.Entry<String, Asignatura> a : asignaturas.entrySet()) {
-								for (JButton previaButton : getPreviasAL()) {
-									String previa = previaButton.getText();
-									if (a.getValue().getNombre().equals(previa))
-										previas.put(a.getKey(), a.getValue());
+							if (tienePrevias) {
+								
+								for (Map.Entry<String, Asignatura> a : asignaturasCarrera.entrySet()) {
+									for (JButton previaButton : getPreviasAL()) {
+										String previa = previaButton.getText();
+										if (a.getValue().getNombre().equals(previa))
+											previas.put(a.getKey(), a.getValue());
+									}
 								}
 							}
-							
-							if (!tienePrevias)
+							else
 								previas = new HashMap<String, Asignatura>();
 							Controlador.agregarAsignatura(nombreAsignatura, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
 							MostrarMensaje.asignaturaAgregada();
+							/////
+							Asignatura a = Controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura);
+							System.out.println("Nombre carrera: " + a.getNombreCarrera());
+							System.out.println("Nombre materia: " + a.getNombreMateria());
+							System.out.println("Nombre asignatura: " + a.getNombre());
+							System.out.println("Cantidad de créditos de la asignatura: " + a.getCantCreditos());
+							System.out.println("Tiene asignaturas previas? " + Boolean.toString(a.getTienePrevias()));
+							if (a.getTienePrevias()) {
+								System.out.println("PREVIAS");
+								for (Map.Entry<String, Asignatura> as : a.getPrevias().entrySet()) {
+									System.out.println("	Nombre asignatura: " + as.getValue().getNombre());
+									System.out.println("	Materia de la asignatura: " + as.getValue().getNombreMateria());
+									System.out.println("	Cantidad de creditos: " + Integer.toString(as.getValue().getCantCreditos()));
+								}
+							}
+							/////
 							return true;
+						}
+						else {
+							MostrarMensaje.errorAsignaturaAgregada();
 						}
 					}
 					else
@@ -364,7 +437,7 @@ public class CrearAsignatura extends JPanel{
 	public void agregarMateriasCarrera() {
 		Map<String, Materia> materias = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString()).getMaterias();
 		for (Map.Entry<String, Materia> m : materias.entrySet()) {
-			materiasJCB.addItem(m.getValue().getNombre());
+			getMateriasJCB().addItem(m.getValue().getNombre());
 		}
 	}
 	
@@ -377,20 +450,58 @@ public class CrearAsignatura extends JPanel{
 			}
 		}
 		if (!existeAsignatura) {
-			getPreviasAL().add(new JButton(previa));
+			getPreviasAL().add(crearBotonPrevia(previa));
 			actualizarPreviasJP();
 		}
 		else
 			MostrarMensaje.errorAsignaturaAgregada();
 	}
 	
+	public JButton crearBotonPrevia(String nombre) {
+		
+		JButton previaJB = new JButton(nombre);
+		
+		ActionListener metodoBoton = new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				removerPrevia(nombre);
+		    }
+		};
+		previaJB.addActionListener(metodoBoton);
+		
+		return previaJB;
+	}
+	
+	public void removerPrevia(String nombre) {
+		boolean existeAsignatura = false;
+		int pos = -1;
+		for (JButton asignatura : getPreviasAL()) {
+			pos++;
+			if (asignatura.getText().equals(nombre)) {
+				existeAsignatura = true;
+				break;
+			}
+		}
+		if (existeAsignatura) {
+			getPreviasAL().remove(pos);
+			actualizarPreviasJP();
+		}
+		else
+			MostrarMensaje.errorImposible();
+	}
+	
 	public void agregarAsignaturasCarrera() {
 		Carrera c = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString());
 		
+		getAsignaturasJCB().setSelectedIndex(-1);
+		
+		ActionListener elegirAsignatura = getAsignaturasJCB().getActionListeners()[0];
+		getAsignaturasJCB().removeActionListener(elegirAsignatura);
+		
 		for (Map.Entry<String, Materia> m : c.getMaterias().entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet())
-				asignaturasJCB.addItem(a.getValue().getNombre());
+				getAsignaturasJCB().addItem(a.getValue().getNombre());
 		}
+		getAsignaturasJCB().addActionListener(elegirAsignatura);
 	}
 	
 	public void actualizarPreviasJP() {
@@ -407,9 +518,9 @@ public class CrearAsignatura extends JPanel{
 		getMateriasJCB().removeAllItems();
 		getNombreJTF().setText("");
 		getCantCreditosJTF().setText("");
-		getTienePreviasBG().clearSelection();
+		getTienePreviasJRB_NO().setSelected(true);
 		getAsignaturasJCB().removeAllItems();
 		getPreviasAL().clear();
-		getPreviasJP().removeAll();
+		actualizarPreviasJP();
 	}
 }
