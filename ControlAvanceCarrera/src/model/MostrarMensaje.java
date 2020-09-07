@@ -112,4 +112,9 @@ public class MostrarMensaje {
 		String mensaje = "Asignatura creada con exito";
 		mostrarOk(mensaje);
 	}
+
+	public static void carreraEliminada() {
+		String mensaje = "Carrera eliminada con exito";
+		mostrarOk(mensaje);
+	}
 }
