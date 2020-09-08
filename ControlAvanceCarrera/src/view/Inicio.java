@@ -217,7 +217,7 @@ public class Inicio{
 			
 			ActionListener actionListenerIEC = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					//new EliminarCarrera();
+
 					removerComponentesPanelCentral();
 					
 					if (EliminarCarrera.getInstancia() != null) {
@@ -239,7 +239,15 @@ public class Inicio{
 			
 			ActionListener actionListenerIEM = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new EliminarMateria();
+					
+					removerComponentesPanelCentral();
+					
+					if (EliminarMateria.getInstancia() != null) {
+						getPanelCentral().add(EliminarMateria.getInstancia());
+						EliminarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemEliminarMateria.addActionListener(actionListenerIEM);

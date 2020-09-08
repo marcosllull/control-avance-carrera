@@ -87,6 +87,11 @@ public class MostrarMensaje {
 		mostrarError(mensaje);
 	}
 	
+	public static void errorFaltaEliminarAsignaturasAsociadas() {
+		String mensaje = "Debe eliminar todas las asignaturas asociadas a la materia para poder eliminarla";
+		mostrarError(mensaje);
+	}
+	
 	public static void errorImposible() {
 		String mensaje = "ERROR inesperado. Comuniquese con desarrollo";
 		mostrarError(mensaje);
@@ -115,6 +120,11 @@ public class MostrarMensaje {
 
 	public static void carreraEliminada() {
 		String mensaje = "Carrera eliminada con exito";
+		mostrarOk(mensaje);
+	}
+	
+	public static void materiaEliminada() {
+		String mensaje = "Materia eliminada con exito";
 		mostrarOk(mensaje);
 	}
 }
