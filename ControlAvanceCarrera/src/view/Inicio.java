@@ -344,22 +344,51 @@ public class Inicio{
 		itemsSeleccionar[0] = new JMenuItem("Tecnologo en informatica");
 		itemsSeleccionar[1] = new JMenuItem("Ingenieria de software");
 		itemsSeleccionar[2] = new JMenuItem("Tecnicatura en redes");
+		
+		for (JMenuItem jmi : itemsSeleccionar)
+			agregarActionListenerCarrera(jmi);
 	}
 	
 	public void agregarActionListenerCarrera(JMenuItem carrera) {
-		ActionListener actionListenerCarrera = new ActionListener() {
+		/*ActionListener actionListenerCarrera = new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				verCarrera(carrera.getText());
 			}
 		};
+		carrera.addActionListener(actionListenerCarrera);*/
+		
+		ActionListener actionListenerCarrera = new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+
+				removerComponentesPanelCentral();
+				
+				String carreraSeleccionada = obtenerNombreCarrera(e); 
+				
+				if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
+					getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));
+					SeleccionarCarrera.getInstancia(carreraSeleccionada).setVentanaPrincipal(getInstancia());
+					getPanelCentral().revalidate();
+					getPanelCentral().repaint();
+				}
+		    }
+		};
 		carrera.addActionListener(actionListenerCarrera);
 	}
 	
+	public String obtenerNombreCarrera(ActionEvent e) {
+		for (JMenuItem jmi : itemsSeleccionar) {
+			if (e.getSource() == jmi)
+				return jmi.getText();
+		}
+		return "";
+	}
+	
+	/*
 	public void verCarrera(String nombreCarrera) {
 		//ACA DEBERIA CREAR TODOS LOS FORMULARIOS DEL PANEL CENTRAL IGUAL QUE EN LA CALCULADORA DE CREDITOS Y COMPLETARLOS CON LOS
 		//DATOS DE LA CARRERA CONSULTANDOLO EN LA BASE DE DATOS POR SU NOMBRE
 		ventana.setTitle(nombreCarrera);
-	}
+	}*/
 	
 	public void removerComponentesPanelCentral() {
 		getPanelCentral().removeAll();
