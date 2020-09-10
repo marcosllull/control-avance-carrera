@@ -127,4 +127,9 @@ public class MostrarMensaje {
 		String mensaje = "Materia eliminada con exito";
 		mostrarOk(mensaje);
 	}
+	
+	public static void asignaturaEliminada() {
+		String mensaje = "Asignatura eliminada con exito";
+		mostrarOk(mensaje);
+	}
 }

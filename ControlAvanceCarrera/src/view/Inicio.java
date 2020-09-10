@@ -261,7 +261,15 @@ public class Inicio{
 			
 			ActionListener actionListenerIEA = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new EliminarAsignatura();
+
+					removerComponentesPanelCentral();
+					
+					if (EliminarAsignatura.getInstancia() != null) {
+						getPanelCentral().add(EliminarAsignatura.getInstancia());
+						EliminarAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemEliminarAsignatura.addActionListener(actionListenerIEA);
