@@ -111,7 +111,9 @@ public class CrearMateria extends JPanel{
 			
 			ActionListener cancelar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					cancelarJB.setText("Presionado");
+					
+					ventanaPrincipal.removerComponentesPanelCentral();
+					instancia = null;
 			    }
 			};
 			cancelarJB.addActionListener(cancelar);
