@@ -26,6 +26,17 @@ public class Inicio{
 	public static Inicio getInstancia() {
 		if (instancia == null) {
 			instancia = new Inicio();
+			
+			instancia.removerComponentesPanelCentral();
+			
+			String carreraSeleccionada = "Tecnologo en informatica";
+			
+			if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
+				instancia.getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));
+				SeleccionarCarrera.getInstancia(carreraSeleccionada).setVentanaPrincipal(getInstancia());
+				instancia.getPanelCentral().revalidate();
+				instancia.getPanelCentral().repaint();
+			}
 		}
 		return instancia;
 	}
