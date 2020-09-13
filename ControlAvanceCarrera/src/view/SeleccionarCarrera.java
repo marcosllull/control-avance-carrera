@@ -478,12 +478,12 @@ public class SeleccionarCarrera extends JPanel{
 			public void actionPerformed (ActionEvent e) {
 				if (item.isSelected()) {
 					verifHabilitarAsignaturas();
-					agregarCreditosMateria(item.getText());
+					agregarCreditosMateriaYCarrera(item.getText());
 					agregarAsignaturaSeleccionada(item.getText());
 				}
 				else {
 					verifDeshabilitarAsignaturas(item.getText());
-					quitarCreditosMateria(item.getText());
+					quitarCreditosMateriaYCarrera(item.getText());
 					quitarAsignaturaSeleccionada(item.getText());
 				}
 		    }
@@ -493,35 +493,47 @@ public class SeleccionarCarrera extends JPanel{
 		return seleccionar;
 	}
 	
-	public void agregarCreditosMateria(String nombreAsignatura) {
-		actualizarCreditosMateria(nombreAsignatura, true);
+	public void agregarCreditosMateriaYCarrera(String nombreAsignatura) {
+		actualizarCreditosMateriaYCarrera(nombreAsignatura, true);
 	}
 	
-	public void quitarCreditosMateria(String nombreAsignatura) {
-		actualizarCreditosMateria(nombreAsignatura, false);
+	public void quitarCreditosMateriaYCarrera(String nombreAsignatura) {
+		actualizarCreditosMateriaYCarrera(nombreAsignatura, false);
 	}
 	
-	public void actualizarCreditosMateria(String nombreAsignatura, boolean agregar) {
+	public void actualizarCreditosMateriaYCarrera(String nombreAsignatura, boolean agregar) {
 		Asignatura asig = asignaturasCarrera.get(nombreAsignatura);
 		String nombreMateria = asig.getNombreMateria();
 		int cantCreditosAsignatura = asig.getCantCreditos();
-		int cantActual = 0;
-		int cantAntes = 0;
-		int cantTotal = 0;
+		int cantActualMateria = 0;
+		int cantAntesMateria = 0;
+		int cantTotalMateria = 0;
+		int cantActualCarrera = 0;
+		int cantAntesCarrera = 0;
+		int cantTotalCarrera = 0;
 		
 		for (int i = 0; i < getMateriasJT().getRowCount(); i++) {
 			if (getMateriasJT().getValueAt(i, 0).equals(nombreMateria)) {
 				
-				String[] cantActualString = getMateriasJT().getValueAt(i, 1).toString().split("/");
-				cantAntes = Integer.parseInt(cantActualString[0]);
-				cantTotal = Integer.parseInt(cantActualString[1]);
+				String[] cantActualMateriaString = getMateriasJT().getValueAt(i, 1).toString().split("/");
+				cantAntesMateria = Integer.parseInt(cantActualMateriaString[0]);
+				cantTotalMateria = Integer.parseInt(cantActualMateriaString[1]);
 				
-				if (agregar)
-					cantActual = cantAntes + cantCreditosAsignatura;
-				else
-					cantActual = cantAntes - cantCreditosAsignatura;
+				String[] cantActualCarreraString = getTotalJL().getText().split("/");	// 'TOTAL: 0' y '250' 
+				cantAntesCarrera = Integer.parseInt(cantActualCarreraString[0].split(":")[1].replaceAll(" ", "")); // '0'
+				cantTotalCarrera = Integer.parseInt(cantActualCarreraString[1]);
 				
-				getMateriasJT().setValueAt(Integer.toString(cantActual) + "/" + Integer.toString(cantTotal), i, 1);	
+				if (agregar) {
+					cantActualMateria = cantAntesMateria + cantCreditosAsignatura;
+					cantActualCarrera = cantAntesCarrera + cantCreditosAsignatura;
+				}
+				else {
+					cantActualMateria = cantAntesMateria - cantCreditosAsignatura;
+					cantActualCarrera = cantAntesCarrera - cantCreditosAsignatura;
+				}
+				
+				getMateriasJT().setValueAt(Integer.toString(cantActualMateria) + "/" + Integer.toString(cantTotalMateria), i, 1);
+				getTotalJL().setText("TOTAL: " + Integer.toString(cantActualCarrera) + "/" + Integer.toString(cantTotalCarrera));
 				break;
 			}
 		}
@@ -591,7 +603,7 @@ public class SeleccionarCarrera extends JPanel{
 						if (item.getText().equals(asig.getNombre())) {
 							
 							if (item.isSelected()) {
-								quitarCreditosMateria(item.getText());
+								quitarCreditosMateriaYCarrera(item.getText());
 								quitarAsignaturaSeleccionada(item.getText());
 							}
 							
