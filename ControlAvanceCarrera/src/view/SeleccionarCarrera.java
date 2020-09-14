@@ -240,7 +240,8 @@ public class SeleccionarCarrera extends JPanel{
 	
 	public JTable getAsignaturasSelectedJT() {
 		if (asignaturasSelectedJT == null) {
-			String[][] tabla = obtenerDatosAsignaturas();
+			//String[][] tabla = obtenerDatosAsignaturas();
+			String[][] tabla = null;
 			String[] columnas = {"Asignatura", "Créditos", "Materia"};
 			asignaturasSelectedJT = new JTable(new DefaultTableModel(tabla, columnas));
 			
