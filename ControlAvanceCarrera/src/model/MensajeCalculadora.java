@@ -13,11 +13,11 @@ public class MensajeCalculadora {
 		}
 		else if (creditosPorMateriaOK) {
 			mensajes = new String[1];
-			mensajes[0] = mensaje2;
+			mensajes[0] = mensaje1;
 		}
 		else if (creditosCarreraOK) {
 			mensajes = new String[1];
-			mensajes[0] = mensaje1;
+			mensajes[0] = mensaje2;
 		}
 		else {
 			mensajes = new String[2];

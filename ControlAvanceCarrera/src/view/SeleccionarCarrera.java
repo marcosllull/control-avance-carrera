@@ -487,11 +487,55 @@ public class SeleccionarCarrera extends JPanel{
 					quitarCreditosMateriaYCarrera(item.getText());
 					quitarAsignaturaSeleccionada(item.getText());
 				}
+				verifCambiarMensajes();
 		    }
 		};
 		//item.addActionListener(seleccionar); //SE ESTABA AGREGANDO DOS VECES BOLUDO. AL RETORNAR TAMBIEN LO AGREGA
 		
 		return seleccionar;
+	}
+	
+	public void verifCambiarMensajes() {
+		String totalString = getTotalJL().getText().split(":")[1].split("/")[0].replaceAll(" ", "");
+		int total = Integer.parseInt(totalString);
+		
+		boolean creditosCarreraOK = false;
+		//if (total > 10)
+		if (total >= ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getCantCreditosMin())
+			creditosCarreraOK = true;
+		
+		boolean creditosMateriasOK = true;
+		for (int i = 0; i < getMateriasJT().getRowCount(); i++) {
+			int creditosActuales = Integer.parseInt(getMateriasJT().getValueAt(i, 1).toString().split("/")[0]);
+			int creditosNecesarios = Integer.parseInt(getMateriasJT().getValueAt(i, 1).toString().split("/")[1]);
+			
+			if (creditosActuales < creditosNecesarios) {
+				creditosMateriasOK = false;
+				break;
+			}
+		}
+		
+		String[] mensajes = null;
+		
+		if (creditosCarreraOK && creditosMateriasOK)
+			mensajes = MensajeCalculadora.mensaje(true, true);
+		else if (creditosCarreraOK)
+			mensajes = MensajeCalculadora.mensaje(true, false);
+		else if (creditosMateriasOK)
+			mensajes = MensajeCalculadora.mensaje(false, true);
+		else
+			mensajes = MensajeCalculadora.mensaje(false, false);
+		
+		
+		//UPDATE mensajes
+		int contador = 0;
+		for (JLabel item : getMensajesAprobadoSiNoJL())
+			item.setText("");
+		for (String msj : mensajes) {
+			getMensajesAprobadoSiNoJL().get(contador).setText(msj);
+			contador++;
+		}
+		//UPDATE mensajes
 	}
 	
 	public void agregarCreditosMateriaYCarrera(String nombreAsignatura) {
