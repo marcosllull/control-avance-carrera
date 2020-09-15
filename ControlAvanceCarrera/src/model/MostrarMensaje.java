@@ -92,6 +92,11 @@ public class MostrarMensaje {
 		mostrarError(mensaje);
 	}
 	
+	public static void errorFaltaSeleccionarCarrera() {
+		String mensaje = "Debe seleccionar una carrera";
+		mostrarError(mensaje);
+	}
+	
 	public static void errorImposible() {
 		String mensaje = "ERROR inesperado. Comuniquese con desarrollo";
 		mostrarError(mensaje);

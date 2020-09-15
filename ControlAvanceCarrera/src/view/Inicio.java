@@ -2,6 +2,8 @@ package view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class Inicio{
@@ -13,7 +15,7 @@ public class Inicio{
 	private JMenu menuArchivo, menuFunciones, menuAyuda; //Opciones de 'menuBar'
 	private JMenu menuSeleccionar, menuCrear, menuEliminar, menuModificar; //Opciones de 'menuFunciones'
 	private JMenuItem itemArchivoSalir;
-	private JMenuItem[] itemsSeleccionar;
+	private ArrayList<JMenuItem> itemsSeleccionar;
 	private JMenuItem itemCrearCarrera, itemCrearMateria, itemCrearAsignatura;
 	private JMenuItem itemEliminarCarrera, itemEliminarMateria, itemEliminarAsignatura;
 	private JMenuItem itemModificarCarrera, itemModificarMateria, itemModificarAsignatura;
@@ -29,14 +31,14 @@ public class Inicio{
 			
 			instancia.removerComponentesPanelCentral();
 			
-			String carreraSeleccionada = "Tecnologo en informatica";
+			/*String carreraSeleccionada = "Tecnologo en informatica";
 			
 			if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
 				instancia.getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));
 				SeleccionarCarrera.getInstancia(carreraSeleccionada).setVentanaPrincipal(getInstancia());
 				instancia.getPanelCentral().revalidate();
 				instancia.getPanelCentral().repaint();
-			}
+			}*/
 		}
 		return instancia;
 	}
@@ -153,8 +155,9 @@ public class Inicio{
 		return itemArchivoSalir;
 	}
 
-	public JMenuItem[] getItemsSeleccionar() {
+	public ArrayList<JMenuItem> getItemsSeleccionar() {
 		if (itemsSeleccionar == null) {
+			itemsSeleccionar = new ArrayList<JMenuItem>();
 			setearItemsSeleccionarBD();
 		}
 		return itemsSeleccionar;
@@ -351,10 +354,10 @@ public class Inicio{
 		////Recorrer cada una de las posiciones y almacenar el nombre de la carrera en el item
 		///En cada vuelta del for se debe llamar al metodo agregarActionListenerCarrera(JMenuItem itemSeleccionar[x])
 		////TERMINA AQUI
-		itemsSeleccionar = new JMenuItem[3];
-		itemsSeleccionar[0] = new JMenuItem("Tecnologo en informatica");
-		itemsSeleccionar[1] = new JMenuItem("Ingenieria de software");
-		itemsSeleccionar[2] = new JMenuItem("Tecnicatura en redes");
+		itemsSeleccionar = new ArrayList<JMenuItem>();
+		itemsSeleccionar.add(new JMenuItem("Tecnologo en informatica"));
+		itemsSeleccionar.add(new JMenuItem("Ingenieria de software"));
+		itemsSeleccionar.add(new JMenuItem("Tecnicatura en redes"));
 		
 		for (JMenuItem jmi : itemsSeleccionar)
 			agregarActionListenerCarrera(jmi);
@@ -374,6 +377,7 @@ public class Inicio{
 				removerComponentesPanelCentral();
 				
 				String carreraSeleccionada = obtenerNombreCarrera(e); 
+				SeleccionarCarrera.setInstanciaNull();
 				
 				if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
 					getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));

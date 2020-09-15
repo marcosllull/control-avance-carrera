@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -133,11 +134,31 @@ public class EliminarCarrera extends JPanel{
 			
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					if (eliminarCarrera(getCarrerasJCB().getSelectedItem().toString())) {
-						ventanaPrincipal.removerComponentesPanelCentral();
-						instancia = null;
+					if (getCarrerasJCB().getSelectedItem() != null) {	
+						if (eliminarCarrera(getCarrerasJCB().getSelectedItem().toString())) {
+							
+							//Elimina una carrera del menu principal de forma dinamica
+							String nombreCarrera = getCarrerasJCB().getSelectedItem().toString();
+							for (int i = 0; i < ventanaPrincipal.getItemsSeleccionar().size(); i++) {
+								if (ventanaPrincipal.getItemsSeleccionar().get(i) != null) {
+									if (ventanaPrincipal.getItemsSeleccionar().get(i).getText().equals(nombreCarrera) ) {
+										ventanaPrincipal.getItemsSeleccionar().remove(ventanaPrincipal.getItemsSeleccionar().get(i));
+										ventanaPrincipal.getMenuSeleccionar().removeAll();
+										for (JMenuItem mi : ventanaPrincipal.getItemsSeleccionar()) {
+											ventanaPrincipal.getMenuSeleccionar().add(mi);
+										}
+										break;
+									}
+								}
+							}
+							//Elimina una carrera del menu principal de forma dinamica
+							
+							ventanaPrincipal.removerComponentesPanelCentral();
+							instancia = null;
+						}
 					}
-						
+					else
+						MostrarMensaje.errorFaltaSeleccionarCarrera();
 			    }
 			};
 			confirmarJB.addActionListener(confirmar);

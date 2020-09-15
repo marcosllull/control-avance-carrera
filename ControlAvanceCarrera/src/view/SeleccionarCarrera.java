@@ -60,7 +60,6 @@ public class SeleccionarCarrera extends JPanel{
 	private static Map<String, Asignatura> asignaturasCarrera;
 	
 	private SeleccionarCarrera(String nombreCarrera) {
-		
 		SeleccionarCarrera.nombreCarrera = nombreCarrera;
 		SeleccionarCarrera.asignaturasCarrera = SeleccionarCarrera.obtenerAsignaturasCarrera();
 		this.setLayout(new GridLayout(2, 2));
@@ -75,6 +74,10 @@ public class SeleccionarCarrera extends JPanel{
 			instancia = new SeleccionarCarrera(nombreCarrera);
 		}
 		return instancia;
+	}
+	
+	public static void setInstanciaNull() {
+		instancia = null;
 	}
 	
 	public void setVentanaPrincipal(Inicio ventanaPrincipal) {

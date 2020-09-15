@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -118,6 +119,14 @@ public class CrearCarrera extends JPanel{
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					if (agregarCarrera(getNombreJTF(), getCantCreditosMinJTF(), getCantCreditosMaxJTF())) {
+						
+						//Agregar carrera al menu principal de forma dinamica
+						JMenuItem carrera = new JMenuItem(getNombreJTF().getText());
+						ventanaPrincipal.agregarActionListenerCarrera(carrera);
+						ventanaPrincipal.getItemsSeleccionar().add(carrera);
+						ventanaPrincipal.getMenuSeleccionar().add(carrera);
+						//Agregar carrera al menu principal de forma dinamica
+						
 						ventanaPrincipal.removerComponentesPanelCentral();
 						instancia = null;
 					}
