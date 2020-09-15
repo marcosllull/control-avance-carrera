@@ -488,11 +488,25 @@ public class SeleccionarCarrera extends JPanel{
 					quitarAsignaturaSeleccionada(item.getText());
 				}
 				verifCambiarMensajes();
+				verifCambiarEstadoMateria();
 		    }
 		};
 		//item.addActionListener(seleccionar); //SE ESTABA AGREGANDO DOS VECES BOLUDO. AL RETORNAR TAMBIEN LO AGREGA
 		
 		return seleccionar;
+	}
+	
+	public void verifCambiarEstadoMateria() {
+		for (int i = 0; i < getMateriasJT().getRowCount(); i++) {
+			String[] campoCreditosMateria = getMateriasJT().getValueAt(i, 1).toString().split("/");
+			int creditosActuales = Integer.parseInt((campoCreditosMateria[0]));
+			int creditosTotales = Integer.parseInt((campoCreditosMateria[1]));
+			
+			if (creditosActuales < creditosTotales)
+				getMateriasJT().setValueAt("X", i, 2);
+			else
+				getMateriasJT().setValueAt("OK", i, 2);
+		}
 	}
 	
 	public void verifCambiarMensajes() {
