@@ -297,7 +297,15 @@ public class Inicio{
 			
 			ActionListener actionListenerIMC = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new ModificarCarrera();
+					
+					removerComponentesPanelCentral();
+					
+					if (ModificarCarrera.getInstancia() != null) {
+						getPanelCentral().add(ModificarCarrera.getInstancia());
+						ModificarCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemModificarCarrera.addActionListener(actionListenerIMC);

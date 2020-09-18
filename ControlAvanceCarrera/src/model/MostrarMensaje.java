@@ -137,4 +137,9 @@ public class MostrarMensaje {
 		String mensaje = "Asignatura eliminada con exito";
 		mostrarOk(mensaje);
 	}
+	
+	public static void carreraModificada() {
+		String mensaje = "Carrera modificada con exito";
+		mostrarOk(mensaje);
+	}
 }

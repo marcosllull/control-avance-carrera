@@ -27,7 +27,6 @@ import model.Fuente;
 import model.ManejadorCarrera;
 import model.Materia;
 import model.MensajeCalculadora;
-
 @SuppressWarnings("serial")
 public class SeleccionarCarrera extends JPanel{
 	
@@ -398,9 +397,9 @@ public class SeleccionarCarrera extends JPanel{
 			ActionListener salir = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					
-					System.exit(0); //Cierra la aplicacion
-					//ventanaPrincipal.removerComponentesPanelCentral();
-					//instancia = null;
+					//System.exit(0); //Cierra la aplicacion
+					ventanaPrincipal.removerComponentesPanelCentral();
+					instancia = null;
 			    }
 			};
 			salirJB.addActionListener(salir);
