@@ -319,7 +319,15 @@ public class Inicio{
 			
 			ActionListener actionListenerIMM = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					new ModificarMateria();
+					
+					removerComponentesPanelCentral();
+					
+					if (ModificarMateria.getInstancia() != null) {
+						getPanelCentral().add(ModificarMateria.getInstancia());
+						ModificarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getPanelCentral().revalidate();
+						getPanelCentral().repaint();
+					}
 			    }
 			};
 			itemModificarMateria.addActionListener(actionListenerIMM);

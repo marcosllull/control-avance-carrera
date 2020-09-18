@@ -142,4 +142,9 @@ public class MostrarMensaje {
 		String mensaje = "Carrera modificada con exito";
 		mostrarOk(mensaje);
 	}
+	
+	public static void materiaModificada() {
+		String mensaje = "Materia modificada con exito";
+		mostrarOk(mensaje);
+	}
 }
