@@ -225,4 +225,3 @@ public class EliminarAsignatura extends JPanel{
 	}
 	
 }
-
