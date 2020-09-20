@@ -359,11 +359,12 @@ public class Inicio{
 
 	public JMenuItem getItemAyudaSobre() {
 		if (itemAyudaSobre == null) {
-			itemAyudaSobre = new JMenuItem("Ayuda");
+			itemAyudaSobre = new JMenuItem("Sobre Control Avance Carrera");
 			
 			ActionListener actionListenerIAS = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					ventana.setTitle("*****************************AYUDA SOBRE******************************");
+					
+					Ayuda.mostrarAyuda();
 			    }
 			};
 			itemAyudaSobre.addActionListener(actionListenerIAS);
