@@ -147,4 +147,9 @@ public class MostrarMensaje {
 		String mensaje = "Materia modificada con exito";
 		mostrarOk(mensaje);
 	}
+	
+	public static void asignaturaModificada() {
+		String mensaje = "Asignatura modificada con exito";
+		mostrarOk(mensaje);
+	}
 }

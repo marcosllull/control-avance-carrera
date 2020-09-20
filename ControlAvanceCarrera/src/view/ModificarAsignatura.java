@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
@@ -20,7 +21,9 @@ import javax.swing.event.ChangeListener;
 import controller.Controlador;
 import model.Asignatura;
 import model.Carrera;
+import model.ManejadorCarrera;
 import model.Materia;
+import model.MetodosAux;
 import model.MostrarMensaje;
 
 @SuppressWarnings("serial")
@@ -352,7 +355,8 @@ public class ModificarAsignatura extends JPanel{
 				public void actionPerformed (ActionEvent e) {
 					
 					if (getCarrerasJCB().getSelectedItem() != null && 
-						getMateriasJCB().getSelectedItem() != null) {
+						getMateriasJCB().getSelectedItem() != null &&
+						getAsignaturasJCB().getSelectedItem() != null) {
 						
 						String nombreCarrera = getCarrerasJCB().getSelectedItem().toString();
 						String nombreMateria = getMateriasJCB().getSelectedItem().toString();
@@ -371,7 +375,83 @@ public class ModificarAsignatura extends JPanel{
 	
 	public boolean modificarAsignatura(String nombreCarrera, String nombreMateria, String nombreAsignaturaAntes) {
 		
-		return true;
+		String nombreAsignaturaDespues = getAsignaturaJTF().getText();
+		int cantCreditos = -1;
+		boolean tienePrevias = this.getTienePreviasJRB_SI().isSelected();
+		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+		
+		///////////////////////////////////////////////////////////////////////////////////////
+		try {
+			cantCreditos = Integer.parseInt(getCantCreditosJTF().getText());
+			
+			if (MetodosAux.validarNombre(nombreCarrera) &&
+				MetodosAux.validarNombre(nombreMateria) &&
+				MetodosAux.validarNombre(nombreAsignaturaDespues) &&
+				cantCreditos >= Controlador.CREDITOS_MIN_ASIGNATURA &&
+				((tienePrevias && getPreviasAL().size() > 0) || (!tienePrevias))) {
+				
+				ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+				
+				boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
+				if (existeCarrera) {
+					
+					boolean existeMateria = mc.getCarreras().get(nombreCarrera).getMaterias().containsKey(nombreMateria);
+					if (existeMateria) {
+						
+						Map<String, Asignatura> asignaturasCarrera = obtenerAsignaturasCarrera(nombreCarrera);
+						boolean existeAsignatura = asignaturasCarrera.containsKey(nombreAsignaturaAntes);
+						if (existeAsignatura) {
+							
+							if (tienePrevias) {
+								
+								for (Map.Entry<String, Asignatura> a : asignaturasCarrera.entrySet()) {
+									for (JButton previaButton : getPreviasAL()) {
+										String previa = previaButton.getText();
+										if (a.getValue().getNombre().equals(previa)) {
+											previas.put(a.getKey(), a.getValue());
+											break;
+										}
+									}
+								}
+							}
+							else
+								previas = new HashMap<String, Asignatura>();
+							
+							Controlador.modificarAsignatura(nombreAsignaturaDespues, nombreAsignaturaAntes, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+							MostrarMensaje.asignaturaModificada();
+							
+							return true;
+						}
+						else
+							MostrarMensaje.errorImposible();
+					}
+					else
+						MostrarMensaje.errorImposible();
+				}
+				else
+					MostrarMensaje.errorImposible();
+			}
+			else {
+				if (!MetodosAux.validarNombre(nombreCarrera))
+					MostrarMensaje.errorNombre();
+				if (!MetodosAux.validarNombre(nombreMateria))
+					MostrarMensaje.errorNombre();
+				if (!MetodosAux.validarNombre(nombreAsignaturaDespues))
+					MostrarMensaje.errorNombre();
+				if (cantCreditos < Controlador.CREDITOS_MIN_ASIGNATURA)
+					MostrarMensaje.errorCreditosMinMateria();
+				if (tienePrevias && getPreviasAL().size() == 0)
+					MostrarMensaje.errorPreviasSinAgregar();
+			}
+		}
+		catch(NumberFormatException e) {
+			MostrarMensaje.errorFormatoCreditos();
+		}
+		
+		
+		//////////////////////////////////////////////////////////////////////////////////////
+		
+		return false;
 	}
 	
 	public void limpiarCampos() {
@@ -559,5 +639,20 @@ public class ModificarAsignatura extends JPanel{
 				}
 			}
 		}
+	}
+	
+	public Map<String, Asignatura> obtenerAsignaturasCarrera(String nombreCarrera){
+		
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
+		Map<String, Materia> materiasCarrera = mc.getCarreras().get(nombreCarrera).getMaterias();
+		for (Map.Entry<String, Materia> m : materiasCarrera.entrySet()) {
+			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()){
+				asignaturasCarrera.put(a.getKey(), a.getValue());
+			}
+		}
+		
+		return asignaturasCarrera;
 	}
 }

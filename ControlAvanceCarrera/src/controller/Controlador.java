@@ -403,7 +403,7 @@ public class Controlador {
 	}
 	
 	public static boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreCarrera, 
-			String nombreMateria, int cantCreditos) {
+			String nombreMateria, int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -425,11 +425,11 @@ public class Controlador {
 					if (MetodosAux.validarNombre(nombreDespues) &&
 						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
 						
-						boolean tienePrevias = a.getTienePrevias();
-						Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+						//boolean tienePrevias = a.getTienePrevias();
+						//Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
 						
-						if (tienePrevias)
-							previas = getCopyHashMapAsignaturasPrevias(c.getNombre(), nombreMateria, nombreAntes);
+						//if (tienePrevias)
+							//previas = getCopyHashMapAsignaturasPrevias(c.getNombre(), nombreMateria, nombreAntes);
 						
 						Controlador.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
 						Controlador.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);

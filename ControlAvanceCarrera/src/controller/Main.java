@@ -1026,7 +1026,7 @@ public class Main {
 		cantCreditos = pedirCantCreditos(mensajeInput, mensajeError, tipo);
 		
 		nombre = ingresarNombreAsignaturaDisponible(nombreAntes, nombreCarrera, nombreMateria);
-		boolean asignaturaModificada = controlador.modificarAsignatura(nombre, nombreAntes, nombreCarrera, nombreMateria, cantCreditos);
+		/*boolean asignaturaModificada = controlador.modificarAsignatura(nombre, nombreAntes, nombreCarrera, nombreMateria, cantCreditos);
 		
 		if (asignaturaModificada) {
 			System.out.println("Asignatura modificada con exito");
@@ -1035,7 +1035,7 @@ public class Main {
 			mostrarAsignatura(controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().get(nombre));
 		}
 		else
-			System.out.println("ERROR. No se pudo modificar la asignatura de la coleccion");
+			System.out.println("ERROR. No se pudo modificar la asignatura de la coleccion");*/
 	}
 	
 	public void iniciarVentana() {
