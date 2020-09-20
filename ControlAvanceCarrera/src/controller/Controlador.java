@@ -420,16 +420,8 @@ public class Controlador {
 				
 				if (existeAsignatura) {
 					
-					Asignatura a = m.getAsignaturas().get(nombreAntes);
-					
 					if (MetodosAux.validarNombre(nombreDespues) &&
 						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
-						
-						//boolean tienePrevias = a.getTienePrevias();
-						//Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
-						
-						//if (tienePrevias)
-							//previas = getCopyHashMapAsignaturasPrevias(c.getNombre(), nombreMateria, nombreAntes);
 						
 						Controlador.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
 						Controlador.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
