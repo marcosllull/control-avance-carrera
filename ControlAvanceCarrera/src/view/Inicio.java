@@ -30,15 +30,6 @@ public class Inicio{
 			instancia = new Inicio();
 			
 			instancia.removerComponentesPanelCentral();
-			
-			/*String carreraSeleccionada = "Tecnologo en informatica";
-			
-			if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
-				instancia.getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));
-				SeleccionarCarrera.getInstancia(carreraSeleccionada).setVentanaPrincipal(getInstancia());
-				instancia.getPanelCentral().revalidate();
-				instancia.getPanelCentral().repaint();
-			}*/
 		}
 		return instancia;
 	}
@@ -389,12 +380,6 @@ public class Inicio{
 	}
 	
 	public void agregarActionListenerCarrera(JMenuItem carrera) {
-		/*ActionListener actionListenerCarrera = new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
-				verCarrera(carrera.getText());
-			}
-		};
-		carrera.addActionListener(actionListenerCarrera);*/
 		
 		ActionListener actionListenerCarrera = new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -422,13 +407,6 @@ public class Inicio{
 		}
 		return "";
 	}
-	
-	/*
-	public void verCarrera(String nombreCarrera) {
-		//ACA DEBERIA CREAR TODOS LOS FORMULARIOS DEL PANEL CENTRAL IGUAL QUE EN LA CALCULADORA DE CREDITOS Y COMPLETARLOS CON LOS
-		//DATOS DE LA CARRERA CONSULTANDOLO EN LA BASE DE DATOS POR SU NOMBRE
-		ventana.setTitle(nombreCarrera);
-	}*/
 	
 	public void removerComponentesPanelCentral() {
 		getPanelCentral().removeAll();

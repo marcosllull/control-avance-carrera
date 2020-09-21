@@ -380,7 +380,6 @@ public class ModificarAsignatura extends JPanel{
 		boolean tienePrevias = this.getTienePreviasJRB_SI().isSelected();
 		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
 		
-		///////////////////////////////////////////////////////////////////////////////////////
 		try {
 			cantCreditos = Integer.parseInt(getCantCreditosJTF().getText());
 			
@@ -447,9 +446,6 @@ public class ModificarAsignatura extends JPanel{
 		catch(NumberFormatException e) {
 			MostrarMensaje.errorFormatoCreditos();
 		}
-		
-		
-		//////////////////////////////////////////////////////////////////////////////////////
 		
 		return false;
 	}

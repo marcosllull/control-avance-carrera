@@ -31,8 +31,6 @@ import model.MensajeCalculadora;
 public class SeleccionarCarrera extends JPanel{
 	
 	private static SeleccionarCarrera instancia;
-	
-	@SuppressWarnings("unused")
 	private Inicio ventanaPrincipal;
 	private static String nombreCarrera;
 	private JPanel panelSupIzqJP;
@@ -242,7 +240,7 @@ public class SeleccionarCarrera extends JPanel{
 	
 	public JTable getAsignaturasSelectedJT() {
 		if (asignaturasSelectedJT == null) {
-			//String[][] tabla = obtenerDatosAsignaturas();
+
 			String[][] tabla = null;
 			String[] columnas = {"Asignatura", "Créditos", "Materia"};
 			asignaturasSelectedJT = new JTable(new DefaultTableModel(tabla, columnas));
@@ -255,10 +253,6 @@ public class SeleccionarCarrera extends JPanel{
             asignaturasSelectedJT.getTableHeader().setFont(Fuente.tablaHeader());
             DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) asignaturasSelectedJT.getTableHeader().getDefaultRenderer();
             renderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
-            
-            //DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-            //rightRenderer.setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
-            //asignaturasSelectedJT.getColumn("Créditos").setCellRenderer(rightRenderer);
 		}
 		return asignaturasSelectedJT;
 	}
@@ -493,7 +487,6 @@ public class SeleccionarCarrera extends JPanel{
 				verifCambiarEstadoMateria();
 		    }
 		};
-		//item.addActionListener(seleccionar); //SE ESTABA AGREGANDO DOS VECES BOLUDO. AL RETORNAR TAMBIEN LO AGREGA
 		
 		return seleccionar;
 	}
@@ -516,7 +509,6 @@ public class SeleccionarCarrera extends JPanel{
 		int total = Integer.parseInt(totalString);
 		
 		boolean creditosCarreraOK = false;
-		//if (total > 10)
 		if (total >= ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getCantCreditosMin())
 			creditosCarreraOK = true;
 		

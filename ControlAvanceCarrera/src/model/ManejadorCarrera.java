@@ -52,10 +52,6 @@ public class ManejadorCarrera {
 	public void removerMateria(String nombreMateria, String nombreCarrera) {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		Carrera c = mc.getCarreras().get(nombreCarrera);
-		//Materia m = c.getMaterias().get(nombreMateria);
-		
-		//Map<String, Asignatura> asignaturasDeLaMateria = m.getAsignaturas();
-		//asignaturasDeLaMateria.clear();
 		
 		c.getMaterias().remove(nombreMateria);
 	}

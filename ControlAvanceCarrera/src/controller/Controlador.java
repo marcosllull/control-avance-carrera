@@ -258,9 +258,6 @@ public class Controlador {
 				boolean existeMateria = carrera.getMaterias().containsKey(nombreMateria);
 				if (existeMateria) {
 					
-					//Materia materia = carrera.getMaterias().get(nombreMateria);
-					
-					//
 					Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
 					Map<String, Materia> materiasCarrera = mc.getCarreras().get(nombreCarrera).getMaterias();
 					for (Map.Entry<String, Materia> m : materiasCarrera.entrySet()) {
@@ -268,9 +265,8 @@ public class Controlador {
 							asignaturasCarrera.put(a.getKey(), a.getValue());
 						}
 					}
-					//
+					
 					boolean existeAsignatura = asignaturasCarrera.containsKey(nombre);
-					//boolean existeAsignatura = materia.getAsignaturas().containsKey(nombre);
 					if (!existeAsignatura) {
 						
 						if (!tienePrevias) {

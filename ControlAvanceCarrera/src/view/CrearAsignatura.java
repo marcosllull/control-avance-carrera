@@ -112,9 +112,7 @@ public class CrearAsignatura extends JPanel{
 				carrerasJCB.addItem(c.getValue().getNombre());
 			
 			//Llenar combobox de las materias de esa carrera
-			//Llenar combobox de las asignaturas de esa carrera como las previas posibles de la asignatura
 			agregarMateriasCarrera();
-			//agregarAsignaturasCarrera();
 			
 			ActionListener elegirCarrera = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -361,7 +359,7 @@ public class CrearAsignatura extends JPanel{
 					
 					boolean existeMateria = mc.getCarreras().get(nombreCarrera).getMaterias().containsKey(nombreMateria);
 					if (existeMateria) {
-						//
+						
 						Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
 						Map<String, Materia> materiasCarrera = mc.getCarreras().get(nombreCarrera).getMaterias();
 						for (Map.Entry<String, Materia> m : materiasCarrera.entrySet()) {
@@ -369,7 +367,7 @@ public class CrearAsignatura extends JPanel{
 								asignaturasCarrera.put(a.getKey(), a.getValue());
 							}
 						}
-						//Map<String, Asignatura> asignaturas = mc.getCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas();
+
 						boolean existeAsignatura = asignaturasCarrera.containsKey(nombreAsignatura);
 						if (!existeAsignatura) {
 							
@@ -387,23 +385,7 @@ public class CrearAsignatura extends JPanel{
 								previas = new HashMap<String, Asignatura>();
 							Controlador.agregarAsignatura(nombreAsignatura, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
 							MostrarMensaje.asignaturaAgregada();
-							/////
-							Asignatura a = Controlador.getColeccionCarreras().get(nombreCarrera).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura);
 							
-							System.out.println("Nombre carrera: " + a.getNombreCarrera());
-							System.out.println("Nombre materia: " + a.getNombreMateria());
-							System.out.println("Nombre asignatura: " + a.getNombre());
-							System.out.println("Cantidad de créditos de la asignatura: " + a.getCantCreditos());
-							System.out.println("Tiene asignaturas previas? " + Boolean.toString(a.getTienePrevias()));
-							if (a.getTienePrevias()) {
-								System.out.println("PREVIAS");
-								for (Map.Entry<String, Asignatura> as : a.getPrevias().entrySet()) {
-									System.out.println("	Nombre asignatura: " + as.getValue().getNombre());
-									System.out.println("	Materia de la asignatura: " + as.getValue().getNombreMateria());
-									System.out.println("	Cantidad de creditos: " + Integer.toString(as.getValue().getCantCreditos()));
-								}
-							}
-							/////
 							return true;
 						}
 						else {
