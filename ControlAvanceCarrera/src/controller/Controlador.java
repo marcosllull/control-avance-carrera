@@ -11,102 +11,12 @@ import model.MetodosAux;
 
 public class Controlador {
 	
-	private String nombreCarrera = "";
-	private Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
-	private Map<String, Asignatura> asignaturasSinSeleccionar = new HashMap<String, Asignatura>();
-	private Map<String, Materia> materias = new HashMap<String, Materia>();
-	private int creditosObtenidos = -1;
-	private int creditosMin = 0;
-	private int creditosMax = 0;
-	private String mailContacto = "";
-	
 	//CONSTANTES
 	public static final int CREDITOS_MIN_CARRERA = 1;
 	public static final int CREDITOS_MIN_MATERIA = 1;
 	public static final int CREDITOS_MIN_ASIGNATURA = 0;
 	
-	public Controlador() {}
-	
-	public Controlador(String nombreCarrera, Map<String, Asignatura> asignaturas, Map<String, Materia> materias, 
-			int creditosObtenidos, int creditosMin, int creditosMax, String mailContacto) {
-		this.nombreCarrera = nombreCarrera;
-		this.asignaturas.putAll(asignaturas);
-		this.materias = materias;
-		this.creditosObtenidos = creditosObtenidos;
-		this.creditosMin = creditosMin;
-		this.creditosMax = creditosMax;
-		this.mailContacto = mailContacto;
-	}
-
-	//GETTERS
-	public String getNombreCarrera() {
-		return nombreCarrera;
-	}
-
-	public Map<String, Asignatura> getAsignaturas() {
-		return asignaturas;
-	}
-
-	public Map<String, Asignatura> getAsignaturasSinSeleccionar() {
-		return asignaturasSinSeleccionar;
-	}
-
-	public Map<String, Materia> getMaterias() {
-		return materias;
-	}
-
-	public int getCreditosObtenidos() {
-		return creditosObtenidos;
-	}
-
-	public int getCreditosMin() {
-		return creditosMin;
-	}
-
-	public int getCreditosMax() {
-		return creditosMax;
-	}
-
-	public String getMailContacto() {
-		return mailContacto;
-	}
-
-	//SETTERS
-	public void setNombreCarrera(String nombreCarrera) {
-		this.nombreCarrera = nombreCarrera;
-	}
-
-	public void setAsignaturas(Map<String, Asignatura> asignaturas) {
-		for (Map.Entry<String, Asignatura> a : asignaturas.entrySet()) {
-			this.asignaturas.put(a.getKey(), a.getValue());
-		}
-	}
-
-	public void setAsignaturasSinSeleccionar(Map<String, Asignatura> asignaturasSinSeleccionar) {
-		for (Map.Entry<String, Asignatura> a : asignaturasSinSeleccionar.entrySet()) {
-			this.asignaturasSinSeleccionar.put(a.getKey(), a.getValue());
-		}
-	}
-
-	public void setMaterias(Map<String, Materia> materias) {
-		this.materias.putAll(materias);
-	}
-
-	public void setCreditosObtenidos(int creditosObtenidos) {
-		this.creditosObtenidos = creditosObtenidos;
-	}
-
-	public void setCreditosMin(int creditosMin) {
-		this.creditosMin = creditosMin;
-	}
-
-	public void setCreditosMax(int creditosMax) {
-		this.creditosMax = creditosMax;
-	}
-
-	public void setMailContacto(String mailContacto) {
-		this.mailContacto = mailContacto;
-	}
+	private Controlador() {}
 	
 	//OTROS METODOS
 	public static Map<String, Carrera> getColeccionCarreras(){
