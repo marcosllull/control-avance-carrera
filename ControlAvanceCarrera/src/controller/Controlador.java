@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import model.Asignatura;
+import model.BaseDeDatos;
 import model.Carrera;
 import model.ManejadorCarrera;
 import model.Materia;
@@ -81,7 +82,9 @@ public class Controlador {
 			if (!existeCarrera) {
 				
 				Carrera c = new Carrera(nombre, creditosMin, creditosMax, materias);
+				
 				mc.agregarCarrera(c);
+				BaseDeDatos.insertarCarreraBD(nombre, creditosMin, creditosMax);
 				
 				return true;
 			}
@@ -95,6 +98,8 @@ public class Controlador {
 		
 		if (existeCarrera) {
 			mc.removerCarrera(nombre);
+			BaseDeDatos.eliminarCarreraBD(nombre);
+			
 			return true;
 		}
 		return false;
@@ -119,7 +124,9 @@ public class Controlador {
 					
 					Materia m = new Materia(nombre, nombreCarrera, cantCreditos,
 							asignaturas);
+					
 					mc.agregarMateria(m, nombreCarrera);
+					BaseDeDatos.insertarMateriaBD(nombre, nombreCarrera, cantCreditos);
 					
 					return true;
 				}
@@ -143,6 +150,8 @@ public class Controlador {
 				
 				if (cantAsignaturas == 0 || seEstaModificando) {
 					mc.removerMateria(nombre, nombreCarrera);
+					BaseDeDatos.eliminarMateriaBD(nombre);
+					
 					return true;
 				}
 			}
@@ -182,8 +191,9 @@ public class Controlador {
 						if (!tienePrevias) {
 							Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, cantCreditos,
 									tienePrevias, previas);
-							
+
 							mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+							BaseDeDatos.insertarAsignaturaBD(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
 							
 							return true;
 						}
@@ -201,6 +211,12 @@ public class Controlador {
 								Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, 
 										cantCreditos, tienePrevias, previas);
 								mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+								
+								BaseDeDatos.insertarAsignaturaBD(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
+								//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS
+								for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
+									BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombre, p.getValue().getNombre());
+								}
 								
 								return true;
 							}
@@ -245,6 +261,10 @@ public class Controlador {
 					boolean esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
 					if (!esPrevia) {
 						mc.removerAsignatura(nombre, nombreCarrera, nombreMateria);
+						
+						BaseDeDatos.eliminarPreviaAsignaturaBD(nombreCarrera, nombre);
+						BaseDeDatos.eliminarAsignaturaBD(nombre);
+						
 						return true;
 					}
 				}
@@ -271,8 +291,10 @@ public class Controlador {
 				
 				//Elimino la carrera
 				Controlador.removerCarrera(nombreAntes);
+				BaseDeDatos.eliminarCarreraBD(nombreAntes);
 				//Agrego la carrera modificada como una nueva con todas las materias que tenia antes y sus respectivas asignaturas
 				Controlador.agregarCarrera(nombreDespues, creditosMin, creditosMax, materias);
+				BaseDeDatos.insertarCarreraBD(nombreDespues, creditosMin, creditosMax);
 				
 				return true;
 			}
@@ -299,7 +321,10 @@ public class Controlador {
 					
 					boolean seEstaModificando = true;
 					Controlador.removerMateria(nombreAntes, nombreCarrera, seEstaModificando);
+					BaseDeDatos.eliminarMateriaBD(nombreAntes);
+					
 					Controlador.agregarMateria(nombreDespues, nombreCarrera, cantCreditos, asignaturas);
+					BaseDeDatos.insertarMateriaBD(nombreDespues, nombreCarrera, cantCreditos);
 					
 					return true;
 				}
@@ -330,7 +355,17 @@ public class Controlador {
 						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
 						
 						Controlador.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
+						//SE ELIMINAN PRIMERO LAS PREVIAS DE LA BASE DE DATOS YA QUE HACEN REFERENCIA A LA ASIGNATURA A ELIMINAR POR LO QUE HASTA
+						//QUE LAS PREVIAS NO SE ELIMINEN, ESTA NO SE PODRA ELIMINAR
+						BaseDeDatos.eliminarPreviaAsignaturaBD(nombreCarrera, nombreAntes);
+						BaseDeDatos.eliminarAsignaturaBD(nombreAntes);
+						
 						Controlador.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+						BaseDeDatos.insertarAsignaturaBD(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
+						//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS
+						for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
+							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre());
+						}
 						
 						return true;
 					}

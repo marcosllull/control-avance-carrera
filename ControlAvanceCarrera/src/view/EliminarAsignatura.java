@@ -186,7 +186,7 @@ public class EliminarAsignatura extends JPanel{
 						return true;
 					}
 					else
-						MostrarMensaje.debug("Esta mal el metodo 'Controlador.removerAsignatura'");
+						MostrarMensaje.errorEsPrevia();
 				}
 				else
 					MostrarMensaje.debug("No seas cabeza de huevo");

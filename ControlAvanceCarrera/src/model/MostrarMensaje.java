@@ -97,6 +97,11 @@ public class MostrarMensaje {
 		mostrarError(mensaje);
 	}
 	
+	public static void errorEsPrevia() {
+		String mensaje = "Esta asignatura es previa de una o mas asignaturas. Debe eliminarlas para poder eliminar esta";
+		mostrarError(mensaje);
+	}
+	
 	public static void errorImposible() {
 		String mensaje = "ERROR inesperado. Comuniquese con desarrollo";
 		mostrarError(mensaje);
