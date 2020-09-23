@@ -3,8 +3,12 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.*;
+
+import controller.Controlador;
+import model.Carrera;
 
 public class Inicio{
 	
@@ -364,19 +368,23 @@ public class Inicio{
 	}
 	
 	public void setearItemsSeleccionarBD() {
-		////Obtener la cantidad de carreras de la base de datos
-		//int cant = ControladorBD.obtenerCantCarreras();
-		//itemsSeleccionar = new JMenuItem[cant];
-		////Recorrer cada una de las posiciones y almacenar el nombre de la carrera en el item
-		///En cada vuelta del for se debe llamar al metodo agregarActionListenerCarrera(JMenuItem itemSeleccionar[x])
-		////TERMINA AQUI
+
 		itemsSeleccionar = new ArrayList<JMenuItem>();
+		for (Map.Entry<String, Carrera> carrera : Controlador.obtenerCarrerasControlador().entrySet()) {
+			JMenuItem jmi = new JMenuItem(carrera.getValue().getNombre());
+			itemsSeleccionar.add(jmi);
+			agregarActionListenerCarrera(jmi);
+			
+		}
+		////TERMINA AQUI
+		
+		/*itemsSeleccionar = new ArrayList<JMenuItem>();
 		itemsSeleccionar.add(new JMenuItem("Tecnologo en informatica"));
 		itemsSeleccionar.add(new JMenuItem("Ingenieria de software"));
 		itemsSeleccionar.add(new JMenuItem("Tecnicatura en redes"));
 		
 		for (JMenuItem jmi : itemsSeleccionar)
-			agregarActionListenerCarrera(jmi);
+			agregarActionListenerCarrera(jmi);*/
 	}
 	
 	public void agregarActionListenerCarrera(JMenuItem carrera) {

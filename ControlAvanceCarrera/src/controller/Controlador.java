@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +68,135 @@ public class Controlador {
 		return null;
 	}
 	
+	public static void cargarCarrerasBD() {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		ArrayList<String[]> carrerasStr = obtenerCarrerasBD();
+		
+		for (String[] carrera : carrerasStr) {
+			String nombreCarrera = carrera[0];
+			int creditosMin = Integer.parseInt(carrera[1]);
+			int creditosMax = Integer.parseInt(carrera[2]);
+			Map<String, Materia> materias = new HashMap<String, Materia>();
+			
+			Carrera c = new Carrera(nombreCarrera, creditosMin, creditosMax, materias);
+			mc.agregarCarrera(c);
+		}
+	}
+	
+	public static void cargarMateriasBD() {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		ArrayList<String[]> materiasStr = obtenerMateriasBD();
+		
+		for (String[] materia : materiasStr) {
+			String nombreMateria = materia[0];
+			String nombreCarrera = materia[1];
+			int cantCreditos = Integer.parseInt(materia[2]);
+			Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
+			
+			Materia m = new Materia(nombreMateria, nombreCarrera, cantCreditos, asignaturas);
+			mc.agregarMateria(m, nombreCarrera);
+		}
+		
+	}
+	
+	public static void cargarAsignaturasBD() {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		ArrayList<String[]> asignaturasStr = obtenerAsignaturasBD();
+		ArrayList<String[]> asignaturasConPrevias = obtenerAsignaturasConPreviasBD();
+		
+		//Primero agrego a la colecccion todas las asignaturas con el hashmap de previas vacio
+		for (String[] asignatura : asignaturasStr) {
+			
+			String nombreAsignatura = asignatura[0];
+			String nombreCarrera = asignatura[1];
+			String nombreMateria = asignatura[2];
+			int cantCreditos = Integer.parseInt(asignatura[3]);
+			boolean tienePrevias = Boolean.parseBoolean(asignatura[4]);
+			
+			Asignatura a = new Asignatura(nombreAsignatura, nombreMateria, nombreCarrera, cantCreditos,
+					tienePrevias, new HashMap<String, Asignatura>());
+
+			mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+		}
+		
+		boolean agregado = false;
+		while (asignaturasConPrevias.size() > 0) {
+			agregado = false;
+			for (String[] acp : asignaturasConPrevias) {
+				for (Map.Entry<String, Materia> materia : mc.getCarreras().get(acp[0]).getMaterias().entrySet()) {
+					for (Map.Entry<String, Asignatura> asignatura : materia.getValue().getAsignaturas().entrySet()) {
+						if (asignatura.getValue().getNombre().equals(acp[1])) {
+							if (!tienePreviasLaPreviaBD(acp[0], acp[2], asignaturasConPrevias) ||
+								previaEstaAgregadaComoAsignatura(acp[0], acp[2])) {
+								
+								Asignatura previa = obtenerPreviaBD(acp[0], acp[2]);
+								asignatura.getValue().getPrevias().put(previa.getNombre(), previa);
+								asignaturasConPrevias.remove(acp);
+								agregado = true;
+								break;
+							}
+						}
+					}
+					if (agregado)
+						break;
+				}
+				if (agregado)
+					break;
+			}
+		}
+	}
+	
+	public static boolean previaEstaAgregadaComoAsignatura(String nombreCarrera, String nombrePrevia) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		Carrera c = mc.getCarreras().get(nombreCarrera);
+		for (Map.Entry<String, Materia> materia : c.getMaterias().entrySet()) {
+			if (materia.getValue().getAsignaturas().containsKey(nombrePrevia)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean tienePreviasLaPreviaBD(String nombreCarrera, String nombreAsignatura, ArrayList<String[]> asignaturasConPrevias) {
+		for (String[] acp : asignaturasConPrevias) {
+			if (acp[1].equals(nombreCarrera) && acp[2].equals(nombreAsignatura))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public static Asignatura obtenerPreviaBD(String nombreCarrera, String nombreAsignatura) {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		for (Map.Entry<String, Materia> materia : mc.getCarreras().get(nombreCarrera).getMaterias().entrySet()) {
+			for (Map.Entry<String, Asignatura> asignatura : materia.getValue().getAsignaturas().entrySet()) {
+				if (asignatura.getValue().getNombreCarrera().equals(nombreCarrera) && asignatura.getValue().getNombre().equals(nombreAsignatura)) {
+					return asignatura.getValue();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static ArrayList<String[]> obtenerCarrerasBD() {
+		return BaseDeDatos.getCarreras();
+	}
+	
+	public static ArrayList<String[]> obtenerMateriasBD(){
+		return BaseDeDatos.getMaterias();
+	}
+	
+	public static ArrayList<String[]> obtenerAsignaturasBD(){
+		return BaseDeDatos.getAsignaturas();
+	}
+	
+	public static ArrayList<String[]> obtenerAsignaturasConPreviasBD(){
+		return BaseDeDatos.getAsignaturasConPrevias();
+	}
+	
+	public static Map<String, Carrera> obtenerCarrerasControlador(){
+		return ManejadorCarrera.getInstancia().getCarreras();
+	}
 	
 	//LAS ASIGNATURAS DE CADA MATERIA NO PUEDEN AGREGARSE EN EL CONSTRUCTOR DE CARRERA. DEBEN
 	//AGREGARSE LUEGO

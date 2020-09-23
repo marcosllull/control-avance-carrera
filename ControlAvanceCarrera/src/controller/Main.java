@@ -17,7 +17,7 @@ public class Main {
 
 		Main m = new Main();
 		//****************************************************DATOS DE PRUEBA********************************************************************
-		Controlador.agregarCarrera("Tecnologo en informatica", 150, 250, new HashMap<String, Materia>());
+		/*Controlador.agregarCarrera("Tecnologo en informatica", 150, 250, new HashMap<String, Materia>());
 		Controlador.agregarMateria("Programacion", "Tecnologo en informatica", 60, new HashMap<String, Asignatura>());
 		Controlador.agregarMateria("Matematicas", "Tecnologo en informatica", 30, new HashMap<String, Asignatura>());
 		Controlador.agregarCarrera("Ingenieria de software", 210, 350, new HashMap<String, Materia>());
@@ -31,9 +31,12 @@ public class Main {
 		previas.put("Principios de programacion", a);
 		Controlador.agregarAsignatura("Estructuras de datos y algoritmos", "Tecnologo en informatica", "Programacion", 6, true, previas);
 		Controlador.agregarAsignatura("Bases de datos I", "Tecnologo en informatica", "Programacion", 12, false, new HashMap<String, Asignatura>());
-		Controlador.agregarAsignatura("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematicas", 12, false, new HashMap<String, Asignatura>());
+		Controlador.agregarAsignatura("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematicas", 12, false, new HashMap<String, Asignatura>());*/
 		//****************************************************DATOS DE PRUEBA********************************************************************
 		
+		Controlador.cargarCarrerasBD();
+		Controlador.cargarMateriasBD();
+		Controlador.cargarAsignaturasBD();
 		m.iniciarVentana();
 	}
 }

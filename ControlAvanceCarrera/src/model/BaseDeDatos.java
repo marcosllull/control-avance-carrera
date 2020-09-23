@@ -3,8 +3,10 @@ package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class BaseDeDatos {
 	
@@ -14,7 +16,6 @@ public class BaseDeDatos {
 	public static void iniciar() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Driver encontrado");
 		}
 		catch(Exception ex) {
 			System.out.println(ex.toString());
@@ -23,14 +24,18 @@ public class BaseDeDatos {
 	
 	public static Connection getConexion() {
 		
-		if (conexion == null) {
-			try {
-				conexion = DriverManager.getConnection("jdbc:mysql://localhost/control_avance_carrera","root" ,"27088678");
-				System.out.println("Conexion exitosa");
-			} 
-			catch (SQLException e) {
-				e.printStackTrace();
+		try {
+			if (conexion == null || conexion.isClosed()) {
+				try {
+					conexion = DriverManager.getConnection("jdbc:mysql://localhost/control_avance_carrera","root" ,"27088678");
+				} 
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return conexion;
 	}
@@ -39,7 +44,6 @@ public class BaseDeDatos {
 		if (sentencia == null) {
 			try {
 				sentencia = conexion.createStatement();
-				System.out.println("Statement creado");
 			} 
 			catch (SQLException e) {
 				e.printStackTrace();
@@ -133,7 +137,7 @@ public class BaseDeDatos {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			String query = "DELETE FROM carrera"
+			String query = "DELETE FROM carrera "
 					+ "WHERE nombre=?";
 			PreparedStatement eliminarCarrera = conexion.prepareStatement(query);
 
@@ -153,7 +157,7 @@ public class BaseDeDatos {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			String query = "DELETE FROM materia"
+			String query = "DELETE FROM materia "
 					+ "WHERE nombre=?";
 			PreparedStatement eliminarMateria = conexion.prepareStatement(query);
 
@@ -173,7 +177,7 @@ public class BaseDeDatos {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			String query = "DELETE FROM asignatura"
+			String query = "DELETE FROM asignatura "
 					+ "WHERE nombre=?";
 			PreparedStatement eliminarAsignatura = conexion.prepareStatement(query);
 
@@ -193,8 +197,8 @@ public class BaseDeDatos {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			String query = "DELETE FROM asignatura_previa"
-					+ "WHERE nombreCarrera=? AND"
+			String query = "DELETE FROM asignatura_previa "
+					+ "WHERE nombreCarrera=? AND "
 					+ "nombreAsignatura=?";
 			PreparedStatement eliminarPreviaAsignatura = conexion.prepareStatement(query);
 
@@ -233,5 +237,110 @@ public class BaseDeDatos {
 		catch (SQLException e) {
 			System.out.println("Previa NO insertada");
 		}
+	}
+	
+	public static ArrayList<String[]> getCarreras() {
+		
+		ArrayList<String[]> carreras = new ArrayList<String[]>();
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			Statement sentencia = conexion.createStatement();
+			String query = "SELECT * "
+					+ "FROM carrera";
+			ResultSet resultado = sentencia.executeQuery(query);
+			while (resultado.next()) {
+				String[] carrera = {resultado.getString(1), Integer.toString(resultado.getInt(2)), Integer.toString(resultado.getInt(3))};
+				carreras.add(carrera);
+			}
+			sentencia.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println("Error en la consulta getCarreras()");
+		}
+		
+		return carreras;
+	}
+	
+	public static ArrayList<String[]> getMaterias() {
+		
+		ArrayList<String[]> materias = new ArrayList<String[]>();
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			Statement sentencia = conexion.createStatement();
+			
+			String query = "SELECT * "
+					+ "FROM materia";
+
+			ResultSet resultado = sentencia.executeQuery(query);
+			while (resultado.next()) {
+				String[] materia = {resultado.getString(1), resultado.getString(2), Integer.toString(resultado.getInt(3))};
+				materias.add(materia);
+			}
+			sentencia.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println("Error en la consulta getMaterias()");
+		}
+		
+		return materias;
+	}
+	
+	public static ArrayList<String[]> getAsignaturas() {
+		
+		ArrayList<String[]> asignaturas = new ArrayList<String[]>();
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			Statement sentencia = conexion.createStatement();
+			
+			String query = "SELECT * "
+					+ "FROM asignatura";
+
+			ResultSet resultado = sentencia.executeQuery(query);
+			
+			while (resultado.next()) {
+				String[] asignatura = {resultado.getString(1), resultado.getString(2), resultado.getString(3), 
+						Integer.toString(resultado.getInt(4)), Boolean.toString(resultado.getBoolean(5))};
+				asignaturas.add(asignatura);
+			}
+			sentencia.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println("Error en la consulta getMaterias()");
+		}
+		
+		return asignaturas;
+	}
+	
+	public static ArrayList<String[]> getAsignaturasConPrevias() {
+		
+		ArrayList<String[]> asignaturasConPrevias = new ArrayList<String[]>();
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			Statement sentencia = conexion.createStatement();
+			
+			String query = "SELECT * "
+					+ "FROM asignatura_previa";
+
+			ResultSet resultado = sentencia.executeQuery(query);
+			
+			while (resultado.next()) {
+				String[] asignaturaConPrevia = {resultado.getString(1), resultado.getString(2), resultado.getString(3)};
+				asignaturasConPrevias.add(asignaturaConPrevia);
+			}
+			sentencia.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println("Error en la consulta getAsignaturasConPrevias()");
+		}
+		
+		return asignaturasConPrevias;
 	}
 }
