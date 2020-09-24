@@ -459,14 +459,19 @@ public class Controlador {
 				if (MetodosAux.validarNombre(nombreDespues) &&
 					cantCreditos >= CREDITOS_MIN_MATERIA) {
 					
-					Map<String, Asignatura> asignaturas = getCopyHashMapAsignaturas(c.getNombre(), nombreAntes);
+					Materia m = c.getMaterias().get(nombreAntes);
+					m.setNombre(nombreDespues);
+					m.setCantCreditos(cantCreditos);
 					
-					boolean seEstaModificando = true;
-					Controlador.removerMateria(nombreAntes, nombreCarrera, seEstaModificando);
-					BaseDeDatos.eliminarMateriaBD(nombreAntes);
+					mc.getCarreras().get(nombreCarrera).getMaterias().remove(nombreAntes);
+					mc.getCarreras().get(nombreCarrera).getMaterias().put(m.getNombre(), m);
 					
-					Controlador.agregarMateria(nombreDespues, nombreCarrera, cantCreditos, asignaturas);
-					BaseDeDatos.insertarMateriaBD(nombreDespues, nombreCarrera, cantCreditos);
+					Map<String, Asignatura> asignaturasMateria = mc.getCarreras().get(nombreCarrera).getMaterias().get(m.getNombre()).getAsignaturas();
+					for (Map.Entry<String, Asignatura> am : asignaturasMateria.entrySet()) {
+						am.getValue().setNombreMateria(nombreDespues);
+					}
+					
+					BaseDeDatos.modificarMateriaBD(nombreAntes, nombreDespues, nombreCarrera, cantCreditos);
 					
 					return true;
 				}

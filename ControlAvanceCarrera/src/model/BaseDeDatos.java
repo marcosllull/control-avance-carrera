@@ -362,4 +362,27 @@ public class BaseDeDatos {
 			System.out.println("Carrera NO actualizada");
 		}
 	}
+	
+	public static void modificarMateriaBD(String nombreAntes, String nombreDespues, String nombreCarrera, int cantCreditos) {
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			String query = "UPDATE materia SET nombre=?, nombreCarrera=?, cantCreditos=? WHERE nombre=? && nombreCarrera=?";
+			
+			PreparedStatement modificarCarrera = conexion.prepareStatement(query);
+			modificarCarrera.setString(1, nombreDespues);
+			modificarCarrera.setString(2, nombreCarrera);
+			modificarCarrera.setInt(3, cantCreditos);
+			modificarCarrera.setString(4, nombreAntes);
+			modificarCarrera.setString(5, nombreCarrera);
+			modificarCarrera.executeUpdate();
+
+			modificarCarrera.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			System.out.println("Materia NO actualizada");
+		}
+	}
 }
