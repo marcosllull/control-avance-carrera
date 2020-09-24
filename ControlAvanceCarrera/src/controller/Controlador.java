@@ -433,6 +433,9 @@ public class Controlador {
 				c.setCantCreditosMin(creditosMin);
 				c.setCantCreditosMax(creditosMax);
 				
+				mc.getCarreras().remove(nombreAntes);
+				mc.getCarreras().put(c.getNombre(), c);
+				
 				BaseDeDatos.modificarCarreraBD(nombreAntes, nombreDespues, creditosMin, creditosMax);
 				
 				return true;

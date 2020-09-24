@@ -155,6 +155,18 @@ public class ModificarCarrera extends JPanel{
 					if (getCarrerasJCB().getSelectedItem() != null) {	
 						if (modificarCarrera(getCarrerasJCB().getSelectedItem().toString())) {
 							
+							//Modifica una carrera del menu principal de forma dinamica
+							String nombreCarrera = getCarrerasJCB().getSelectedItem().toString();
+							for (int i = 0; i < ventanaPrincipal.getItemsSeleccionar().size(); i++) {
+								if (ventanaPrincipal.getItemsSeleccionar().get(i) != null) {
+									if (ventanaPrincipal.getItemsSeleccionar().get(i).getText().equals(nombreCarrera) ) {
+										ventanaPrincipal.getItemsSeleccionar().get(i).setText(getCarreraJTF().getText());
+										break;
+									}
+								}
+							}
+							//Modifica una carrera del menu principal de forma dinamica
+							
 							ventanaPrincipal.removerComponentesPanelCentral();
 							instancia = null;
 						}

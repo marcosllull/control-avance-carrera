@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.Asignatura;
+import model.Carrera;
 import model.Fuente;
 import model.ManejadorCarrera;
 import model.Materia;
@@ -702,6 +703,16 @@ public class SeleccionarCarrera extends JPanel{
 	}
 	
 	public static Map<String, Asignatura> obtenerAsignaturasCarrera(){
+		System.out.println("---------------------------------------");
+		for (Map.Entry<String, Carrera> car : ManejadorCarrera.getInstancia().getCarreras().entrySet()) {
+			System.out.println(car.getValue().getNombre());
+		}
+		System.out.println("---------------------------------------");
+		if (ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera) == null) {
+			System.out.println("nombreCarrera: " + nombreCarrera);
+			System.out.println("ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera) = null");
+		}
+		
 		Map<String, Materia> materias = ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getMaterias();
 		Map<String, Asignatura> asignaturasCarrera = new HashMap<String, Asignatura>();
 		
