@@ -1,3 +1,5 @@
+DROP DATABASE control_avance_carrera;
+
 CREATE DATABASE control_avance_carrera;
 use control_avance_carrera;
 /**********TABLAS**********/
@@ -10,7 +12,7 @@ CREATE TABLE carrera (
 
 CREATE TABLE materia (
 	PRIMARY KEY (nombre, nombreCarrera),
-    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre),
+    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre) ON UPDATE CASCADE,
 	nombre VARCHAR(40),
     nombreCarrera VARCHAR(40),
     cantCreditos INTEGER
@@ -18,8 +20,8 @@ CREATE TABLE materia (
 
 CREATE TABLE asignatura (
 	PRIMARY KEY (nombre, nombreCarrera),
-    FOREIGN KEY (nombreMateria) REFERENCES materia (nombre),
-    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre),
+    FOREIGN KEY (nombreMateria) REFERENCES materia (nombre)  ON UPDATE CASCADE,
+    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre)  ON UPDATE CASCADE,
 	nombre VARCHAR(40),
     nombreCarrera VARCHAR(40),
     nombreMateria VARCHAR(40),
@@ -29,9 +31,9 @@ CREATE TABLE asignatura (
 
 CREATE TABLE asignatura_previa (
 	PRIMARY KEY (nombreCarrera, nombreAsignatura, nombrePrevia),
-    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre),
-    FOREIGN KEY (nombreAsignatura) REFERENCES asignatura (nombre),
-    FOREIGN KEY (nombrePrevia) REFERENCES asignatura (nombre),
+    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre)  ON UPDATE CASCADE,
+    FOREIGN KEY (nombreAsignatura) REFERENCES asignatura (nombre)  ON UPDATE CASCADE,
+    FOREIGN KEY (nombrePrevia) REFERENCES asignatura (nombre)  ON UPDATE CASCADE,
     nombreCarrera VARCHAR(40),
 	nombreAsignatura VARCHAR(40),
     nombrePrevia VARCHAR(40)

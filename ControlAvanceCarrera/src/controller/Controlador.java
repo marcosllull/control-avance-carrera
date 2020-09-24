@@ -227,6 +227,18 @@ public class Controlador {
 		boolean existeCarrera = mc.getCarreras().containsKey(nombre);
 		
 		if (existeCarrera) {
+			for (Map.Entry<String, Carrera> carrera : mc.getCarreras().entrySet()) {
+				if (carrera.getValue().getNombre().equals(nombre)) {
+					for (Map.Entry<String, Materia> materia : carrera.getValue().getMaterias().entrySet()) {
+						for (Map.Entry<String, Asignatura> asignatura : materia.getValue().getAsignaturas().entrySet()) {
+							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre());
+							//removerAsignatura(String nombre, String nombreCarrera, String nombreMateria)
+						}
+						BaseDeDatos.eliminarMateriaBD(materia.getValue().getNombre());
+					}
+					break;
+				}
+			}
 			mc.removerCarrera(nombre);
 			BaseDeDatos.eliminarCarreraBD(nombre);
 			
@@ -416,15 +428,12 @@ public class Controlador {
 			if (MetodosAux.validarNombre(nombreDespues) &&
 				creditosMin >= CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
 				
-				//Creo una copia de las materias y sus respectivas asignaturas
-				Map<String, Materia> materias = Controlador.getCopyHashMapMaterias(nombreAntes);
+				Carrera c = mc.getCarreras().get(nombreAntes);
+				c.setNombre(nombreDespues);
+				c.setCantCreditosMin(creditosMin);
+				c.setCantCreditosMax(creditosMax);
 				
-				//Elimino la carrera
-				Controlador.removerCarrera(nombreAntes);
-				BaseDeDatos.eliminarCarreraBD(nombreAntes);
-				//Agrego la carrera modificada como una nueva con todas las materias que tenia antes y sus respectivas asignaturas
-				Controlador.agregarCarrera(nombreDespues, creditosMin, creditosMax, materias);
-				BaseDeDatos.insertarCarreraBD(nombreDespues, creditosMin, creditosMax);
+				BaseDeDatos.modificarCarreraBD(nombreAntes, nombreDespues, creditosMin, creditosMax);
 				
 				return true;
 			}

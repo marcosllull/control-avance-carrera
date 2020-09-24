@@ -27,7 +27,7 @@ public class BaseDeDatos {
 		try {
 			if (conexion == null || conexion.isClosed()) {
 				try {
-					conexion = DriverManager.getConnection("jdbc:mysql://localhost/control_avance_carrera","root" ,"27088678");
+					conexion = DriverManager.getConnection("jdbc:mysql://localhost/control_avance_carrera?useSSL=false","root" ,"27088678");
 				} 
 				catch (SQLException e) {
 					e.printStackTrace();
@@ -136,13 +136,10 @@ public class BaseDeDatos {
 		try {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
-			
 			String query = "DELETE FROM carrera "
 					+ "WHERE nombre=?";
 			PreparedStatement eliminarCarrera = conexion.prepareStatement(query);
-
 			eliminarCarrera.setString(1, nombre);
-			
 			eliminarCarrera.executeUpdate();
 			eliminarCarrera.close();
 			conexion.close();
@@ -342,5 +339,27 @@ public class BaseDeDatos {
 		}
 		
 		return asignaturasConPrevias;
+	}
+	
+	public static void modificarCarreraBD(String nombreAntes, String nombreDespues, int creditosMin, int creditosMax) {
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			String query = "UPDATE carrera SET nombre=?, cantCreditosMin=?, cantCreditosMax=? WHERE nombre=?";
+			
+			PreparedStatement modificarCarrera = conexion.prepareStatement(query);
+			modificarCarrera.setString(1, nombreDespues);
+			modificarCarrera.setInt(2, creditosMin);
+			modificarCarrera.setInt(3, creditosMax);
+			modificarCarrera.setString(4, nombreAntes);
+			modificarCarrera.executeUpdate();
+
+			modificarCarrera.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			System.out.println("Carrera NO actualizada");
+		}
 	}
 }
