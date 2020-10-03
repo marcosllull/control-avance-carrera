@@ -169,45 +169,41 @@ public class BaseDeDatos {
 		}
 	}
 	
-	public static void eliminarAsignaturaBD(String nombre) {
+	public static void eliminarAsignaturaBD(String nombre, String nombreCarrera) {
 		try {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			String query = "DELETE FROM asignatura "
-					+ "WHERE nombre=?";
-			PreparedStatement eliminarAsignatura = conexion.prepareStatement(query);
+			/*Eliminar todas las previas de esta asignatura de la tabla asignatura_previa*/
+			BaseDeDatos.eliminarPreviasAsignatura(nombreCarrera, nombre);
 
-			eliminarAsignatura.setString(1, nombre);
+			/*Eliminar todas las filas en que esta asignatura es previa de otra de la tabla asignatura_previa*/
+			String query1 = "DELETE FROM asignatura_previa "
+					+ "WHERE nombreCarrera=? "
+					+ "AND nombrePrevia=?";
+			/*Eliminar la asignatura*/
+			String query2 = "DELETE FROM asignatura "
+					+ "WHERE nombreCarrera=? "
+					+ "AND nombre=?";
 			
+			PreparedStatement eliminarAsignatura;
+			
+			eliminarAsignatura = conexion.prepareStatement(query1);
+			eliminarAsignatura.setString(1, nombreCarrera);
+			eliminarAsignatura.setString(2, nombre);
 			eliminarAsignatura.executeUpdate();
+			
+			eliminarAsignatura = conexion.prepareStatement(query2);
+			eliminarAsignatura.setString(1, nombreCarrera);
+			eliminarAsignatura.setString(2, nombre);
+			eliminarAsignatura.executeUpdate();
+			
+			
 			eliminarAsignatura.close();
 			conexion.close();
 		} 
 		catch (SQLException e) {
 			System.out.println("Asignatura NO eliminada");
-		}
-	}
-	
-	public static void eliminarPreviaAsignaturaBD(String nombreCarrera, String nombreAsignatura) {
-		try {
-			BaseDeDatos.iniciar();
-			Connection conexion = BaseDeDatos.getConexion();
-			
-			String query = "DELETE FROM asignatura_previa "
-					+ "WHERE nombreCarrera=? AND "
-					+ "nombreAsignatura=?";
-			PreparedStatement eliminarPreviaAsignatura = conexion.prepareStatement(query);
-
-			eliminarPreviaAsignatura.setString(1, nombreCarrera);
-			eliminarPreviaAsignatura.setString(2, nombreAsignatura);
-			
-			eliminarPreviaAsignatura.executeUpdate();
-			eliminarPreviaAsignatura.close();
-			conexion.close();
-		} 
-		catch (SQLException e) {
-			System.out.println("Previas NO eliminadas");
 		}
 	}
 
@@ -219,10 +215,10 @@ public class BaseDeDatos {
 			String query = "INSERT INTO asignatura_previa ("
 					+ "nombreCarrera, "
 					+ "nombreAsignatura, "
-					+ "nombrePrevia VALUES ("
+					+ "nombrePrevia) VALUES ("
 					+ "?, ?, ?)";
 			PreparedStatement insertarPreviaAsignatura = conexion.prepareStatement(query);
-
+			
 			insertarPreviaAsignatura.setString(1, nombreCarrera);
 			insertarPreviaAsignatura.setString(2, nombreAsignatura);
 			insertarPreviaAsignatura.setString(3, nombrePrevia);
@@ -383,6 +379,57 @@ public class BaseDeDatos {
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			System.out.println("Materia NO actualizada");
+		}
+	}
+	
+	public static void modificarAsignaturaBD(String nombreAntes, String nombreDespues, String nombreCarrera, int cantCreditos, boolean tienePrevias) {
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			String query = "UPDATE asignatura SET nombre=?, cantCreditos=?, tienePrevias=? "
+					+ "WHERE nombre=? "
+					+ "AND nombreCarrera=?";
+			
+			PreparedStatement modificarAsignatura = conexion.prepareStatement(query);
+			modificarAsignatura.setString(1, nombreDespues);
+			modificarAsignatura.setInt(2, cantCreditos);
+			modificarAsignatura.setBoolean(3, tienePrevias);
+			modificarAsignatura.setString(4, nombreAntes);
+			modificarAsignatura.setString(5, nombreCarrera);
+			
+			modificarAsignatura.executeUpdate();
+
+			modificarAsignatura.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			System.out.println("Asignatura NO actualizada");
+		}
+	}
+	
+	public static void eliminarPreviasAsignatura(String nombreCarrera, String nombreAsignatura) {
+		
+		try {
+			BaseDeDatos.iniciar();
+			Connection conexion = BaseDeDatos.getConexion();
+			/*Eliminar todas las previas de esta asignatura de la tabla asignatura_previa*/
+			String query1 ="DELETE FROM asignatura_previa "
+					+ "WHERE nombreCarrera=? "
+					+ "AND nombreAsignatura=?";
+			
+			
+			PreparedStatement eliminarAsignatura;
+			
+			eliminarAsignatura = conexion.prepareStatement(query1);
+			eliminarAsignatura.setString(1, nombreCarrera);
+			eliminarAsignatura.setString(2, nombreAsignatura);
+			eliminarAsignatura.executeUpdate();
+			eliminarAsignatura.close();
+			conexion.close();
+		} 
+		catch (SQLException e) {
+			System.out.println("Asignatura NO eliminada");
 		}
 	}
 }

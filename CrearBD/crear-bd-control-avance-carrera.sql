@@ -58,3 +58,4 @@ INSERT INTO asignatura VALUES("Bases de datos I", "Tecnologo en informatica", "P
 INSERT INTO asignatura VALUES("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematicas", 12, false);
 /*****************PREVIAS DE UNA ASIGNATURA******************/
 INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Principios de programacion");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos I", "Principios de programacion");

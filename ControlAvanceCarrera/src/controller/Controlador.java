@@ -68,6 +68,18 @@ public class Controlador {
 		return null;
 	}
 	
+	public static void reiniciarManejador() {
+		borrarCarrerasManejador();
+		cargarCarrerasBD();
+		cargarMateriasBD();
+		cargarAsignaturasBD();
+	}
+	
+	public static void borrarCarrerasManejador() {
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		mc.getCarreras().clear();
+	}
+	
 	public static void cargarCarrerasBD() {
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		ArrayList<String[]> carrerasStr = obtenerCarrerasBD();
@@ -231,7 +243,7 @@ public class Controlador {
 				if (carrera.getValue().getNombre().equals(nombre)) {
 					for (Map.Entry<String, Materia> materia : carrera.getValue().getMaterias().entrySet()) {
 						for (Map.Entry<String, Asignatura> asignatura : materia.getValue().getAsignaturas().entrySet()) {
-							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre());
+							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre(), carrera.getValue().getNombre());
 							//removerAsignatura(String nombre, String nombreCarrera, String nombreMateria)
 						}
 						BaseDeDatos.eliminarMateriaBD(materia.getValue().getNombre());
@@ -403,9 +415,8 @@ public class Controlador {
 					boolean esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
 					if (!esPrevia) {
 						mc.removerAsignatura(nombre, nombreCarrera, nombreMateria);
-						
-						BaseDeDatos.eliminarPreviaAsignaturaBD(nombreCarrera, nombre);
-						BaseDeDatos.eliminarAsignaturaBD(nombre);
+
+						BaseDeDatos.eliminarAsignaturaBD(nombre, nombreCarrera);
 						
 						return true;
 					}
@@ -500,19 +511,24 @@ public class Controlador {
 					
 					if (MetodosAux.validarNombre(nombreDespues) &&
 						cantCreditos >= CREDITOS_MIN_ASIGNATURA) {
+
 						
-						Controlador.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
-						//SE ELIMINAN PRIMERO LAS PREVIAS DE LA BASE DE DATOS YA QUE HACEN REFERENCIA A LA ASIGNATURA A ELIMINAR POR LO QUE HASTA
-						//QUE LAS PREVIAS NO SE ELIMINEN, ESTA NO SE PODRA ELIMINAR
-						BaseDeDatos.eliminarPreviaAsignaturaBD(nombreCarrera, nombreAntes);
-						BaseDeDatos.eliminarAsignaturaBD(nombreAntes);
-						
-						Controlador.agregarAsignatura(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
-						BaseDeDatos.insertarAsignaturaBD(nombreDespues, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
-						//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS
+						BaseDeDatos.modificarAsignaturaBD(nombreAntes, nombreDespues, nombreCarrera, cantCreditos, tienePrevias);
+						//Elimina las previas que tenia esa asignatura antes de ser modificada
+						BaseDeDatos.eliminarPreviasAsignatura(nombreCarrera, nombreDespues);
 						for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
 							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre());
 						}
+						
+						/*Remuevo la asignatura de la coleccion*/
+						mc.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
+						
+						/*Agrego la  asignatura a la coleccion*/
+						Asignatura a = new Asignatura(nombreDespues, nombreMateria, nombreCarrera, 
+								cantCreditos, tienePrevias, previas);
+						mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
+						
+						reiniciarManejador();
 						
 						return true;
 					}
