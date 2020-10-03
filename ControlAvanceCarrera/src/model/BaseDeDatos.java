@@ -169,15 +169,16 @@ public class BaseDeDatos {
 		}
 	}
 	
-	public static void eliminarAsignaturaBD(String nombre, String nombreCarrera) {
+	public static void eliminarAsignaturaBD(String nombre, String nombreCarrera, boolean eliminarCarrera) {
 		try {
+			/*Eliminar todas las previas de esta asignatura de la tabla asignatura_previa*/
+			BaseDeDatos.eliminarPreviasAsignatura(nombreCarrera, nombre);
+			
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
-			/*Eliminar todas las previas de esta asignatura de la tabla asignatura_previa*/
-			BaseDeDatos.eliminarPreviasAsignatura(nombreCarrera, nombre);
-
 			/*Eliminar todas las filas en que esta asignatura es previa de otra de la tabla asignatura_previa*/
+			/*SOLO SE HACE SI SE ELIMINA LA CARRERA ASOCIADA, YA QUE UNA ASIGNATURA NO PUEDE ELIMINARSE SI ES PREVIA DE OTRA*/
 			String query1 = "DELETE FROM asignatura_previa "
 					+ "WHERE nombreCarrera=? "
 					+ "AND nombrePrevia=?";
@@ -188,16 +189,17 @@ public class BaseDeDatos {
 			
 			PreparedStatement eliminarAsignatura;
 			
-			eliminarAsignatura = conexion.prepareStatement(query1);
-			eliminarAsignatura.setString(1, nombreCarrera);
-			eliminarAsignatura.setString(2, nombre);
-			eliminarAsignatura.executeUpdate();
+			if (eliminarCarrera) {
+				eliminarAsignatura = conexion.prepareStatement(query1);
+				eliminarAsignatura.setString(1, nombreCarrera);
+				eliminarAsignatura.setString(2, nombre);
+				eliminarAsignatura.executeUpdate();
+			}
 			
 			eliminarAsignatura = conexion.prepareStatement(query2);
 			eliminarAsignatura.setString(1, nombreCarrera);
 			eliminarAsignatura.setString(2, nombre);
 			eliminarAsignatura.executeUpdate();
-			
 			
 			eliminarAsignatura.close();
 			conexion.close();

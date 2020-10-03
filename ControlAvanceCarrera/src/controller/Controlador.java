@@ -223,10 +223,8 @@ public class Controlador {
 			boolean existeCarrera = mc.getCarreras().containsKey(nombre);
 			if (!existeCarrera) {
 				
-				Carrera c = new Carrera(nombre, creditosMin, creditosMax, materias);
-				
-				mc.agregarCarrera(c);
 				BaseDeDatos.insertarCarreraBD(nombre, creditosMin, creditosMax);
+				reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 				
 				return true;
 			}
@@ -243,16 +241,17 @@ public class Controlador {
 				if (carrera.getValue().getNombre().equals(nombre)) {
 					for (Map.Entry<String, Materia> materia : carrera.getValue().getMaterias().entrySet()) {
 						for (Map.Entry<String, Asignatura> asignatura : materia.getValue().getAsignaturas().entrySet()) {
-							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre(), carrera.getValue().getNombre());
-							//removerAsignatura(String nombre, String nombreCarrera, String nombreMateria)
+							Boolean eliminarTodo = true;
+							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre(), carrera.getValue().getNombre(), eliminarTodo);
 						}
 						BaseDeDatos.eliminarMateriaBD(materia.getValue().getNombre());
 					}
 					break;
 				}
 			}
-			mc.removerCarrera(nombre);
+			
 			BaseDeDatos.eliminarCarreraBD(nombre);
+			reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 			
 			return true;
 		}
@@ -276,11 +275,8 @@ public class Controlador {
 				boolean existeMateria = carrera.getMaterias().containsKey(nombre);
 				if (!existeMateria) {
 					
-					Materia m = new Materia(nombre, nombreCarrera, cantCreditos,
-							asignaturas);
-					
-					mc.agregarMateria(m, nombreCarrera);
 					BaseDeDatos.insertarMateriaBD(nombre, nombreCarrera, cantCreditos);
+					reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 					
 					return true;
 				}
@@ -303,8 +299,9 @@ public class Controlador {
 				int cantAsignaturas = materia.getAsignaturas().size();
 				
 				if (cantAsignaturas == 0 || seEstaModificando) {
-					mc.removerMateria(nombre, nombreCarrera);
+
 					BaseDeDatos.eliminarMateriaBD(nombre);
+					reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 					
 					return true;
 				}
@@ -343,11 +340,9 @@ public class Controlador {
 					if (!existeAsignatura) {
 						
 						if (!tienePrevias) {
-							Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, cantCreditos,
-									tienePrevias, previas);
 
-							mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
 							BaseDeDatos.insertarAsignaturaBD(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
+							reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 							
 							return true;
 						}
@@ -362,15 +357,14 @@ public class Controlador {
 							}
 							
 							if (existenPrevias) {
-								Asignatura a = new Asignatura(nombre, nombreMateria, nombreCarrera, 
-										cantCreditos, tienePrevias, previas);
-								mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
 								
 								BaseDeDatos.insertarAsignaturaBD(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
 								//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS
 								for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
 									BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombre, p.getValue().getNombre());
 								}
+								
+								reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 								
 								return true;
 							}
@@ -414,9 +408,10 @@ public class Controlador {
 					
 					boolean esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
 					if (!esPrevia) {
-						mc.removerAsignatura(nombre, nombreCarrera, nombreMateria);
-
-						BaseDeDatos.eliminarAsignaturaBD(nombre, nombreCarrera);
+						
+						Boolean eliminarTodo = false; //Asignaturas que tienen esta como previa de la tabla asignatura_previa
+						BaseDeDatos.eliminarAsignaturaBD(nombre, nombreCarrera, eliminarTodo);
+						reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 						
 						return true;
 					}
@@ -438,16 +433,9 @@ public class Controlador {
 			
 			if (MetodosAux.validarNombre(nombreDespues) &&
 				creditosMin >= CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
-				
-				Carrera c = mc.getCarreras().get(nombreAntes);
-				c.setNombre(nombreDespues);
-				c.setCantCreditosMin(creditosMin);
-				c.setCantCreditosMax(creditosMax);
-				
-				mc.getCarreras().remove(nombreAntes);
-				mc.getCarreras().put(c.getNombre(), c);
-				
+								
 				BaseDeDatos.modificarCarreraBD(nombreAntes, nombreDespues, creditosMin, creditosMax);
+				reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 				
 				return true;
 			}
@@ -470,19 +458,8 @@ public class Controlador {
 				if (MetodosAux.validarNombre(nombreDespues) &&
 					cantCreditos >= CREDITOS_MIN_MATERIA) {
 					
-					Materia m = c.getMaterias().get(nombreAntes);
-					m.setNombre(nombreDespues);
-					m.setCantCreditos(cantCreditos);
-					
-					mc.getCarreras().get(nombreCarrera).getMaterias().remove(nombreAntes);
-					mc.getCarreras().get(nombreCarrera).getMaterias().put(m.getNombre(), m);
-					
-					Map<String, Asignatura> asignaturasMateria = mc.getCarreras().get(nombreCarrera).getMaterias().get(m.getNombre()).getAsignaturas();
-					for (Map.Entry<String, Asignatura> am : asignaturasMateria.entrySet()) {
-						am.getValue().setNombreMateria(nombreDespues);
-					}
-					
 					BaseDeDatos.modificarMateriaBD(nombreAntes, nombreDespues, nombreCarrera, cantCreditos);
+					reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 					
 					return true;
 				}
@@ -520,15 +497,7 @@ public class Controlador {
 							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre());
 						}
 						
-						/*Remuevo la asignatura de la coleccion*/
-						mc.removerAsignatura(nombreAntes, nombreCarrera, nombreMateria);
-						
-						/*Agrego la  asignatura a la coleccion*/
-						Asignatura a = new Asignatura(nombreDespues, nombreMateria, nombreCarrera, 
-								cantCreditos, tienePrevias, previas);
-						mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
-						
-						reiniciarManejador();
+						reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 						
 						return true;
 					}
