@@ -20,8 +20,7 @@ CREATE TABLE materia (
 
 CREATE TABLE asignatura (
 	PRIMARY KEY (nombre, nombreCarrera),
-    FOREIGN KEY (nombreMateria) REFERENCES materia (nombre)  ON UPDATE CASCADE,
-    FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre)  ON UPDATE CASCADE,
+    FOREIGN KEY (nombreMateria, nombreCarrera) REFERENCES materia (nombre, nombreCarrera)  ON UPDATE CASCADE,
 	nombre VARCHAR(40),
     nombreCarrera VARCHAR(40),
     nombreMateria VARCHAR(40),

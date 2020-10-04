@@ -149,16 +149,18 @@ public class BaseDeDatos {
 		}
 	}
 	
-	public static void eliminarMateriaBD(String nombre) {
+	public static void eliminarMateriaBD(String nombre, String nombreCarrera) {
 		try {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
 			
 			String query = "DELETE FROM materia "
-					+ "WHERE nombre=?";
+					+ "WHERE nombre=? "
+					+ "AND nombreCarrera=?";
 			PreparedStatement eliminarMateria = conexion.prepareStatement(query);
 
 			eliminarMateria.setString(1, nombre);
+			eliminarMateria.setString(2, nombreCarrera);
 			
 			eliminarMateria.executeUpdate();
 			eliminarMateria.close();

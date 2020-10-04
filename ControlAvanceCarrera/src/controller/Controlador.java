@@ -244,12 +244,13 @@ public class Controlador {
 							Boolean eliminarTodo = true;
 							BaseDeDatos.eliminarAsignaturaBD(asignatura.getValue().getNombre(), carrera.getValue().getNombre(), eliminarTodo);
 						}
-						BaseDeDatos.eliminarMateriaBD(materia.getValue().getNombre());
+						
+						BaseDeDatos.eliminarMateriaBD(materia.getValue().getNombre(), nombre);
 					}
 					break;
 				}
 			}
-			
+
 			BaseDeDatos.eliminarCarreraBD(nombre);
 			reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 			
@@ -300,7 +301,7 @@ public class Controlador {
 				
 				if (cantAsignaturas == 0 || seEstaModificando) {
 
-					BaseDeDatos.eliminarMateriaBD(nombre);
+					BaseDeDatos.eliminarMateriaBD(nombre, nombreCarrera);
 					reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
 					
 					return true;
