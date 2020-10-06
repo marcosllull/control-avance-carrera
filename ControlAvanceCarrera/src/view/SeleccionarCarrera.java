@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -19,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -243,20 +246,41 @@ public class SeleccionarCarrera extends JPanel{
 
 			String[][] tabla = null;
 			String[] columnas = {"Asignatura", "Créditos", "Materia"};
-			asignaturasSelectedJT = new JTable(new DefaultTableModel(tabla, columnas));
+			asignaturasSelectedJT = new MyJTable(new DefaultTableModel(tabla, columnas));
 			
 			asignaturasSelectedJT.setCellSelectionEnabled(true);  
             ListSelectionModel select= asignaturasSelectedJT.getSelectionModel();  
             select.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             
-            asignaturasSelectedJT.setFont(Fuente.tabla());
-            asignaturasSelectedJT.getTableHeader().setFont(Fuente.tablaHeader());
+            //ESTABLECE TODOS LOS ESTILOS QUE TENDRA LA TABLA
+            setearEstilosTabla(asignaturasSelectedJT);
+            
             DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) asignaturasSelectedJT.getTableHeader().getDefaultRenderer();
             renderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
 		}
 		return asignaturasSelectedJT;
 	}
 
+	public void setearEstilosTabla(JTable tabla) {
+		tabla.setFont(Fuente.tabla());
+        tabla.getTableHeader().setFont(Fuente.tablaHeader());
+        //Cambia el color de fondo del header
+        tabla.getTableHeader().setOpaque(false);
+        tabla.getTableHeader().setBackground(new Color(107, 137, 255));
+        //Al hacer click se selecciona una fila
+        tabla.setCellSelectionEnabled(false);
+        tabla.setRowSelectionAllowed(true);
+        //Deshabilita las lineas del grid de la tabla (pero no del header)
+        tabla.setShowGrid(false);
+        tabla.setIntercellSpacing(new Dimension(0, 0));
+        //Deshabilita el foco (borde alrededor de la celda) de la celda seleccionada
+        tabla.setFocusable(false);
+        //Cambia el color de fondo de la fila seleccionada
+        tabla.setSelectionBackground(new Color(245, 233, 186));
+        //Deshabilita las lineas del grid del header de todos los JTable del programa
+        UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(0,0,0,0));
+	}
+	
 	public JLabel getMateriasJL() {
 		if (materiasJL == null) {
 			materiasJL = new JLabel("Creditos por materia");
@@ -277,14 +301,15 @@ public class SeleccionarCarrera extends JPanel{
 		if (materiasJT == null) {
 			String[][] tabla = obtenerDatosMaterias();
 			String[] columnas = {"Materia", "Créditos", "Estado"};
-			materiasJT = new JTable(tabla, columnas);
+			materiasJT = new MyJTable(new DefaultTableModel(tabla, columnas));
+			
 			
 			materiasJT.setCellSelectionEnabled(true);
             ListSelectionModel select= materiasJT.getSelectionModel();
             select.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             
-            materiasJT.setFont(Fuente.tabla());
-            materiasJT.getTableHeader().setFont(Fuente.tablaHeader());
+            //ESTABLECE TODOS LOS ESTILOS QUE TENDRA LA TABLA
+            setearEstilosTabla(materiasJT);
             
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
