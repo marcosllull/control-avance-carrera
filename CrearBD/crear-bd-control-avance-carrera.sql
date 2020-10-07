@@ -1,4 +1,4 @@
-DROP DATABASE control_avance_carrera;
+DROP DATABASE IF EXISTS control_avance_carrera;
 
 CREATE DATABASE control_avance_carrera;
 use control_avance_carrera;
