@@ -150,6 +150,7 @@ public class CrearCarrera extends JPanel{
 				creditosMax = Integer.parseInt(creditosMaxJTF.getText());
 				
 				if (MetodosAux.validarNombre(nombre) &&
+					MetodosAux.validarSizeNombre(nombre) &&
 					creditosMin >= Controlador.CREDITOS_MIN_CARRERA && creditosMin <= creditosMax) {
 							
 					ManejadorCarrera mc = ManejadorCarrera.getInstancia();
@@ -166,6 +167,8 @@ public class CrearCarrera extends JPanel{
 				else {
 					if (!MetodosAux.validarNombre(nombre))
 						MostrarMensaje.errorNombre();
+					if (!MetodosAux.validarSizeNombre(nombre))
+						MostrarMensaje.errorSizeNombreCarrera();
 					if (creditosMin < Controlador.CREDITOS_MIN_CARRERA)
 						MostrarMensaje.errorCreditosMinCarrera();
 					if (creditosMin > creditosMax)

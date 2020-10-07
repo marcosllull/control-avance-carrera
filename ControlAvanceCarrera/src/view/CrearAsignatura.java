@@ -349,6 +349,9 @@ public class CrearAsignatura extends JPanel{
 			if (MetodosAux.validarNombre(nombreCarrera) &&
 				MetodosAux.validarNombre(nombreMateria) &&
 				MetodosAux.validarNombre(nombreAsignatura) &&
+				MetodosAux.validarSizeNombre(nombreCarrera) &&
+				MetodosAux.validarSizeNombre(nombreMateria) &&
+				MetodosAux.validarSizeNombre(nombreAsignatura) &&
 				cantCreditos >= Controlador.CREDITOS_MIN_ASIGNATURA &&
 				((tienePrevias && getPreviasAL().size() > 0) || (!tienePrevias))) {
 						
@@ -405,6 +408,12 @@ public class CrearAsignatura extends JPanel{
 					MostrarMensaje.errorNombre();
 				if (!MetodosAux.validarNombre(nombreAsignatura))
 					MostrarMensaje.errorNombre();
+				if (!MetodosAux.validarSizeNombre(nombreCarrera))
+					MostrarMensaje.errorSizeNombreCarrera();
+				if (!MetodosAux.validarSizeNombre(nombreMateria))
+					MostrarMensaje.errorSizeNombreMateria();
+				if (!MetodosAux.validarSizeNombre(nombreAsignatura))
+					MostrarMensaje.errorSizeNombreAsignatura();
 				if (cantCreditos < Controlador.CREDITOS_MIN_ASIGNATURA)
 					MostrarMensaje.errorCreditosMinMateria();
 				if (tienePrevias && getPreviasAL().size() == 0)

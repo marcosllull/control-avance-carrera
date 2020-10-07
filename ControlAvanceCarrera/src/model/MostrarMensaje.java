@@ -27,6 +27,21 @@ public class MostrarMensaje {
 		mostrarError(mensaje);
 	}
 	
+	public static void errorSizeNombreCarrera() {
+		String mensaje = "El nombre de la carrera debe contener entre 1-80 caracteres";
+		mostrarError(mensaje);
+	}
+	
+	public static void errorSizeNombreMateria() {
+		String mensaje = "El nombre de la materia debe contener entre 1-80 caracteres";
+		mostrarError(mensaje);
+	}
+	
+	public static void errorSizeNombreAsignatura() {
+		String mensaje = "El nombre de la asignatura debe contener entre 1-80 caracteres";
+		mostrarError(mensaje);
+	}
+	
 	public static void errorFormatoCreditosMin() {
 		String mensaje = "La cantidad de creditos minimos debe ser un numero entero";
 		mostrarError(mensaje);

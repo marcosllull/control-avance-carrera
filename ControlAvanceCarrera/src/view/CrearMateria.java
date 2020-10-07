@@ -150,6 +150,8 @@ public class CrearMateria extends JPanel{
 			
 			if (MetodosAux.validarNombre(nombreCarrera) &&
 				MetodosAux.validarNombre(nombreMateria) &&
+				MetodosAux.validarSizeNombre(nombreCarrera) &&
+				MetodosAux.validarSizeNombre(nombreMateria) &&
 				cantCreditos >= Controlador.CREDITOS_MIN_MATERIA) {
 						
 				ManejadorCarrera mc = ManejadorCarrera.getInstancia();
@@ -175,6 +177,10 @@ public class CrearMateria extends JPanel{
 					MostrarMensaje.errorNombre();
 				if (!MetodosAux.validarNombre(nombreMateria))
 					MostrarMensaje.errorNombre();
+				if (!MetodosAux.validarSizeNombre(nombreCarrera))
+					MostrarMensaje.errorSizeNombreCarrera();
+				if (!MetodosAux.validarSizeNombre(nombreMateria))
+					MostrarMensaje.errorSizeNombreMateria();
 				if (cantCreditos < Controlador.CREDITOS_MIN_MATERIA)
 					MostrarMensaje.errorCreditosMinMateria();
 			}

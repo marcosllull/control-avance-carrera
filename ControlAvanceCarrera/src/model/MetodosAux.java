@@ -19,4 +19,8 @@ public class MetodosAux {
 		else
 			return false;
 	}
+	
+	public static boolean validarSizeNombre(String cadena) {
+		return (cadena.length() <= 80) ? true : false; 
+	}
 }
