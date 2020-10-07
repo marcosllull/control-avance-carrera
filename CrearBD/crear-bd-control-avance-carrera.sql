@@ -41,20 +41,38 @@ CREATE TABLE asignatura_previa (
 /********************* DATOS DE PRUEBA ******************/
 
 /**************************CARRERAS**************************/
-INSERT INTO carrera VALUES ("Tecnologo en informatica", 150, 250);
+INSERT INTO carrera VALUES ("Tecnologo en informatica", 150, 252);
 INSERT INTO carrera VALUES ("Ingenieria en sistemas", 210, 350);
 INSERT INTO carrera VALUES ("Tecnicatura en redes", 230, 360);
 /**************************MATERIAS**************************/
-INSERT INTO materia VALUES ("Programacion", "Tecnologo en informatica", 60);
-INSERT INTO materia VALUES ("Matematicas", "Tecnologo en informatica", 30);
+/******TECNOLOGO EN INFORMATICA******/
+INSERT INTO materia VALUES ("Matematica", "Tecnologo en informatica", 26);
+INSERT INTO materia VALUES ("Programacion", "Tecnologo en informatica", 44);
+INSERT INTO materia VALUES ("Arquitectura Sistemas Operativos y Redes de Computadoras", "Tecnologo en informatica", 32);
+INSERT INTO materia VALUES ("Bases de Datos y Sistemas de Información", "Tecnologo en informatica", 24);
+INSERT INTO materia VALUES ("Desarrollo de Software", "Tecnologo en informatica", 12);
+INSERT INTO materia VALUES ("Ciencias Humanas y Sociales", "Tecnologo en informatica", 28);
+INSERT INTO materia VALUES ("Proyecto y Pasantía", "Tecnologo en informatica", 30);
+/******INGENIERIA EN SISTEMAS******/
 INSERT INTO materia VALUES ("Programacion", "Ingenieria en sistemas", 100);
 INSERT INTO materia VALUES ("Ciencias humanas", "Ingenieria en sistemas", 100);
 INSERT INTO materia VALUES ("Bases de datos", "Ingenieria en sistemas", 110);
 /*************************ASIGNATURAS************************/
+INSERT INTO asignatura VALUES("Arquitectura del computador", "Tecnologo en informatica", "Arquitectura Sistemas Operativos y Redes de Computadoras", 0, false);
+INSERT INTO asignatura VALUES("Inglés Técnico I", "Tecnologo en informatica", "Ciencias Humanas y Sociales", 8, false);
+INSERT INTO asignatura VALUES("Matemática", "Tecnologo en informatica", "Matematica", 0, false);
+INSERT INTO asignatura VALUES("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematica", 12, false);
 INSERT INTO asignatura VALUES("Principios de programacion", "Tecnologo en informatica", "Programacion", 0, false);
-INSERT INTO asignatura VALUES("Estructuras de datos y algoritmos", "Tecnologo en informatica", "Programacion", 6, true);
 INSERT INTO asignatura VALUES("Bases de datos I", "Tecnologo en informatica", "Programacion", 12, true);
-INSERT INTO asignatura VALUES("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematicas", 12, false);
+INSERT INTO asignatura VALUES("Estructuras de datos y algoritmos", "Tecnologo en informatica", "Programacion", 16, true);
+INSERT INTO asignatura VALUES("Inglés Técnico II", "Tecnologo en informatica", "Ciencias Humanas y Sociales", 4, false);
+INSERT INTO asignatura VALUES("Matematicas discretas y logica II", "Tecnologo en informatica", "Matematica", 6, true);
+INSERT INTO asignatura VALUES("Sistemas Operativos", "Tecnologo en informatica", "Arquitectura Sistemas Operativos y Redes de Computadoras", 12, true);
+
+
 /*****************PREVIAS DE UNA ASIGNATURA******************/
 INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Principios de programacion");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Matematicas discretas y logica I");
 INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos I", "Principios de programacion");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Matematicas discretas y logica II", "Matematicas discretas y logica I");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Sistemas Operativos", "Arquitectura del computador");
