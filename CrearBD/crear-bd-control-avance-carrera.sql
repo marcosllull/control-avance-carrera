@@ -5,7 +5,7 @@ use control_avance_carrera;
 /**********TABLAS**********/
 
 CREATE TABLE carrera (
-	nombre VARCHAR(40) PRIMARY KEY,
+	nombre VARCHAR(80) PRIMARY KEY,
     cantCreditosMin INTEGER,
     cantCreditosMax INTEGER
 );
@@ -13,17 +13,17 @@ CREATE TABLE carrera (
 CREATE TABLE materia (
 	PRIMARY KEY (nombre, nombreCarrera),
     FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre) ON UPDATE CASCADE,
-	nombre VARCHAR(40),
-    nombreCarrera VARCHAR(40),
+	nombre VARCHAR(80),
+    nombreCarrera VARCHAR(80),
     cantCreditos INTEGER
 );
 
 CREATE TABLE asignatura (
 	PRIMARY KEY (nombre, nombreCarrera),
     FOREIGN KEY (nombreMateria, nombreCarrera) REFERENCES materia (nombre, nombreCarrera)  ON UPDATE CASCADE,
-	nombre VARCHAR(40),
-    nombreCarrera VARCHAR(40),
-    nombreMateria VARCHAR(40),
+	nombre VARCHAR(80),
+    nombreCarrera VARCHAR(80),
+    nombreMateria VARCHAR(80),
     cantCreditos INTEGER,
     tienePrevias BOOLEAN
 );
@@ -33,9 +33,9 @@ CREATE TABLE asignatura_previa (
     FOREIGN KEY (nombreCarrera) REFERENCES carrera (nombre)  ON UPDATE CASCADE,
     FOREIGN KEY (nombreAsignatura) REFERENCES asignatura (nombre)  ON UPDATE CASCADE,
     FOREIGN KEY (nombrePrevia) REFERENCES asignatura (nombre)  ON UPDATE CASCADE,
-    nombreCarrera VARCHAR(40),
-	nombreAsignatura VARCHAR(40),
-    nombrePrevia VARCHAR(40)
+    nombreCarrera VARCHAR(80),
+	nombreAsignatura VARCHAR(80),
+    nombrePrevia VARCHAR(80)
 );
 
 /********************* DATOS DE PRUEBA ******************/

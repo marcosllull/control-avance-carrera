@@ -44,9 +44,8 @@ public class Inicio{
 			ventana.setLayout(new BorderLayout());
 			ventana.add(getMenuBarra(), BorderLayout.NORTH);
 			ventana.setJMenuBar(getMenuBarra());
-			ventana.add(getPanelCentral(), BorderLayout.CENTER);	//LA CANTIDAD DE FILAS Y COLUMNAS DEBE DARSE DEPENDIENDO DE LA OPCION DEL PROGRAMA
-			ventana.setSize(800, 600);
-			//ventana.pack(); //Da las dimensiones correctas a la ventana
+			ventana.add(getPanelCentral(), BorderLayout.CENTER);
+			ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			ventana.setVisible(true);
 		}
 		return ventana;
@@ -376,15 +375,6 @@ public class Inicio{
 			agregarActionListenerCarrera(jmi);
 			
 		}
-		////TERMINA AQUI
-		
-		/*itemsSeleccionar = new ArrayList<JMenuItem>();
-		itemsSeleccionar.add(new JMenuItem("Tecnologo en informatica"));
-		itemsSeleccionar.add(new JMenuItem("Ingenieria de software"));
-		itemsSeleccionar.add(new JMenuItem("Tecnicatura en redes"));
-		
-		for (JMenuItem jmi : itemsSeleccionar)
-			agregarActionListenerCarrera(jmi);*/
 	}
 	
 	public void agregarActionListenerCarrera(JMenuItem carrera) {

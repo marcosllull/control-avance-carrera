@@ -59,6 +59,10 @@ public class SeleccionarCarrera extends JPanel{
 	
 	private static Map<String, Asignatura> asignaturasCarrera;
 	
+	private static final Color COLOR_FONDO = new Color(240,240,240);
+	private static final Color COLOR_TITULO = new Color(0,0,0);
+	private static final Color COLOR_SALIR = new Color(126,126,126);
+	
 	private SeleccionarCarrera(String nombreCarrera) {
 		SeleccionarCarrera.nombreCarrera = nombreCarrera;
 		SeleccionarCarrera.asignaturasCarrera = SeleccionarCarrera.obtenerAsignaturasCarrera();
@@ -87,7 +91,7 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getPanelSupIzqJP() {
 		if (panelSupIzqJP == null) {
 			panelSupIzqJP = new JPanel(new GridBagLayout());
-			
+			panelSupIzqJP.setBackground(COLOR_FONDO);
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
 			
@@ -113,7 +117,7 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getPanelSupDerJP() {
 		if (panelSupDerJP == null) {
 			panelSupDerJP = new JPanel(new GridBagLayout());
-			
+			panelSupDerJP.setBackground(COLOR_FONDO);
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
 			
@@ -139,7 +143,7 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getPanelInfIzqJP() {
 		if (panelInfIzqJP == null) {
 			panelInfIzqJP = new JPanel(new GridBagLayout());
-			
+			panelInfIzqJP.setBackground(COLOR_FONDO);
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
 			
@@ -166,7 +170,7 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getPanelInfDerJP() {
 		if (panelInfDerJP == null) {
 			panelInfDerJP = new JPanel(new GridBagLayout());
-			
+			panelInfDerJP.setBackground(COLOR_FONDO);
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
 			
@@ -194,6 +198,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (asignaturasJL == null) {
 			asignaturasJL = new JLabel("Asignaturas");
 			asignaturasJL.setFont(Fuente.titulo());
+			asignaturasJL.setForeground(COLOR_TITULO);
 		}
 		return asignaturasJL;
 	}
@@ -202,6 +207,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (asignaturasJSP == null) {
 			asignaturasJSP = new JScrollPane(getAsignaturasJP());
 			asignaturasJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			asignaturasJSP.getViewport().setBackground(COLOR_FONDO);
 		}
 		return asignaturasJSP;
 	}
@@ -209,6 +215,8 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getAsignaturasJP() {
 		if (asignaturasJP == null) {
 			asignaturasJP = new JPanel(new GridLayout(0, 1));
+			asignaturasJP.setOpaque(false);
+			asignaturasJP.setBackground(COLOR_FONDO);
 			
 			for (JCheckBox a : getAsignaturasJCB())
 				asignaturasJP.add(a);
@@ -229,6 +237,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (asignaturasSelectedJL == null) {
 			asignaturasSelectedJL = new JLabel("Asignaturas seleccionadas");
 			asignaturasSelectedJL.setFont(Fuente.titulo());
+			asignaturasSelectedJL.setForeground(COLOR_TITULO);
 		}
 		return asignaturasSelectedJL;
 	}
@@ -237,6 +246,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (asignaturasSelectedJSP == null) {
 			asignaturasSelectedJSP = new JScrollPane(getAsignaturasSelectedJT());
 			asignaturasSelectedJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			asignaturasSelectedJSP.getViewport().setBackground(COLOR_FONDO);
 		}
 		return asignaturasSelectedJSP;
 	}
@@ -279,12 +289,15 @@ public class SeleccionarCarrera extends JPanel{
         tabla.setSelectionBackground(new Color(245, 233, 186));
         //Deshabilita las lineas del grid del header de todos los JTable del programa
         UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(0,0,0,0));
+        //Evita mover las columnas de la tabla
+        tabla.getTableHeader().setReorderingAllowed(false);
 	}
 	
 	public JLabel getMateriasJL() {
 		if (materiasJL == null) {
 			materiasJL = new JLabel("Creditos por materia");
 			materiasJL.setFont(Fuente.titulo());
+			materiasJL.setForeground(COLOR_TITULO);
 		}
 		return materiasJL;
 	}
@@ -293,6 +306,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (materiasJSP == null) {
 			materiasJSP = new JScrollPane(getMateriasJT());
 			materiasJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			materiasJSP.getViewport().setBackground(COLOR_FONDO);
 		}
 		return materiasJSP;
 	}
@@ -323,7 +337,9 @@ public class SeleccionarCarrera extends JPanel{
 	public JPanel getMensajesJP() {
 		if (mensajesJP == null) {
 			mensajesJP = new JPanel(new GridBagLayout());
-			
+			mensajesJP.setOpaque(true);
+			mensajesJP.setBackground(COLOR_FONDO);
+
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
 			GridBagConstraints gbc3 = new GridBagConstraints();
@@ -373,6 +389,9 @@ public class SeleccionarCarrera extends JPanel{
 		if (creditosCompletarCarreraJL == null) {
 			creditosCompletarCarreraJL = new JLabel("Créditos para completar la carrera");
 			creditosCompletarCarreraJL.setFont(Fuente.titulo());
+			creditosCompletarCarreraJL.setOpaque(true);
+			creditosCompletarCarreraJL.setBackground(COLOR_FONDO);
+			creditosCompletarCarreraJL.setForeground(COLOR_TITULO);
 		}
 		return creditosCompletarCarreraJL;
 	}
@@ -381,6 +400,9 @@ public class SeleccionarCarrera extends JPanel{
 		if (creditosObtenidosVsNecesariosJL == null) {
 			creditosObtenidosVsNecesariosJL = new JLabel("(Créditos obtenidos / Créditos necesarios)");
 			creditosObtenidosVsNecesariosJL.setFont(Fuente.subTitulo());
+			creditosObtenidosVsNecesariosJL.setOpaque(true);
+			creditosObtenidosVsNecesariosJL.setBackground(COLOR_FONDO);
+			creditosObtenidosVsNecesariosJL.setForeground(COLOR_TITULO);
 		}
 		return creditosObtenidosVsNecesariosJL;
 	}
@@ -390,6 +412,9 @@ public class SeleccionarCarrera extends JPanel{
 			int cantCreditos = ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getCantCreditosMax();
 			totalJL = new JLabel("TOTAL: 0/" + cantCreditos);
 			totalJL.setFont(Fuente.total());
+			totalJL.setOpaque(true);
+			totalJL.setBackground(COLOR_FONDO);
+			totalJL.setForeground(COLOR_TITULO);
 		}
 		return totalJL;
 	}
@@ -401,8 +426,10 @@ public class SeleccionarCarrera extends JPanel{
 			for (String m : msjs) {
 				JLabel msj = new JLabel(m);
 				msj.setFont(Fuente.mensajes());
-				msj.setForeground(Color.RED);
+				msj.setForeground(new Color(255,67,67));
 				mensajesAprobadoSiNoJL.add(msj);
+				msj.setOpaque(true);
+				msj.setBackground(COLOR_FONDO);
 			}
 		}
 		return mensajesAprobadoSiNoJL;
@@ -412,6 +439,8 @@ public class SeleccionarCarrera extends JPanel{
 		if (salirJB == null) {
 			salirJB = new JButton("Salir");
 			salirJB.setFont(Fuente.salir());
+			salirJB.setBackground(COLOR_SALIR);
+			salirJB.setForeground(new Color(255,255,255));
 			
 			ActionListener salir = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -431,6 +460,7 @@ public class SeleccionarCarrera extends JPanel{
 		for (Map.Entry<String, Materia> m : materias.entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
 				JCheckBox item = new JCheckBox(a.getValue().getNombre());
+				item.setBackground(COLOR_FONDO);
 				item.addActionListener(obtenerActionListenerAsignatura(item));
 				item.setFont(Fuente.tabla());
 				if (tienePrevias(item.getText()))

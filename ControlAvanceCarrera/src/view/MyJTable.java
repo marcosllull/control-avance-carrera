@@ -13,12 +13,11 @@ public class MyJTable extends JTable{
         super(dm);
     }
 	
-	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component comp = super.prepareRenderer(renderer, row, column);
-        Color alternateColor = new Color(186, 198, 245);
-        Color whiteColor = Color.WHITE;
+	public Component prepareRenderer(TableCellRenderer renderer, int fila, int columna) {
+        Component comp = super.prepareRenderer(renderer, fila, columna);
+        Color colorAlternativo = new Color(186, 198, 245);
         if(!comp.getBackground().equals(getSelectionBackground())) {
-           Color c = (row % 2 == 0 ? alternateColor : whiteColor);
+           Color c = (fila % 2 == 0 ? colorAlternativo : Color.WHITE);
            comp.setBackground(c);
            c = null;
         }
