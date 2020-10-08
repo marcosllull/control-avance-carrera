@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 
 import controller.Controlador;
 import model.Carrera;
+import model.Fuente;
 import model.ManejadorCarrera;
 import model.MetodosAux;
 import model.MostrarMensaje;
@@ -60,6 +61,7 @@ public class ModificarCarrera extends JPanel{
 	public JLabel getCarrerasJL() {
 		if (carrerasJL == null) {
 			carrerasJL = new JLabel("Carreras");
+			carrerasJL.setFont(Fuente.label());
 		}
 		return carrerasJL;
 	}
@@ -67,6 +69,8 @@ public class ModificarCarrera extends JPanel{
 	public JComboBox<String> getCarrerasJCB(){
 		if (carrerasJCB == null) {
 			carrerasJCB = new JComboBox<String>();
+			carrerasJCB.setFont(Fuente.comboBox());
+			
 			Map<String, Carrera> carreras = Controlador.getColeccionCarreras();
 			for (Map.Entry<String, Carrera> c : carreras.entrySet())
 				carrerasJCB.addItem(c.getValue().getNombre());
@@ -91,6 +95,7 @@ public class ModificarCarrera extends JPanel{
 	public JLabel getCarreraJL() {
 		if (carreraJL == null) {
 			carreraJL = new JLabel("Carrera");
+			carreraJL.setFont(Fuente.label());
 		}
 		return carreraJL;
 	}
@@ -98,6 +103,7 @@ public class ModificarCarrera extends JPanel{
 	public JTextField getCarreraJTF() {
 		if (carreraJTF == null) {
 			carreraJTF = new JTextField();
+			carreraJTF.setFont(Fuente.textField());
 		}
 		return carreraJTF;
 	}
@@ -105,6 +111,7 @@ public class ModificarCarrera extends JPanel{
 	public JLabel getCantCreditosMinJL() {
 		if (cantCreditosMinJL == null) {
 			cantCreditosMinJL = new JLabel("Cantidad de creditos minimos");
+			cantCreditosMinJL.setFont(Fuente.label());
 		}
 		return cantCreditosMinJL;
 	}
@@ -112,6 +119,7 @@ public class ModificarCarrera extends JPanel{
 	public JTextField getCantCreditosMinJTF() {
 		if (cantCreditosMinJTF == null) {
 			cantCreditosMinJTF = new JTextField();
+			cantCreditosMinJTF.setFont(Fuente.textField());
 		}
 		return cantCreditosMinJTF;
 	}
@@ -119,6 +127,7 @@ public class ModificarCarrera extends JPanel{
 	public JLabel getCantCreditosMaxJL() {
 		if (cantCreditosMaxJL == null) {
 			cantCreditosMaxJL = new JLabel("Cantidad de creditos maximos");
+			cantCreditosMaxJL.setFont(Fuente.label());
 		}
 		return cantCreditosMaxJL;
 	}
@@ -126,13 +135,15 @@ public class ModificarCarrera extends JPanel{
 	public JTextField getCantCreditosMaxJTF() {
 		if (cantCreditosMaxJTF == null) {
 			cantCreditosMaxJTF = new JTextField();
+			cantCreditosMaxJTF.setFont(Fuente.textField());
 		}
 		return cantCreditosMaxJTF;
 	}
 	
 	public JButton getCancelarJB() {
 		if (cancelarJB == null) {
-			cancelarJB = new JButton("Cancelar");
+			cancelarJB = new MiBoton("Cancelar", Colores.COLOR_BG_CANCELAR, Colores.COLOR_BG_CANCELAR_OVER, Colores.COLOR_BG_CANCELAR_PRESIONADO);
+			cancelarJB.setFont(Fuente.button());
 			
 			ActionListener cancelar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -148,7 +159,8 @@ public class ModificarCarrera extends JPanel{
 	
 	public JButton getConfirmarJB() {
 		if (confirmarJB == null) {
-			confirmarJB = new JButton("Confirmar");
+			confirmarJB = new MiBoton("Confirmar", Colores.COLOR_BG_CONFIRMAR, Colores.COLOR_BG_CONFIRMAR_OVER, Colores.COLOR_BG_CONFIRMAR_PRESIONADO);
+			confirmarJB.setFont(Fuente.button());
 			
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {

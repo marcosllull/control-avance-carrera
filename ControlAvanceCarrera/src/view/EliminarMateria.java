@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 
 import controller.Controlador;
 import model.Carrera;
+import model.Fuente;
 import model.ManejadorCarrera;
 import model.Materia;
 import model.MostrarMensaje;
@@ -56,6 +57,7 @@ public class EliminarMateria extends JPanel{
 	public JLabel getCarrerasJL() {
 		if (carrerasJL == null) {
 			carrerasJL = new JLabel("Carreras");
+			carrerasJL.setFont(Fuente.label());
 		}
 		return carrerasJL;
 	}
@@ -63,6 +65,7 @@ public class EliminarMateria extends JPanel{
 	public JComboBox<String> getCarrerasJCB(){
 		if (carrerasJCB == null) {
 			carrerasJCB = new JComboBox<String>();
+			carrerasJCB.setFont(Fuente.comboBox());
 			
 			Map<String, Carrera> carreras = Controlador.getColeccionCarreras();
 			for (Map.Entry<String, Carrera> c : carreras.entrySet())
@@ -89,6 +92,7 @@ public class EliminarMateria extends JPanel{
 	public JLabel getMateriasJL() {
 		if (materiasJL == null) {
 			materiasJL = new JLabel("Materias");
+			materiasJL.setFont(Fuente.label());
 		}
 		return materiasJL;
 	}
@@ -97,6 +101,7 @@ public class EliminarMateria extends JPanel{
 		if (materiasJCB == null) {
 			
 			materiasJCB = new JComboBox<String>();
+			materiasJCB.setFont(Fuente.comboBox());
 			
 			ActionListener elegirMateria = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -113,6 +118,7 @@ public class EliminarMateria extends JPanel{
 	public JLabel getCantCreditosJL() {
 		if (cantCreditosJL == null) {
 			cantCreditosJL = new JLabel("Cantidad de creditos");
+			cantCreditosJL.setFont(Fuente.label());
 		}
 		return cantCreditosJL;
 	}
@@ -120,13 +126,15 @@ public class EliminarMateria extends JPanel{
 	public JTextField getCantCreditosJTF() {
 		if (cantCreditosJTF == null) {
 			cantCreditosJTF = new JTextField();
+			cantCreditosJTF.setFont(Fuente.textField());
 		}
 		return cantCreditosJTF;
 	}
 	
 	public JButton getCancelarJB() {
 		if (cancelarJB == null) {
-			cancelarJB = new JButton("Cancelar");
+			cancelarJB = new MiBoton("Cancelar", Colores.COLOR_BG_CANCELAR, Colores.COLOR_BG_CANCELAR_OVER, Colores.COLOR_BG_CANCELAR_PRESIONADO);
+			cancelarJB.setFont(Fuente.button());
 			
 			ActionListener cancelar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -142,7 +150,8 @@ public class EliminarMateria extends JPanel{
 	
 	public JButton getConfirmarJB() {
 		if (confirmarJB == null) {
-			confirmarJB = new JButton("Confirmar");
+			confirmarJB = new MiBoton("Confirmar", Colores.COLOR_BG_CONFIRMAR, Colores.COLOR_BG_CONFIRMAR_OVER, Colores.COLOR_BG_CONFIRMAR_PRESIONADO);
+			confirmarJB.setFont(Fuente.button());
 			
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {

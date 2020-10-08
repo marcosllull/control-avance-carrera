@@ -437,9 +437,8 @@ public class SeleccionarCarrera extends JPanel{
 
 	public JButton getSalirJB() {
 		if (salirJB == null) {
-			salirJB = new JButton("Salir");
+			salirJB = new MiBoton("Salir", Colores.COLOR_BG_CANCELAR, Colores.COLOR_BG_CANCELAR_OVER, Colores.COLOR_BG_CANCELAR_PRESIONADO);
 			salirJB.setFont(Fuente.salir());
-			salirJB.setBackground(COLOR_SALIR);
 			salirJB.setForeground(new Color(255,255,255));
 			
 			ActionListener salir = new ActionListener() {

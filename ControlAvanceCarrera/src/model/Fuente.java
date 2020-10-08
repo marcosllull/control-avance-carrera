@@ -25,7 +25,7 @@ public class Fuente {
 		return fuente;
 	}
 	public static Font salir() {
-		Font fuente = new Font("Arial", Font.BOLD, 20);
+		Font fuente = new Font("Arial", Font.BOLD, 22);
 		return fuente;
 	}
 	

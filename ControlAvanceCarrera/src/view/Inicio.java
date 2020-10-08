@@ -25,9 +25,17 @@ public class Inicio{
 	private JMenuItem itemModificarCarrera, itemModificarMateria, itemModificarAsignatura;
 	private JMenuItem itemAyudaSobre;
 	
-	private int anchoCarrera = 1000; private int altoCarrera = 400;
-	private int anchoMateria = 1000; private int altoMateria = 400;
-	private int anchoAsignatura = 1200; private int altoAsignatura = 600;
+	private int anchoCrearCarrera = 1000; private int altoCrearCarrera = 400;
+	private int anchoCrearMateria = 1000; private int altoCrearMateria = 400;
+	private int anchoCrearAsignatura = 1200; private int altoCrearAsignatura = 600;
+	
+	private int anchoEliminarCarrera = 1000; private int altoEliminarCarrera = 400;
+	private int anchoEliminarMateria = 1000; private int altoEliminarMateria = 400;
+	private int anchoEliminarAsignatura = 1000; private int altoEliminarAsignatura = 400;
+	
+	private int anchoModificarCarrera = 1000; private int altoModificarCarrera = 400;
+	private int anchoModificarMateria = 1000; private int altoModificarMateria = 400;
+	private int anchoModificarAsignatura = 1200; private int altoModificarAsignatura = 600;
 	
 	private Inicio() {
 		getVentana();
@@ -171,7 +179,7 @@ public class Inicio{
 					removerComponentesPanelCentral();
 					getPanelCentral().add(CrearCarrera.getInstancia());
 					CrearCarrera.getInstancia().setVentanaPrincipal(getInstancia());
-					getVentana().setSize(anchoCarrera, altoCarrera);
+					getVentana().setSize(anchoCrearCarrera, altoCrearCarrera);
 					centrarVentana();
 					getPanelCentral().revalidate();
 					getPanelCentral().repaint();
@@ -193,7 +201,7 @@ public class Inicio{
 					if (CrearMateria.getInstancia() != null) {
 						getPanelCentral().add(CrearMateria.getInstancia());
 						CrearMateria.getInstancia().setVentanaPrincipal(getInstancia());
-						getVentana().setSize(anchoMateria, altoMateria);
+						getVentana().setSize(anchoCrearMateria, altoCrearMateria);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -217,7 +225,7 @@ public class Inicio{
 					if (CrearAsignatura.getInstancia() != null) {
 						getPanelCentral().add(CrearAsignatura.getInstancia());
 						CrearAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
-						getVentana().setSize(anchoAsignatura, altoAsignatura);
+						getVentana().setSize(anchoCrearAsignatura, altoCrearAsignatura);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -241,6 +249,7 @@ public class Inicio{
 					if (EliminarCarrera.getInstancia() != null) {
 						getPanelCentral().add(EliminarCarrera.getInstancia());
 						EliminarCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoEliminarCarrera, altoEliminarCarrera);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -264,6 +273,7 @@ public class Inicio{
 					if (EliminarMateria.getInstancia() != null) {
 						getPanelCentral().add(EliminarMateria.getInstancia());
 						EliminarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoEliminarMateria, altoEliminarMateria);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -287,6 +297,7 @@ public class Inicio{
 					if (EliminarAsignatura.getInstancia() != null) {
 						getPanelCentral().add(EliminarAsignatura.getInstancia());
 						EliminarAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoEliminarAsignatura, altoEliminarAsignatura);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -310,6 +321,7 @@ public class Inicio{
 					if (ModificarCarrera.getInstancia() != null) {
 						getPanelCentral().add(ModificarCarrera.getInstancia());
 						ModificarCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoModificarCarrera, altoModificarCarrera);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -333,6 +345,7 @@ public class Inicio{
 					if (ModificarMateria.getInstancia() != null) {
 						getPanelCentral().add(ModificarMateria.getInstancia());
 						ModificarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoModificarMateria, altoModificarMateria);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
@@ -356,6 +369,7 @@ public class Inicio{
 					if (ModificarAsignatura.getInstancia() != null) {
 						getPanelCentral().add(ModificarAsignatura.getInstancia());
 						ModificarAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoModificarAsignatura, altoModificarAsignatura);
 						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
