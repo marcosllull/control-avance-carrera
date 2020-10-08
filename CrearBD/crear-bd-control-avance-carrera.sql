@@ -63,7 +63,7 @@ INSERT INTO asignatura VALUES("Inglés Técnico I", "Tecnologo en informatica", 
 INSERT INTO asignatura VALUES("Matemática", "Tecnologo en informatica", "Matematica", 0, false);
 INSERT INTO asignatura VALUES("Matematicas discretas y logica I", "Tecnologo en informatica", "Matematica", 12, false);
 INSERT INTO asignatura VALUES("Principios de programacion", "Tecnologo en informatica", "Programacion", 0, false);
-INSERT INTO asignatura VALUES("Bases de datos I", "Tecnologo en informatica", "Programacion", 12, true);
+INSERT INTO asignatura VALUES("Bases de datos I", "Tecnologo en informatica", "Bases de Datos y Sistemas de Información", 12, true);
 INSERT INTO asignatura VALUES("Estructuras de datos y algoritmos", "Tecnologo en informatica", "Programacion", 16, true);
 INSERT INTO asignatura VALUES("Inglés Técnico II", "Tecnologo en informatica", "Ciencias Humanas y Sociales", 4, false);
 INSERT INTO asignatura VALUES("Matematicas discretas y logica II", "Tecnologo en informatica", "Matematica", 6, true);

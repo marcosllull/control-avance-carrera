@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 import controller.Controlador;
 import model.Asignatura;
 import model.Carrera;
+import model.Fuente;
 import model.ManejadorCarrera;
 import model.Materia;
 import model.MetodosAux;
@@ -100,6 +101,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getCarrerasJL() {
 		if (carrerasJL == null) {
 			carrerasJL = new JLabel("Carreras");
+			carrerasJL.setFont(Fuente.label());
 		}
 		return carrerasJL;
 	}
@@ -107,6 +109,8 @@ public class CrearAsignatura extends JPanel{
 	public JComboBox<String> getCarrerasJCB() {
 		if (carrerasJCB == null) {
 			carrerasJCB = new JComboBox<String>();
+			carrerasJCB.setFont(Fuente.comboBox());
+			
 			Map<String, Carrera> carreras = Controlador.getColeccionCarreras();
 			for (Map.Entry<String, Carrera> c : carreras.entrySet())
 				carrerasJCB.addItem(c.getValue().getNombre());
@@ -129,6 +133,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getMateriasJL() {
 		if (materiasJL == null) {
 			materiasJL = new JLabel("Materias");
+			materiasJL.setFont(Fuente.label());
 		}
 		return materiasJL;
 	}
@@ -136,13 +141,15 @@ public class CrearAsignatura extends JPanel{
 	public JComboBox<String> getMateriasJCB() {
 		if (materiasJCB == null) {
 			materiasJCB = new JComboBox<String>();
+			materiasJCB.setFont(Fuente.comboBox());
 		}
 		return materiasJCB;
 	}
 	
 	public JLabel getNombreJL() {
 		if (nombreJL == null) {
-			nombreJL = new JLabel("Nombre");			
+			nombreJL = new JLabel("Nombre");
+			nombreJL.setFont(Fuente.label());
 		}
 		return nombreJL;
 	}
@@ -150,6 +157,7 @@ public class CrearAsignatura extends JPanel{
 	public JTextField getNombreJTF() {
 		if (nombreJTF == null) {
 			nombreJTF = new JTextField();
+			nombreJTF.setFont(Fuente.textField());
 		}
 		return nombreJTF;
 	}
@@ -157,6 +165,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getCantCreditosJL() {
 		if (cantCreditosJL == null) {
 			cantCreditosJL = new JLabel("Cantidad de creditos");
+			cantCreditosJL.setFont(Fuente.label());
 		}
 		return cantCreditosJL;
 	}
@@ -164,6 +173,7 @@ public class CrearAsignatura extends JPanel{
 	public JTextField getCantCreditosJTF() {
 		if (cantCreditosJTF == null) {
 			cantCreditosJTF = new JTextField();
+			cantCreditosJTF.setFont(Fuente.textField());
 		}
 		return cantCreditosJTF;
 	}
@@ -171,6 +181,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getTienePreviasJL() {
 		if (tienePreviasJL == null) {
 			tienePreviasJL = new JLabel("Tiene previas?");
+			tienePreviasJL.setFont(Fuente.label());
 		}
 		return tienePreviasJL;
 	}
@@ -197,6 +208,7 @@ public class CrearAsignatura extends JPanel{
 	public JRadioButton getTienePreviasJRB_SI() {
 		if (tienePreviasJRB_SI == null) {
 			tienePreviasJRB_SI = new JRadioButton("SI");
+			tienePreviasJRB_SI.setFont(Fuente.radioButton());
 			
 			ChangeListener cambiarEstado = new ChangeListener() {
 				public void stateChanged (ChangeEvent e) {
@@ -215,6 +227,7 @@ public class CrearAsignatura extends JPanel{
 	public JRadioButton getTienePreviasJRB_NO() {
 		if (tienePreviasJRB_NO == null) {
 			tienePreviasJRB_NO = new JRadioButton("NO");
+			tienePreviasJRB_NO.setFont(Fuente.radioButton());
 			
 			tienePreviasJRB_NO.setSelected(true);
 			
@@ -235,6 +248,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getAgregarPreviaJL() {
 		if (agregarPreviaJL == null) {
 			agregarPreviaJL = new JLabel("Agregar previa");
+			agregarPreviaJL.setFont(Fuente.label());
 		}
 		return agregarPreviaJL;
 	}
@@ -242,6 +256,7 @@ public class CrearAsignatura extends JPanel{
 	public JComboBox<String> getAsignaturasJCB(){
 		if (asignaturasJCB == null) {
 			asignaturasJCB = new JComboBox<String>();
+			asignaturasJCB.setFont(Fuente.comboBox());
 			
 			ActionListener elegirAsignatura = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -271,6 +286,7 @@ public class CrearAsignatura extends JPanel{
 	public JLabel getPreviasAgregadasJL() {
 		if (previasAgregadasJL == null) {
 			previasAgregadasJL = new JLabel("Previas agregadas");
+			previasAgregadasJL.setFont(Fuente.label());
 		}
 		return previasAgregadasJL;
 	}
@@ -300,7 +316,8 @@ public class CrearAsignatura extends JPanel{
 	
 	public JButton getCancelarJB() {
 		if (cancelarJB == null) {
-			cancelarJB = new JButton("Cancelar");
+			cancelarJB = new MiBoton("Cancelar", Colores.COLOR_BG_CANCELAR, Colores.COLOR_BG_CANCELAR_OVER, Colores.COLOR_BG_CANCELAR_PRESIONADO);
+			cancelarJB.setFont(Fuente.button());
 			
 			ActionListener cancelar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -316,7 +333,8 @@ public class CrearAsignatura extends JPanel{
 	
 	public JButton getConfirmarJB() {
 		if (confirmarJB == null) {
-			confirmarJB = new JButton("Confirmar");
+			confirmarJB = new MiBoton("Confirmar", Colores.COLOR_BG_CONFIRMAR, Colores.COLOR_BG_CONFIRMAR_OVER, Colores.COLOR_BG_CONFIRMAR_PRESIONADO);
+			confirmarJB.setFont(Fuente.button());
 			
 			ActionListener confirmar = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
@@ -451,7 +469,10 @@ public class CrearAsignatura extends JPanel{
 	
 	public JButton crearBotonPrevia(String nombre) {
 		
-		JButton previaJB = new JButton(nombre);
+		JButton previaJB = new MiBoton(nombre, Colores.COLOR_BG_PREVIA, Colores.COLOR_BG_PREVIA_OVER, Colores.COLOR_BG_PREVIA_PRESIONADO);
+		previaJB.setFont(Fuente.buttonPrevia());
+		previaJB.setBackground(Colores.COLOR_BG_PREVIA);
+		previaJB.setForeground(Colores.COLOR_FG_PREVIA);
 		
 		ActionListener metodoBoton = new ActionListener() {
 			public void actionPerformed (ActionEvent e) {

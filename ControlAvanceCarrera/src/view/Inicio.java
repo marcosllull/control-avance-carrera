@@ -25,6 +25,10 @@ public class Inicio{
 	private JMenuItem itemModificarCarrera, itemModificarMateria, itemModificarAsignatura;
 	private JMenuItem itemAyudaSobre;
 	
+	private int anchoCarrera = 1000; private int altoCarrera = 400;
+	private int anchoMateria = 1000; private int altoMateria = 400;
+	private int anchoAsignatura = 1200; private int altoAsignatura = 600;
+	
 	private Inicio() {
 		getVentana();
 	}
@@ -167,6 +171,8 @@ public class Inicio{
 					removerComponentesPanelCentral();
 					getPanelCentral().add(CrearCarrera.getInstancia());
 					CrearCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+					getVentana().setSize(anchoCarrera, altoCarrera);
+					centrarVentana();
 					getPanelCentral().revalidate();
 					getPanelCentral().repaint();
 			    }
@@ -187,6 +193,8 @@ public class Inicio{
 					if (CrearMateria.getInstancia() != null) {
 						getPanelCentral().add(CrearMateria.getInstancia());
 						CrearMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoMateria, altoMateria);
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -209,6 +217,8 @@ public class Inicio{
 					if (CrearAsignatura.getInstancia() != null) {
 						getPanelCentral().add(CrearAsignatura.getInstancia());
 						CrearAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						getVentana().setSize(anchoAsignatura, altoAsignatura);
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -231,6 +241,7 @@ public class Inicio{
 					if (EliminarCarrera.getInstancia() != null) {
 						getPanelCentral().add(EliminarCarrera.getInstancia());
 						EliminarCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -253,6 +264,7 @@ public class Inicio{
 					if (EliminarMateria.getInstancia() != null) {
 						getPanelCentral().add(EliminarMateria.getInstancia());
 						EliminarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -275,6 +287,7 @@ public class Inicio{
 					if (EliminarAsignatura.getInstancia() != null) {
 						getPanelCentral().add(EliminarAsignatura.getInstancia());
 						EliminarAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -297,6 +310,7 @@ public class Inicio{
 					if (ModificarCarrera.getInstancia() != null) {
 						getPanelCentral().add(ModificarCarrera.getInstancia());
 						ModificarCarrera.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -319,6 +333,7 @@ public class Inicio{
 					if (ModificarMateria.getInstancia() != null) {
 						getPanelCentral().add(ModificarMateria.getInstancia());
 						ModificarMateria.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -341,6 +356,7 @@ public class Inicio{
 					if (ModificarAsignatura.getInstancia() != null) {
 						getPanelCentral().add(ModificarAsignatura.getInstancia());
 						ModificarAsignatura.getInstancia().setVentanaPrincipal(getInstancia());
+						centrarVentana();
 						getPanelCentral().revalidate();
 						getPanelCentral().repaint();
 					}
@@ -390,6 +406,7 @@ public class Inicio{
 				if (SeleccionarCarrera.getInstancia(carreraSeleccionada) != null) {
 					getPanelCentral().add(SeleccionarCarrera.getInstancia(carreraSeleccionada));
 					SeleccionarCarrera.getInstancia(carreraSeleccionada).setVentanaPrincipal(getInstancia());
+					maximizarVentana();
 					getPanelCentral().revalidate();
 					getPanelCentral().repaint();
 				}
@@ -415,5 +432,17 @@ public class Inicio{
 	public void redibujarPanelCentral() {
 		getPanelCentral().revalidate();
 		getPanelCentral().repaint();
+	}
+	
+	public void centrarVentana() {
+		getVentana().setVisible(false);		//Para que no se vea el trayecto de cambio de posicion de la ventana
+		getVentana().setLocationRelativeTo(null);	//Centra la ventana
+		getVentana().setVisible(true);	//Muestra la ventana
+	}
+	
+	public void maximizarVentana() {
+		getVentana().setVisible(false);		//Para que no se vea el trayecto de cambio de posicion de la ventana
+		getVentana().setExtendedState(JFrame.MAXIMIZED_BOTH);
+		getVentana().setVisible(true);	//Muestra la ventana
 	}
 }
