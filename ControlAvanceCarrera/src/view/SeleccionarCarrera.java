@@ -61,7 +61,6 @@ public class SeleccionarCarrera extends JPanel{
 	
 	private static final Color COLOR_FONDO = new Color(240,240,240);
 	private static final Color COLOR_TITULO = new Color(0,0,0);
-	private static final Color COLOR_SALIR = new Color(126,126,126);
 	
 	private SeleccionarCarrera(String nombreCarrera) {
 		SeleccionarCarrera.nombreCarrera = nombreCarrera;
