@@ -711,6 +711,7 @@ public class SeleccionarCarrera extends JPanel{
 							if (item.isSelected()) {
 								quitarCreditosMateriaYCarrera(item.getText());
 								quitarAsignaturaSeleccionada(item.getText());
+								verifDeshabilitarAsignaturas(asig.getNombre());
 							}
 							
 							item.setEnabled(false);
