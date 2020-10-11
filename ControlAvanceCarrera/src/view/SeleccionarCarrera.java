@@ -61,6 +61,8 @@ public class SeleccionarCarrera extends JPanel{
 	
 	private static final Color COLOR_FONDO = new Color(240,240,240);
 	private static final Color COLOR_TITULO = new Color(0,0,0);
+	private static final Color COLOR_CREDITOS_INSUFICIENTES = new Color(255,67,67);
+	private static final Color COLOR_CREDITOS_SUFICIENTES = new Color(39, 143, 66);
 	
 	private SeleccionarCarrera(String nombreCarrera) {
 		SeleccionarCarrera.nombreCarrera = nombreCarrera;
@@ -425,7 +427,7 @@ public class SeleccionarCarrera extends JPanel{
 			for (String m : msjs) {
 				JLabel msj = new JLabel(m);
 				msj.setFont(Fuente.mensajes());
-				msj.setForeground(new Color(255,67,67));
+				msj.setForeground(COLOR_CREDITOS_INSUFICIENTES);
 				mensajesAprobadoSiNoJL.add(msj);
 				msj.setOpaque(true);
 				msj.setBackground(COLOR_FONDO);
@@ -577,9 +579,12 @@ public class SeleccionarCarrera extends JPanel{
 		}
 		
 		String[] mensajes = null;
+		Color colorMensajes = COLOR_CREDITOS_INSUFICIENTES;
 		
-		if (creditosCarreraOK && creditosMateriasOK)
+		if (creditosCarreraOK && creditosMateriasOK) {
 			mensajes = MensajeCalculadora.mensaje(true, true);
+			colorMensajes = COLOR_CREDITOS_SUFICIENTES;
+		}
 		else if (creditosCarreraOK)
 			mensajes = MensajeCalculadora.mensaje(true, false);
 		else if (creditosMateriasOK)
@@ -594,6 +599,7 @@ public class SeleccionarCarrera extends JPanel{
 			item.setText("");
 		for (String msj : mensajes) {
 			getMensajesAprobadoSiNoJL().get(contador).setText(msj);
+			getMensajesAprobadoSiNoJL().get(contador).setForeground(colorMensajes);;
 			contador++;
 		}
 		//UPDATE mensajes

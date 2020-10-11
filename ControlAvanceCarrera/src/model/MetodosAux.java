@@ -10,7 +10,7 @@ public class MetodosAux {
 		if (cadena.isBlank())
 			return false;
 		
-		Pattern patron = Pattern.compile("^([a-z]| |á|é|í|ó)+$", Pattern.CASE_INSENSITIVE);
+		Pattern patron = Pattern.compile("^([a-z]| |á|é|í|ó|.|[0-9])+$", Pattern.CASE_INSENSITIVE);
 		Matcher match = patron.matcher(cadena);
 		boolean nombreValido = match.find();
 		
