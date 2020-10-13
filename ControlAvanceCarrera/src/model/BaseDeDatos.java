@@ -211,7 +211,7 @@ public class BaseDeDatos {
 		}
 	}
 
-	public static void insertarPreviaAsignaturaBD(String nombreCarrera, String nombreAsignatura, String nombrePrevia) {
+	public static void insertarPreviaAsignaturaBD(String nombreCarrera, String nombreAsignatura, String nombrePrevia, TipoPrevia tipoPrevia) {
 		try {
 			BaseDeDatos.iniciar();
 			Connection conexion = BaseDeDatos.getConexion();
@@ -219,13 +219,15 @@ public class BaseDeDatos {
 			String query = "INSERT INTO asignatura_previa ("
 					+ "nombreCarrera, "
 					+ "nombreAsignatura, "
-					+ "nombrePrevia) VALUES ("
-					+ "?, ?, ?)";
+					+ "nombrePrevia, "
+					+ "tipoPrevia) VALUES ("
+					+ "?, ?, ?, ?)";
 			PreparedStatement insertarPreviaAsignatura = conexion.prepareStatement(query);
 			
 			insertarPreviaAsignatura.setString(1, nombreCarrera);
 			insertarPreviaAsignatura.setString(2, nombreAsignatura);
 			insertarPreviaAsignatura.setString(3, nombrePrevia);
+			insertarPreviaAsignatura.setString(4, tipoPrevia.name());
 			
 			insertarPreviaAsignatura.executeUpdate();
 			insertarPreviaAsignatura.close();
@@ -328,7 +330,7 @@ public class BaseDeDatos {
 			ResultSet resultado = sentencia.executeQuery(query);
 			
 			while (resultado.next()) {
-				String[] asignaturaConPrevia = {resultado.getString(1), resultado.getString(2), resultado.getString(3)};
+				String[] asignaturaConPrevia = {resultado.getString(1), resultado.getString(2), resultado.getString(3), resultado.getString(4)};
 				asignaturasConPrevias.add(asignaturaConPrevia);
 			}
 			sentencia.close();

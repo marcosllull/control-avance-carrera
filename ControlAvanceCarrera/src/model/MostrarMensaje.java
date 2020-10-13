@@ -87,8 +87,13 @@ public class MostrarMensaje {
 		mostrarError(mensaje);
 	}
 	
-	public static void errorAsignaturaAgregada() {
-		String mensaje = "La asignatura ya se encuentra agregada";
+	public static void errorAsignaturaAgregadaCurso() {
+		String mensaje = "La asignatura ya se encuentra agregada en previas de curso";
+		mostrarError(mensaje);
+	}
+	
+	public static void errorAsignaturaAgregadaTodo() {
+		String mensaje = "La asignatura ya se encuentra agregada en previas de curso y exámen";
 		mostrarError(mensaje);
 	}
 	

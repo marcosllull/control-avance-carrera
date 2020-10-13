@@ -14,14 +14,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -43,7 +46,14 @@ public class SeleccionarCarrera extends JPanel{
 	private JLabel asignaturasJL;
 	private JScrollPane asignaturasJSP;
 	private JPanel asignaturasJP;
-	private ArrayList<JCheckBox> asignaturasJCB;
+	
+	private JPanel panelesEsqSupIzq;
+	//private JScrollPane estadosJSP;
+	private JPanel estadosJP;
+	private ArrayList<JLabel> asignaturasUnselectedJL;
+	private ArrayList<ButtonGroup> estadosAsignaturasALBG;
+	private ArrayList<JRadioButton[]> estadosAsignaturasALJRB;
+	
 	private JLabel asignaturasSelectedJL;
 	private JScrollPane asignaturasSelectedJSP;
 	private JTable asignaturasSelectedJT;
@@ -63,6 +73,10 @@ public class SeleccionarCarrera extends JPanel{
 	private static final Color COLOR_TITULO = new Color(0,0,0);
 	private static final Color COLOR_CREDITOS_INSUFICIENTES = new Color(255,67,67);
 	private static final Color COLOR_CREDITOS_SUFICIENTES = new Color(39, 143, 66);
+	
+	private static final String ESTADO_SIN_APROBAR = "Sin Aprobar";
+	private static final String ESTADO_CURSO_APROBADO = "Curso";
+	private static final String ESTADO_CURSO_Y_EXAMEN_APROBADO = "Curso y exámen";
 	
 	private SeleccionarCarrera(String nombreCarrera) {
 		SeleccionarCarrera.nombreCarrera = nombreCarrera;
@@ -95,6 +109,7 @@ public class SeleccionarCarrera extends JPanel{
 			panelSupIzqJP.setBackground(COLOR_FONDO);
 			GridBagConstraints gbc1 = new GridBagConstraints();
 			GridBagConstraints gbc2 = new GridBagConstraints();
+			//GridBagConstraints gbc3 = new GridBagConstraints();
 			
 			gbc1.gridx = 0;
 			gbc1.gridy = 0;
@@ -109,8 +124,17 @@ public class SeleccionarCarrera extends JPanel{
 			gbc2.fill = GridBagConstraints.BOTH;
 			gbc2.insets = new Insets(0,5,0,0);
 			
+			/*gbc3.gridx = 2;
+			gbc3.gridy = 2;
+			gbc3.gridwidth = 1;
+			gbc3.weightx = 1;
+			gbc3.weighty = 1;
+			gbc3.fill = GridBagConstraints.BOTH;
+			gbc3.insets = new Insets(0,5,0,0);*/
+			
 			panelSupIzqJP.add(getAsignaturasJL(), gbc1);
 			panelSupIzqJP.add(getAsignaturasJSP(), gbc2);
+			//panelSupIzqJP.add(getEstadosJSP(), gbc3);
 		}
 		return panelSupIzqJP;
 	}
@@ -206,11 +230,20 @@ public class SeleccionarCarrera extends JPanel{
 
 	public JScrollPane getAsignaturasJSP() {
 		if (asignaturasJSP == null) {
-			asignaturasJSP = new JScrollPane(getAsignaturasJP());
+			asignaturasJSP = new JScrollPane(getPanelesEsqSupIzq());
 			asignaturasJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			asignaturasJSP.getViewport().setBackground(COLOR_FONDO);
 		}
 		return asignaturasJSP;
+	}
+	
+	public JPanel getPanelesEsqSupIzq() {
+		if (panelesEsqSupIzq == null) {
+			panelesEsqSupIzq = new JPanel(new GridLayout(1,2));
+			panelesEsqSupIzq.add(getAsignaturasJP());
+			panelesEsqSupIzq.add(getEstadosJP());
+		}
+		return panelesEsqSupIzq;
 	}
 	
 	public JPanel getAsignaturasJP() {
@@ -219,20 +252,132 @@ public class SeleccionarCarrera extends JPanel{
 			asignaturasJP.setOpaque(false);
 			asignaturasJP.setBackground(COLOR_FONDO);
 			
-			for (JCheckBox a : getAsignaturasJCB())
+			for (JLabel a : getAsignaturasUnselectedJL())
 				asignaturasJP.add(a);
 		}
 		return asignaturasJP;
 	}
-
-	public ArrayList<JCheckBox> getAsignaturasJCB() {
+	
+	/*public JScrollPane getEstadosJSP() {
+		if (estadosJSP == null) {
+			estadosJSP = new JScrollPane(getEstadosJP());
+			estadosJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			estadosJSP.getViewport().setBackground(COLOR_FONDO);
+		}
+		return estadosJSP;
+	}*/
+	
+	public JPanel getEstadosJP() {
+		if (estadosJP == null) {
+			estadosJP = new JPanel(new GridLayout(0, 3));
+			
+			for (JRadioButton[] estado : getEstadosAsignaturasALJRB()) {
+				estadosJP.add(estado[0]);
+				estadosJP.add(estado[1]);
+				estadosJP.add(estado[2]);
+			}
+		}
+		return estadosJP;
+	}
+	
+	public ArrayList<JLabel> getAsignaturasUnselectedJL() {
+		if (asignaturasUnselectedJL == null) {
+			asignaturasUnselectedJL = new ArrayList<JLabel>();
+			
+			agregarAsignaturasUnselected();
+		}
+		return asignaturasUnselectedJL;
+	}
+	
+	public void agregarAsignaturasUnselected() {
+		Map<String, Materia> materias = ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getMaterias();
+		for (Map.Entry<String, Materia> m : materias.entrySet()) {
+			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
+				JLabel item = new JLabel(a.getValue().getNombre());
+				item.setBackground(COLOR_FONDO);
+				item.setFont(Fuente.tabla());
+				asignaturasUnselectedJL.add(item);
+			}
+		}
+	}
+	
+	public ArrayList<ButtonGroup> getEstadosAsignaturasALBG(){
+		if (estadosAsignaturasALBG == null) {
+			estadosAsignaturasALBG = new ArrayList<ButtonGroup>();
+		}
+		return estadosAsignaturasALBG;
+	}
+	
+	public ArrayList<JRadioButton[]> getEstadosAsignaturasALJRB() {
+		if (estadosAsignaturasALJRB == null) {
+			estadosAsignaturasALJRB = new ArrayList<JRadioButton[]>();
+		
+			agregarRadioButtonsAsignaturas();
+		}
+		return estadosAsignaturasALJRB;
+	}
+	
+	public void agregarRadioButtonsAsignaturas() {
+		for (JLabel asignatura : asignaturasUnselectedJL) {
+			JRadioButton sinAprobarJRB = crearRadioButtonAsignatura(asignatura, ESTADO_SIN_APROBAR);
+			JRadioButton cursoJRB = crearRadioButtonAsignatura(asignatura, ESTADO_CURSO_APROBADO);
+			JRadioButton cursoYExamenJRB = crearRadioButtonAsignatura(asignatura, ESTADO_CURSO_Y_EXAMEN_APROBADO);
+			
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(sinAprobarJRB);
+			bg.add(cursoJRB);
+			bg.add(cursoYExamenJRB);
+			getEstadosAsignaturasALBG().add(bg);
+			getEstadosAsignaturasALJRB().add(new JRadioButton[] {sinAprobarJRB, cursoJRB, cursoYExamenJRB});
+		}
+	}
+	
+	public JRadioButton crearRadioButtonAsignatura(JLabel asignatura, String estado) {
+		
+		JRadioButton rb = new JRadioButton(estado);
+		//rb.setFont(Fuente.radioButton());
+		
+		if (tienePrevias(asignatura.getText()))
+			rb.setEnabled(false);
+		if (estado.equals(ESTADO_SIN_APROBAR))
+			rb.setSelected(true);
+		
+		ChangeListener cambiarEstado = new ChangeListener() {
+			public void stateChanged (ChangeEvent e) {
+				if (rb.isSelected()) {
+					if (estado.equals(ESTADO_CURSO_Y_EXAMEN_APROBADO)) {
+						verifHabilitarAsignaturas();
+						agregarCreditosMateriaYCarrera(asignatura.getText());
+						agregarAsignaturaSeleccionada(asignatura.getText());
+					}
+					else if (estado.equals(ESTADO_CURSO_APROBADO)) {
+						verifHabilitarAsignaturas();
+						quitarCreditosMateriaYCarrera(asignatura.getText());
+						agregarAsignaturaSeleccionada(asignatura.getText());
+					}
+					else {
+						verifDeshabilitarAsignaturas(asignatura.getText());
+						quitarCreditosMateriaYCarrera(asignatura.getText());
+						quitarAsignaturaSeleccionada(asignatura.getText());
+					}
+					verifCambiarMensajes();
+					verifCambiarEstadoMateria();
+				}
+		    }
+		};
+		rb.addChangeListener(cambiarEstado);
+		
+		return rb;
+	}
+	
+	/*public ArrayList<JCheckBox> getAsignaturasJCB() {
 		if (asignaturasJCB == null) {
 			asignaturasJCB = new ArrayList<JCheckBox>();
 			
 			agregarAsignaturas();
 		}
 		return asignaturasJCB;
-	}
+	}*/
 
 	public JLabel getAsignaturasSelectedJL() {
 		if (asignaturasSelectedJL == null) {
@@ -455,7 +600,7 @@ public class SeleccionarCarrera extends JPanel{
 		return salirJB;
 	}
 	
-	public void agregarAsignaturas() {
+	/*public void agregarAsignaturas() {
 		Map<String, Materia> materias = ManejadorCarrera.getInstancia().getCarreras().get(nombreCarrera).getMaterias();
 		for (Map.Entry<String, Materia> m : materias.entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
@@ -468,7 +613,7 @@ public class SeleccionarCarrera extends JPanel{
 				asignaturasJCB.add(item);
 			}
 		}
-	}
+	}*/
 
 	public String[][] obtenerDatosMaterias(){
 		
@@ -524,7 +669,7 @@ public class SeleccionarCarrera extends JPanel{
 		return false;
 	}
 	
-	public ActionListener obtenerActionListenerAsignatura(JCheckBox item) {
+	/*public ActionListener obtenerActionListenerAsignatura(JCheckBox item) {
 		
 		ActionListener seleccionar = new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -544,7 +689,7 @@ public class SeleccionarCarrera extends JPanel{
 		};
 		
 		return seleccionar;
-	}
+	}*/
 	
 	public void verifCambiarEstadoMateria() {
 		for (int i = 0; i < getMateriasJT().getRowCount(); i++) {
@@ -686,17 +831,23 @@ public class SeleccionarCarrera extends JPanel{
 			
 			boolean tienePreviasSinSeleccionar = false;
 			for (Map.Entry<String, String> asignaturaNoSeleccionada : asignaturasNoSeleccionadas.entrySet()) {
-				if (asig.getPrevias().containsKey(asignaturaNoSeleccionada.getKey())) {	//asignatura no habilitada tiene previa sin habilitar?
+				if (asig.getPreviasCurso().containsKey(asignaturaNoSeleccionada.getKey())) {	//asignatura no habilitada tiene previa sin habilitar?
 					tienePreviasSinSeleccionar = true;
 					break;
 				}
 			}
 			if (!tienePreviasSinSeleccionar) {	//habilitar si todas las previas estan habilitadas
-				for (JCheckBox item : getAsignaturasJCB()) {
+				int pos = 0;
+				for (JLabel item : getAsignaturasUnselectedJL()) {
 					if (item.getText().equals(asig.getNombre())) {
-						item.setEnabled(true);
-						item.setSelected(false);
+						getEstadosAsignaturasALJRB().get(pos)[0].setEnabled(true);
+						getEstadosAsignaturasALJRB().get(pos)[1].setEnabled(true);
+						getEstadosAsignaturasALJRB().get(pos)[2].setEnabled(true);
+						getEstadosAsignaturasALJRB().get(pos)[0].setSelected(true);
+						//item.setEnabled(true);
+						//item.setSelected(false);
 					}
+					pos += 1;
 				}
 			}
 		}
@@ -710,21 +861,29 @@ public class SeleccionarCarrera extends JPanel{
 			yaEsta = true;
 			for (Map.Entry<String, String> a : asignaturasHabilitadas.entrySet()) {
 				Asignatura asig = asignaturasCarrera.get(a.getKey());
-				if (asig.getPrevias().containsKey(nombreAsignaturaDeseleccionada)) {
-					for (JCheckBox item : getAsignaturasJCB()) {
+				if (asig.getPreviasCurso().containsKey(nombreAsignaturaDeseleccionada)) {
+					
+					int pos = 0;
+					for (JLabel item : getAsignaturasUnselectedJL()) {
 						if (item.getText().equals(asig.getNombre())) {
 							
-							if (item.isSelected()) {
+							if (getEstadosAsignaturasALJRB().get(pos)[2].isSelected()) {
 								quitarCreditosMateriaYCarrera(item.getText());
 								quitarAsignaturaSeleccionada(item.getText());
 								verifDeshabilitarAsignaturas(asig.getNombre());
 							}
 							
-							item.setEnabled(false);
-							item.setSelected(false);
+							getEstadosAsignaturasALJRB().get(pos)[0].setEnabled(false);
+							getEstadosAsignaturasALJRB().get(pos)[1].setEnabled(false);
+							getEstadosAsignaturasALJRB().get(pos)[2].setEnabled(false);
+							getEstadosAsignaturasALJRB().get(pos)[0].setSelected(false);
+							
+							//item.setEnabled(false);
+							//item.setSelected(false);
 							yaEsta = false;
 							break;
 						}
+						pos += 1;
 					}
 					break;
 				}
@@ -736,26 +895,34 @@ public class SeleccionarCarrera extends JPanel{
 	
 	public Map<String, String> obtenerAsignaturasHabilitadas() {
 		Map<String, String> asignaturasHabilitadas = new HashMap<String, String>();
-		for (JCheckBox item : getAsignaturasJCB()) {
-			if (item.isEnabled())
+		int pos = 0;
+		for (JLabel item : getAsignaturasUnselectedJL()) {
+			boolean estadosHabilitados = this.getEstadosAsignaturasALJRB().get(pos)[0].isEnabled();
+			if (estadosHabilitados)
 				asignaturasHabilitadas.put(item.getText(), item.getText());
+			pos += 1;
 		}
 		return asignaturasHabilitadas;
 	}
 	
 	public Map<String, String> obtenerAsignaturasNoHabilitadas(){
 		Map<String, String> asignaturasNoHabilitadas = new HashMap<String, String>();
-		for (JCheckBox item : getAsignaturasJCB()) {
-			if (!item.isEnabled())
+		int pos = 0;
+		for (JLabel item : getAsignaturasUnselectedJL()) {
+			boolean estadosHabilitados = this.getEstadosAsignaturasALJRB().get(pos)[0].isEnabled();
+			if (!estadosHabilitados)
 				asignaturasNoHabilitadas.put(item.getText(), item.getText());
+			pos += 1;
 		}
 		return asignaturasNoHabilitadas;
 	}
 	
 	public Map<String, String> obtenerAsignaturasNoSeleccionadas() {
 		Map<String, String> asignaturasNoSeleccionadas = new HashMap<String, String>();
-		for (JCheckBox item : getAsignaturasJCB()) {
-			if (!item.isSelected())
+		int pos = 0;
+		for (JLabel item : getAsignaturasUnselectedJL()) {
+			boolean estadoSeleccionadoCursoYExamen = this.getEstadosAsignaturasALJRB().get(pos)[0].isSelected();
+			if (!estadoSeleccionadoCursoYExamen)
 				asignaturasNoSeleccionadas.put(item.getText(), item.getText());
 		}
 		return asignaturasNoSeleccionadas;

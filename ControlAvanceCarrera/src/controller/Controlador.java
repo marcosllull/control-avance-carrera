@@ -10,6 +10,7 @@ import model.Carrera;
 import model.ManejadorCarrera;
 import model.Materia;
 import model.MetodosAux;
+import model.TipoPrevia;
 
 public class Controlador {
 	
@@ -126,7 +127,7 @@ public class Controlador {
 			boolean tienePrevias = Boolean.parseBoolean(asignatura[4]);
 			
 			Asignatura a = new Asignatura(nombreAsignatura, nombreMateria, nombreCarrera, cantCreditos,
-					tienePrevias, new HashMap<String, Asignatura>());
+					tienePrevias, new HashMap<String, Asignatura>(), new HashMap<String, Asignatura>());
 
 			mc.agregarAsignatura(a, nombreCarrera, nombreMateria);
 		}
@@ -142,7 +143,10 @@ public class Controlador {
 								previaEstaAgregadaComoAsignatura(acp[0], acp[2])) {
 								
 								Asignatura previa = obtenerPreviaBD(acp[0], acp[2]);
-								asignatura.getValue().getPrevias().put(previa.getNombre(), previa);
+								if (TipoPrevia.valueOf(acp[3].toUpperCase()) == TipoPrevia.CURSO)
+									asignatura.getValue().getPreviasCurso().put(previa.getNombre(), previa);
+								else
+									asignatura.getValue().getPreviasTodo().put(previa.getNombre(), previa);
 								asignaturasConPrevias.remove(acp);
 								agregado = true;
 								break;
@@ -312,7 +316,7 @@ public class Controlador {
 	}
 	
 	public static boolean agregarAsignatura(String nombre, String nombreCarrera, String nombreMateria, 
-			int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
+			int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previasCurso, Map<String, Asignatura> previasTodo) {
 		
 		if (MetodosAux.validarNombre(nombre) &&
 			MetodosAux.validarNombre(nombreMateria) &&
@@ -350,7 +354,7 @@ public class Controlador {
 						else {
 							
 							boolean existenPrevias = true;
-							for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
+							for (Map.Entry<String, Asignatura> p : previasCurso.entrySet()) {
 								if (!asignaturasCarrera.containsKey(p.getKey())) {
 									existenPrevias = false;
 									break;
@@ -358,11 +362,25 @@ public class Controlador {
 							}
 							
 							if (existenPrevias) {
+								for (Map.Entry<String, Asignatura> p : previasTodo.entrySet()) {
+									if (!asignaturasCarrera.containsKey(p.getKey())) {
+										existenPrevias = false;
+										break;
+									}
+								}
+							}
+							
+							if (existenPrevias) {
 								
 								BaseDeDatos.insertarAsignaturaBD(nombre, nombreCarrera, nombreMateria, cantCreditos, tienePrevias);
-								//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS
-								for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
-									BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombre, p.getValue().getNombre());
+								//SE INSERTA LA ASIGNATURA Y LUEGO TODAS SUS PREVIAS DE CURSO
+								for (Map.Entry<String, Asignatura> p : previasCurso.entrySet()) {
+									//falta pasar como parametro si la previa es de curso o de curso y examen
+									BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombre, p.getValue().getNombre(), TipoPrevia.CURSO);
+								}
+								//SE INSERTAN LAS PREVIAS DE CURSO Y EXAMEN
+								for (Map.Entry<String, Asignatura> p : previasTodo.entrySet()) {
+									BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombre, p.getValue().getNombre(), TipoPrevia.CURSOYEXAMEN);
 								}
 								
 								reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
@@ -379,15 +397,19 @@ public class Controlador {
 	
 	//Verifica si una asignatura de nombre 'nombre' es previa de otra asignatura
 	//nombre: nombre de la asignatura. materias: hashmap con todas las materias y cada una de sus asignaturas
-	public static boolean verificarEsPrevia(String nombre, Map<String, Materia> materias) {
+	//Valores de retorno: NO_ES_PREVIA = -1. PREVIA_DE_CURSO = 0. PREVIA_DE_CURSO_Y_EXAMEN = 1
+	public static int verificarEsPrevia(String nombre, Map<String, Materia> materias) {
 		for (Map.Entry<String, Materia> m : materias.entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
-				if (a.getValue().getPrevias().containsKey(nombre)) {
-					return true;
+				if (a.getValue().getPreviasCurso().containsKey(nombre)) {
+					return 0;
+				}
+				else if (a.getValue().getPreviasTodo().containsKey(nombre)) {
+					return 1;
 				}
 			}
 		}
-		return false;
+		return -1;
 	}
 	
 	public static boolean removerAsignatura(String nombre, String nombreCarrera, String nombreMateria) {
@@ -407,8 +429,8 @@ public class Controlador {
 		
 				if (existeAsignatura) {
 					
-					boolean esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
-					if (!esPrevia) {
+					int esPrevia = verificarEsPrevia(nombre, carrera.getMaterias()); 
+					if (esPrevia == -1) {
 						
 						Boolean eliminarTodo = false; //Asignaturas que tienen esta como previa de la tabla asignatura_previa
 						BaseDeDatos.eliminarAsignaturaBD(nombre, nombreCarrera, eliminarTodo);
@@ -470,7 +492,7 @@ public class Controlador {
 	}
 	
 	public static boolean modificarAsignatura(String nombreDespues, String nombreAntes, String nombreCarrera, 
-			String nombreMateria, int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previas) {
+			String nombreMateria, int cantCreditos, boolean tienePrevias, Map<String, Asignatura> previasCurso, Map<String, Asignatura> previasTodo) {
 		
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		boolean existeCarrera = mc.getCarreras().containsKey(nombreCarrera);
@@ -494,8 +516,11 @@ public class Controlador {
 						BaseDeDatos.modificarAsignaturaBD(nombreAntes, nombreDespues, nombreCarrera, cantCreditos, tienePrevias);
 						//Elimina las previas que tenia esa asignatura antes de ser modificada
 						BaseDeDatos.eliminarPreviasAsignatura(nombreCarrera, nombreDespues);
-						for (Map.Entry<String, Asignatura> p : previas.entrySet()) {
-							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre());
+						for (Map.Entry<String, Asignatura> p : previasCurso.entrySet()) {
+							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre(), TipoPrevia.CURSO);
+						}
+						for (Map.Entry<String, Asignatura> p : previasTodo.entrySet()) {
+							BaseDeDatos.insertarPreviaAsignaturaBD(nombreCarrera, nombreDespues, p.getValue().getNombre(), TipoPrevia.CURSOYEXAMEN);
 						}
 						
 						reiniciarManejador(); //Vuelve a tomar la informacion de la base de datos
@@ -508,14 +533,27 @@ public class Controlador {
 		return false;
 	}
 	
-	//DEEP COPY del hashmap asignaturas previas (copia creando nuevos objetos de los atributos, sin referencias)
-	public static Map<String, Asignatura> getCopyHashMapAsignaturasPrevias(String nombreAntes, String nombreMateria, String nombreAsignatura){
+	//DEEP COPY del hashmap asignaturas previas de curso (copia creando nuevos objetos de los atributos, sin referencias)
+	public static Map<String, Asignatura> getCopyHashMapAsignaturasPreviasCurso(String nombreAntes, String nombreMateria, String nombreAsignatura){
 		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 		
 		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
-		for (Map.Entry<String, Asignatura> p : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura).getPrevias().entrySet()) {
+		for (Map.Entry<String, Asignatura> p : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura).getPreviasCurso().entrySet()) {
 			Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
-						p.getValue().getCantCreditos(), false, null);
+						p.getValue().getCantCreditos(), false, null, null);
+			previas.put(previa.getNombre(), previa);
+		}
+		return previas;
+	}
+	
+	//DEEP COPY del hashmap asignaturas previas de curso y examen (copia creando nuevos objetos de los atributos, sin referencias)
+	public static Map<String, Asignatura> getCopyHashMapAsignaturasPreviasTodo(String nombreAntes, String nombreMateria, String nombreAsignatura){
+		ManejadorCarrera mc = ManejadorCarrera.getInstancia();
+		
+		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+		for (Map.Entry<String, Asignatura> p : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().get(nombreAsignatura).getPreviasTodo().entrySet()) {
+			Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+						p.getValue().getCantCreditos(), false, null, null);
 			previas.put(previa.getNombre(), previa);
 		}
 		return previas;
@@ -528,14 +566,23 @@ public class Controlador {
 		Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
 		for (Map.Entry<String, Asignatura> a : mc.getCarreras().get(nombreAntes).getMaterias().get(nombreMateria).getAsignaturas().entrySet()) {
 			Asignatura original = a.getValue();
-			Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
-			for (Map.Entry<String, Asignatura> p : original.getPrevias().entrySet()) {
+			Map<String, Asignatura> previasCurso = new HashMap<String, Asignatura>();
+			Map<String, Asignatura> previasTodo = new HashMap<String, Asignatura>();
+			//PREVIAS DE CURSO
+			for (Map.Entry<String, Asignatura> p : original.getPreviasCurso().entrySet()) {
 				Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
-						p.getValue().getCantCreditos(), false, null);
-				previas.put(previa.getNombre(), previa);
+						p.getValue().getCantCreditos(), false, null, null);
+				previasCurso.put(previa.getNombre(), previa);
 			}
+			//PREVIAS DE CURSO Y EXAMEN
+			for (Map.Entry<String, Asignatura> p : original.getPreviasTodo().entrySet()) {
+				Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+						p.getValue().getCantCreditos(), false, null, null);
+				previasTodo.put(previa.getNombre(), previa);
+			}
+			//
 			Asignatura copia = new Asignatura(original.getNombre(), original.getNombreMateria(), original.getNombreCarrera(),
-					original.getCantCreditos(), original.getTienePrevias(), previas);
+					original.getCantCreditos(), original.getTienePrevias(), previasCurso, previasTodo);
 			asignaturas.put(copia.getNombre(), copia);
 		}
 		return asignaturas;
@@ -550,14 +597,23 @@ public class Controlador {
 			Map<String, Asignatura> asignaturas = new HashMap<String, Asignatura>();
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet()) {
 				Asignatura original = a.getValue();
-				Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
-				for (Map.Entry<String, Asignatura> p : original.getPrevias().entrySet()) {
+				Map<String, Asignatura> previasCurso = new HashMap<String, Asignatura>();
+				Map<String, Asignatura> previasTodo = new HashMap<String, Asignatura>();
+				//PREVIAS DE CURSO
+				for (Map.Entry<String, Asignatura> p : original.getPreviasCurso().entrySet()) {
 					Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
-							p.getValue().getCantCreditos(), false, null);
-					previas.put(previa.getNombre(), previa);
+							p.getValue().getCantCreditos(), false, null, null);
+					previasCurso.put(previa.getNombre(), previa);
 				}
+				//PREVIAS DE CURSO Y EXAMEN
+				for (Map.Entry<String, Asignatura> p : original.getPreviasTodo().entrySet()) {
+					Asignatura previa = new Asignatura(p.getValue().getNombre(), p.getValue().getNombreMateria(), p.getValue().getNombreCarrera(),
+							p.getValue().getCantCreditos(), false, null, null);
+					previasTodo.put(previa.getNombre(), previa);
+				}
+				//
 				Asignatura copia = new Asignatura(original.getNombre(), original.getNombreMateria(), original.getNombreCarrera(),
-						original.getCantCreditos(), original.getTienePrevias(), previas);
+						original.getCantCreditos(), original.getTienePrevias(), previasCurso, previasTodo);
 				asignaturas.put(copia.getNombre(), copia);
 			}
 			Materia materia = new Materia(m.getValue().getNombre(), m.getValue().getNombreCarrera(), m.getValue().getCantCreditos(),

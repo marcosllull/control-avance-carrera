@@ -10,18 +10,21 @@ public class Asignatura {
 	private String nombreCarrera;
 	private int cantCreditos;
 	private boolean tienePrevias;
-	private Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+	private Map<String, Asignatura> previasCurso = new HashMap<String, Asignatura>();
+	private Map<String, Asignatura> previasTodo = new HashMap<String, Asignatura>();
 	
 	public Asignatura(String nombre, String nombreMateria, String nombreCarrera, int cantCreditos,
-			boolean tienePrevias, Map<String, Asignatura> previas) {
+			boolean tienePrevias, Map<String, Asignatura> previasCurso, Map<String, Asignatura> previasTodo) {
 		
 		this.nombre = nombre;
 		this.nombreMateria = nombreMateria;
 		this.nombreCarrera = nombreCarrera;
 		this.cantCreditos = cantCreditos;
 		this.tienePrevias = tienePrevias;
-		if (previas != null)
-			this.previas.putAll(previas);
+		if (previasCurso != null)
+			this.previasCurso.putAll(previasCurso);
+		if (previasTodo != null)
+			this.previasTodo.putAll(previasTodo);
 	}
 	
 	//GETTERS
@@ -45,8 +48,12 @@ public class Asignatura {
 		return tienePrevias;
 	}
 
-	public Map<String, Asignatura> getPrevias() {
-		return previas;
+	public Map<String, Asignatura> getPreviasCurso() {
+		return previasCurso;
+	}
+	
+	public Map<String, Asignatura> getPreviasTodo() {
+		return previasTodo;
 	}
 
 	//SETTERS
@@ -70,7 +77,11 @@ public class Asignatura {
 		this.tienePrevias = tienePrevias;
 	}
 
-	public void setPrevias(Map<String, Asignatura> previas) {
-		this.previas.putAll(previas); 
+	public void setPreviasCurso(Map<String, Asignatura> previasCurso) {
+		this.previasCurso.putAll(previasCurso); 
+	}
+	
+	public void setPreviasTodo(Map<String, Asignatura> previasTodo) {
+		this.previasTodo.putAll(previasTodo); 
 	}
 }

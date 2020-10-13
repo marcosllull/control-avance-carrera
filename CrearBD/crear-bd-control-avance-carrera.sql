@@ -35,7 +35,8 @@ CREATE TABLE asignatura_previa (
     FOREIGN KEY (nombrePrevia) REFERENCES asignatura (nombre)  ON UPDATE CASCADE,
     nombreCarrera VARCHAR(80),
 	nombreAsignatura VARCHAR(80),
-    nombrePrevia VARCHAR(80)
+    nombrePrevia VARCHAR(80),
+    tipoPrevia ENUM('Curso', 'CursoYExamen')
 );
 
 /********************* DATOS DE PRUEBA ******************/
@@ -88,40 +89,40 @@ INSERT INTO asignatura VALUES("Proyecto", "Tecnologo en informatica", "Proyecto 
 
 
 /*****************PREVIAS DE UNA ASIGNATURA******************/
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Principios de programacion");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Matematicas discretas y logica I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos I", "Principios de programacion");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Matematicas discretas y logica II", "Matematicas discretas y logica I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Sistemas Operativos", "Arquitectura del computador");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos II", "Bases de datos I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Redes de Computadoras", "Arquitectura del computador");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación Avanzada", "Bases de datos I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación Avanzada", "Estructuras de datos y algoritmos");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Administración de Infraestructuras", "Sistemas Operativos");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Administración de Infraestructuras", "Redes de Computadoras");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Estructuras de datos y algoritmos");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Bases de datos I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Programación Avanzada");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Probabilidad y Estadística", "Matematicas discretas y logica I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Probabilidad y Estadística", "Matematicas discretas y logica II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación de Aplicaciones", "Programación Avanzada");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación de Aplicaciones", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Aplicaciones de Internet Ricas", "Programación de Aplicaciones");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Programación de Aplicaciones");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Bases de datos I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Programación de Aplicaciones");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Ingeniería de Software");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Calidad de Datos", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Calidad de Datos", "Programación de Aplicaciones");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Principios de programacion");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Estructuras de datos y algoritmos");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Programación Avanzada");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Arquitectura del computador");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Sistemas Operativos");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Redes de Computadoras");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Bases de datos I");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Bases de datos II");
-INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Proyecto", "Programación Avanzada");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Principios de programacion", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Estructuras de datos y algoritmos", "Matematicas discretas y logica I", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos I", "Principios de programacion", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Matematicas discretas y logica II", "Matematicas discretas y logica I", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Sistemas Operativos", "Arquitectura del computador", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Bases de datos II", "Bases de datos I", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Redes de Computadoras", "Arquitectura del computador", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación Avanzada", "Bases de datos I", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación Avanzada", "Estructuras de datos y algoritmos", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Administración de Infraestructuras", "Sistemas Operativos", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Administración de Infraestructuras", "Redes de Computadoras", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Estructuras de datos y algoritmos", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Bases de datos I", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Programación Avanzada", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Ingeniería de Software", "Bases de datos II", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Probabilidad y Estadística", "Matematicas discretas y logica I", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Probabilidad y Estadística", "Matematicas discretas y logica II", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación de Aplicaciones", "Programación Avanzada", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Programación de Aplicaciones", "Bases de datos II", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Aplicaciones de Internet Ricas", "Programación de Aplicaciones", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Programación de Aplicaciones", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Bases de datos I", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información .NET", "Bases de datos II", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Bases de datos II", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Programación de Aplicaciones", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Taller de Sistemas de Información Geográfica", "Ingeniería de Software", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Calidad de Datos", "Bases de datos II", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Calidad de Datos", "Programación de Aplicaciones", "Curso");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Principios de programacion", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Estructuras de datos y algoritmos", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Programación Avanzada", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Arquitectura del computador", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Sistemas Operativos", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Redes de Computadoras", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Bases de datos I", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Pasantía Laboral", "Bases de datos II", "CursoYExamen");
+INSERT INTO asignatura_previa VALUES("Tecnologo en informatica", "Proyecto", "Programación Avanzada", "CursoYExamen");

@@ -47,17 +47,24 @@ public class ModificarAsignatura extends JPanel{
 	private JPanel tienePreviasJP;
 	private JRadioButton tienePreviasJRB_SI;
 	private JRadioButton tienePreviasJRB_NO;
-	private JLabel agregarPreviaJL;
-	private JComboBox<String> asignaturasPreviasJCB;
-	private JLabel previasAgregadasJL;
-	private ArrayList<JButton> previasAL;
-	private JPanel previasJP;
-	private JScrollPane previasJSP;
+	private JLabel agregarPreviaCursoJL;
+	private JComboBox<String> asignaturasCursoJCB;
+	private JLabel previasCursoAgregadasJL;
+	private ArrayList<JButton> previasCursoAL;
+	private JPanel previasCursoJP;
+	private JScrollPane previasCursoJSP;
+	
+	private JLabel agregarPreviaTodoJL;
+	private JComboBox<String> asignaturasTodoJCB;
+	private JLabel previasTodoAgregadasJL;
+	private ArrayList<JButton> previasTodoAL;
+	private JPanel previasTodoJP;
+	private JScrollPane previasTodoJSP;
 	private JButton cancelarJB;
 	private JButton confirmarJB;
 	
 	private ModificarAsignatura() {
-		this.setLayout(new GridLayout(9, 2));
+		this.setLayout(new GridLayout(11, 2));
 		this.add(getCarrerasJL());
 		this.add(getCarrerasJCB());
 		this.add(getMateriasJL());
@@ -70,10 +77,14 @@ public class ModificarAsignatura extends JPanel{
 		this.add(getCantCreditosJTF());
 		this.add(getTienePreviasJL());
 		this.add(getTienePreviasJP());
-		this.add(getAgregarPreviaJL());
-		this.add(getAsignaturasPreviasJCB());
-		this.add(getPreviasAgregadasJL());
-		this.add(getPreviasJSP());
+		this.add(getAgregarPreviaCursoJL());
+		this.add(getAsignaturasCursoJCB());
+		this.add(getPreviasCursoAgregadasJL());
+		this.add(getPreviasCursoJSP());
+		this.add(getAgregarPreviaTodoJL());
+		this.add(getAsignaturasTodoJCB());
+		this.add(getPreviasTodoAgregadasJL());
+		this.add(getPreviasTodoJSP());
 		this.add(getCancelarJB());
 		this.add(getConfirmarJB());
 		
@@ -248,8 +259,11 @@ public class ModificarAsignatura extends JPanel{
 			ChangeListener cambiarEstado = new ChangeListener() {
 				public void stateChanged (ChangeEvent e) {
 					if (tienePreviasJRB_SI.isSelected()) {
-						getAsignaturasPreviasJCB().setEnabled(true);
-						for (JButton b : getPreviasAL())
+						getAsignaturasCursoJCB().setEnabled(true);
+						for (JButton b : getPreviasCursoAL())
+							b.setEnabled(true);
+						getAsignaturasTodoJCB().setEnabled(true);
+						for (JButton b : getPreviasTodoAL())
 							b.setEnabled(true);
 					}
 			    }
@@ -269,8 +283,11 @@ public class ModificarAsignatura extends JPanel{
 			ChangeListener cambiarEstado = new ChangeListener() {
 				public void stateChanged (ChangeEvent e) {
 					if (tienePreviasJRB_NO.isSelected()) {
-						getAsignaturasPreviasJCB().setEnabled(false);
-						for (JButton b : getPreviasAL())
+						getAsignaturasCursoJCB().setEnabled(false);
+						for (JButton b : getPreviasCursoAL())
+							b.setEnabled(false);
+						getAsignaturasTodoJCB().setEnabled(false);
+						for (JButton b : getPreviasTodoAL())
 							b.setEnabled(false);
 					}
 			    }
@@ -280,72 +297,142 @@ public class ModificarAsignatura extends JPanel{
 		return tienePreviasJRB_NO;
 	}
 	
-	public JLabel getAgregarPreviaJL() {
-		if (agregarPreviaJL == null) {
-			agregarPreviaJL = new JLabel("Agregar previa");
-			agregarPreviaJL.setFont(Fuente.label());
+	public JLabel getAgregarPreviaCursoJL() {
+		if (agregarPreviaCursoJL == null) {
+			agregarPreviaCursoJL = new JLabel("Agregar previa (CURSO)");
+			agregarPreviaCursoJL.setFont(Fuente.label());
 		}
-		return agregarPreviaJL;
+		return agregarPreviaCursoJL;
 	}
 	
-	public JComboBox<String> getAsignaturasPreviasJCB(){
-		if (asignaturasPreviasJCB == null) {
-			asignaturasPreviasJCB = new JComboBox<String>();
-			asignaturasPreviasJCB.setFont(Fuente.comboBox());
+	public JComboBox<String> getAsignaturasCursoJCB(){
+		if (asignaturasCursoJCB == null) {
+			asignaturasCursoJCB = new JComboBox<String>();
+			asignaturasCursoJCB.setFont(Fuente.comboBox());
 			
 			ActionListener elegirAsignatura = new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					if (asignaturasPreviasJCB.getSelectedItem() != null && 
-						!asignaturasPreviasJCB.getSelectedItem().toString().equals("Elegir asignatura"))
+					if (asignaturasCursoJCB.getSelectedItem() != null && 
+						!asignaturasCursoJCB.getSelectedItem().toString().equals("Elegir asignatura"))
 						
-						agregarPreviaAsignatura(asignaturasPreviasJCB.getSelectedItem().toString());
+						agregarPreviaCursoAsignatura(asignaturasCursoJCB.getSelectedItem().toString());
 						//Eliminar texto por defecto del JComboBox
-						for (int i = 0; i < asignaturasPreviasJCB.getItemCount(); i++) {
-							if (asignaturasPreviasJCB.getItemAt(i).equals("Elegir asignatura")) {
+						for (int i = 0; i < asignaturasCursoJCB.getItemCount(); i++) {
+							if (asignaturasCursoJCB.getItemAt(i).equals("Elegir asignatura")) {
 								
-								asignaturasPreviasJCB.removeItemAt(i);
+								asignaturasCursoJCB.removeItemAt(i);
 								break;
 							}
 						}
 						///
 				}
 			};
-			asignaturasPreviasJCB.addActionListener(elegirAsignatura);
+			asignaturasCursoJCB.addActionListener(elegirAsignatura);
 			
-			agregarAsignaturasCarrera();
-			asignaturasPreviasJCB.setEnabled(false);
+			agregarAsignaturasCarrera(asignaturasCursoJCB);
+			asignaturasCursoJCB.setEnabled(false);
 		}
-		return asignaturasPreviasJCB;
+		return asignaturasCursoJCB;
 	}
 	
-	public JLabel getPreviasAgregadasJL() {
-		if (previasAgregadasJL == null) {
-			previasAgregadasJL = new JLabel("Previas agregadas");
-			previasAgregadasJL.setFont(Fuente.label());
+	public JLabel getPreviasCursoAgregadasJL() {
+		if (previasCursoAgregadasJL == null) {
+			previasCursoAgregadasJL = new JLabel("Previas agregadas (CURSO)");
+			previasCursoAgregadasJL.setFont(Fuente.label());
 		}
-		return previasAgregadasJL;
+		return previasCursoAgregadasJL;
 	}
 	
-	public ArrayList<JButton> getPreviasAL(){
-		if (previasAL == null) {
-			previasAL = new ArrayList<JButton>();
+	public ArrayList<JButton> getPreviasCursoAL(){
+		if (previasCursoAL == null) {
+			previasCursoAL = new ArrayList<JButton>();
 		}
-		return previasAL;
+		return previasCursoAL;
 	}
 
-	public JPanel getPreviasJP() {
-		if (previasJP == null) {
-			previasJP = new JPanel();
+	public JPanel getPreviasCursoJP() {
+		if (previasCursoJP == null) {
+			previasCursoJP = new JPanel();
 		}
-		return previasJP;
+		return previasCursoJP;
 	}
 	
-	public JScrollPane getPreviasJSP() {
-		if (previasJSP == null) {
-			previasJSP = new JScrollPane(getPreviasJP());
-			previasJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	public JScrollPane getPreviasCursoJSP() {
+		if (previasCursoJSP == null) {
+			previasCursoJSP = new JScrollPane(getPreviasCursoJP());
+			//previasJSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); //SETTING SCHEME FOR HORIZONTAL BAR
+			previasCursoJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		}
-		return previasJSP;
+		return previasCursoJSP;
+	}
+	
+	public JLabel getAgregarPreviaTodoJL() {
+		if (agregarPreviaTodoJL == null) {
+			agregarPreviaTodoJL = new JLabel("Agregar previa (CURSO y EXÁMEN)");
+			agregarPreviaTodoJL.setFont(Fuente.label());
+		}
+		return agregarPreviaTodoJL;
+	}
+	
+	public JComboBox<String> getAsignaturasTodoJCB(){
+		if (asignaturasTodoJCB == null) {
+			asignaturasTodoJCB = new JComboBox<String>();
+			asignaturasTodoJCB.setFont(Fuente.comboBox());
+			
+			ActionListener elegirAsignatura = new ActionListener() {
+				public void actionPerformed (ActionEvent e) {
+					if (asignaturasTodoJCB.getSelectedItem() != null && 
+						!asignaturasTodoJCB.getSelectedItem().toString().equals("Elegir asignatura"))
+						
+						agregarPreviaTodoAsignatura(asignaturasTodoJCB.getSelectedItem().toString());
+						//Eliminar texto por defecto del JComboBox
+						for (int i = 0; i < asignaturasTodoJCB.getItemCount(); i++) {
+							if (asignaturasTodoJCB.getItemAt(i).equals("Elegir asignatura")) {
+								
+								asignaturasTodoJCB.removeItemAt(i);
+								break;
+							}
+						}
+						///
+				}
+			};
+			asignaturasTodoJCB.addActionListener(elegirAsignatura);
+			
+			agregarAsignaturasCarrera(asignaturasTodoJCB);
+			asignaturasTodoJCB.setEnabled(false);
+		}
+		return asignaturasTodoJCB;
+	}
+	
+	public JLabel getPreviasTodoAgregadasJL() {
+		if (previasTodoAgregadasJL == null) {
+			previasTodoAgregadasJL = new JLabel("Previas agregadas (CURSO y EXÁMEN)");
+			previasTodoAgregadasJL.setFont(Fuente.label());
+		}
+		return previasTodoAgregadasJL;
+	}
+	
+	public ArrayList<JButton> getPreviasTodoAL(){
+		if (previasTodoAL == null) {
+			previasTodoAL = new ArrayList<JButton>();
+		}
+		return previasTodoAL;
+	}
+
+	public JPanel getPreviasTodoJP() {
+		if (previasTodoJP == null) {
+			previasTodoJP = new JPanel();
+		}
+		return previasTodoJP;
+	}
+	
+	public JScrollPane getPreviasTodoJSP() {
+		if (previasTodoJSP == null) {
+			previasTodoJSP = new JScrollPane(getPreviasTodoJP());
+			//previasJSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); //SETTING SCHEME FOR HORIZONTAL BAR
+			previasTodoJSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		}
+		return previasTodoJSP;
 	}
 	
 	public JButton getCancelarJB() {
@@ -397,7 +484,8 @@ public class ModificarAsignatura extends JPanel{
 		String nombreAsignaturaDespues = getAsignaturaJTF().getText();
 		int cantCreditos = -1;
 		boolean tienePrevias = this.getTienePreviasJRB_SI().isSelected();
-		Map<String, Asignatura> previas = new HashMap<String, Asignatura>();
+		Map<String, Asignatura> previasCurso = new HashMap<String, Asignatura>();
+		Map<String, Asignatura> previasTodo = new HashMap<String, Asignatura>();
 		
 		try {
 			cantCreditos = Integer.parseInt(getCantCreditosJTF().getText());
@@ -406,7 +494,7 @@ public class ModificarAsignatura extends JPanel{
 				MetodosAux.validarNombre(nombreMateria) &&
 				MetodosAux.validarNombre(nombreAsignaturaDespues) &&
 				cantCreditos >= Controlador.CREDITOS_MIN_ASIGNATURA &&
-				((tienePrevias && getPreviasAL().size() > 0) || (!tienePrevias))) {
+				((tienePrevias && (getPreviasCursoAL().size() > 0 || getPreviasTodoAL().size() > 0)) || (!tienePrevias))) {
 				
 				ManejadorCarrera mc = ManejadorCarrera.getInstancia();
 				
@@ -423,19 +511,33 @@ public class ModificarAsignatura extends JPanel{
 							if (tienePrevias) {
 								
 								for (Map.Entry<String, Asignatura> a : asignaturasCarrera.entrySet()) {
-									for (JButton previaButton : getPreviasAL()) {
+									boolean esPreviaCurso = false;
+									for (JButton previaButton : getPreviasCursoAL()) {
 										String previa = previaButton.getText();
 										if (a.getValue().getNombre().equals(previa)) {
-											previas.put(a.getKey(), a.getValue());
+											previasCurso.put(a.getKey(), a.getValue());
+											esPreviaCurso = true;
 											break;
 										}
 									}
+									if (!esPreviaCurso) {
+										//PREVIAS TODO
+										for (JButton previaButton : getPreviasTodoAL()) {
+											String previa = previaButton.getText();
+											if (a.getValue().getNombre().equals(previa)) {
+												previasTodo.put(a.getKey(), a.getValue());
+												break;
+											}
+										}
+										//
+									}
 								}
 							}
-							else
-								previas = new HashMap<String, Asignatura>();
-							
-							Controlador.modificarAsignatura(nombreAsignaturaDespues, nombreAsignaturaAntes, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previas);
+							else {
+								previasCurso = new HashMap<String, Asignatura>();
+								previasTodo = new HashMap<String, Asignatura>();
+							}
+							Controlador.modificarAsignatura(nombreAsignaturaDespues, nombreAsignaturaAntes, nombreCarrera, nombreMateria, cantCreditos, tienePrevias, previasCurso, previasTodo);
 							MostrarMensaje.asignaturaModificada();
 							
 							return true;
@@ -458,7 +560,7 @@ public class ModificarAsignatura extends JPanel{
 					MostrarMensaje.errorNombre();
 				if (cantCreditos < Controlador.CREDITOS_MIN_ASIGNATURA)
 					MostrarMensaje.errorCreditosMinMateria();
-				if (tienePrevias && getPreviasAL().size() == 0)
+				if (tienePrevias && (getPreviasCursoAL().size() == 0 || getPreviasTodoAL().size() == 0))
 					MostrarMensaje.errorPreviasSinAgregar();
 			}
 		}
@@ -476,7 +578,9 @@ public class ModificarAsignatura extends JPanel{
 		limpiarCantCreditos();
 		limpiarTienePrevias();
 		limpiarAsignaturasPreviasJCB();
-		limpiarAsignaturasPreviasAgregadas();
+		limpiarAsignaturasCursoAgregadas();
+		limpiarAsignaturasTodoJCB();
+		limpiarAsignaturasTodoAgregadas();
 	}
 		
 	public void limpiarMaterias() {
@@ -500,12 +604,21 @@ public class ModificarAsignatura extends JPanel{
 	}
 	
 	public void limpiarAsignaturasPreviasJCB() {
-		getAsignaturasPreviasJCB().removeAllItems();
+		getAsignaturasCursoJCB().removeAllItems();
 	}
 	
-	public void limpiarAsignaturasPreviasAgregadas() {
-		getPreviasAL().clear();
-		actualizarPreviasJP();
+	public void limpiarAsignaturasTodoJCB() {
+		getAsignaturasCursoJCB().removeAllItems();
+	}
+	
+	public void limpiarAsignaturasCursoAgregadas() {
+		getPreviasCursoAL().clear();
+		actualizarPreviasCursoJP();
+	}
+	
+	public void limpiarAsignaturasTodoAgregadas() {
+		getPreviasTodoAL().clear();
+		actualizarPreviasTodoJP();
 	}
 	
 	public void agregarMaterias() {
@@ -529,51 +642,89 @@ public class ModificarAsignatura extends JPanel{
 		}
 	}
 	
-	public void agregarPreviasAsignatura() {
-		Asignatura asignatura = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString()).getMaterias().get(getMateriasJCB().getSelectedItem().toString()).getAsignaturas().get(getAsignaturasJCB().getSelectedItem().toString());
-		Map<String, Asignatura> previas = asignatura.getPrevias();
-		
-		limpiarAsignaturasPreviasAgregadas();
-		for (Map.Entry<String, Asignatura> a : previas.entrySet())
-			agregarPreviaAsignatura(a.getValue().getNombre().toString());
-		actualizarPreviasJP();
+	public void agregarPreviaCursoAsignatura(String previa) {
+		boolean existeAsignaturaCurso = verifPreviaAgregada(previa, getPreviasCursoAL());
+		boolean existeAsignaturaTodo = verifPreviaAgregada(previa, getPreviasTodoAL());
+		if (!existeAsignaturaCurso && !existeAsignaturaTodo) {
+			Boolean esPreviaCurso = true;
+			getPreviasCursoAL().add(crearBotonPrevia(previa, esPreviaCurso));
+			actualizarPreviasCursoJP();
+		}
+		else {
+			if (existeAsignaturaCurso)
+				MostrarMensaje.errorAsignaturaAgregadaCurso();
+			else if (existeAsignaturaTodo)
+				MostrarMensaje.errorAsignaturaAgregadaTodo();
+			else
+				MostrarMensaje.errorImposible();
+		}
 	}
 	
-	public void agregarPreviaAsignatura(String previa) {
-		boolean existeAsignatura = false;
-		for (JButton asignatura : getPreviasAL()) {
+	public boolean verifPreviaAgregada(String previa, ArrayList<JButton> previasAL) {
+		for (JButton asignatura : previasAL) {
 			if (asignatura.getText().equals(previa)) {
-				existeAsignatura = true;
-				break;
+				return true;
 			}
 		}
-		if (!existeAsignatura) {
-			getPreviasAL().add(crearBotonPrevia(previa));
-			actualizarPreviasJP();
-		}
-		else
-			MostrarMensaje.errorAsignaturaAgregada();
+		return false;
 	}
 	
-	public JButton crearBotonPrevia(String nombre) {
+	public void agregarPreviaTodoAsignatura(String previa) {
+		boolean existeAsignaturaCurso = verifPreviaAgregada(previa, getPreviasCursoAL());
+		boolean existeAsignaturaTodo = verifPreviaAgregada(previa, getPreviasTodoAL());
+		if (!existeAsignaturaCurso && !existeAsignaturaTodo) {
+			Boolean esPreviaCurso = false;
+			getPreviasTodoAL().add(crearBotonPrevia(previa, esPreviaCurso));
+			actualizarPreviasTodoJP();
+		}
+		else {
+			if (existeAsignaturaCurso)
+				MostrarMensaje.errorAsignaturaAgregadaCurso();
+			else if (existeAsignaturaTodo)
+				MostrarMensaje.errorAsignaturaAgregadaTodo();
+			else
+				MostrarMensaje.errorImposible();
+		}
+			
+	}
+	
+	public JButton crearBotonPrevia(String nombre, Boolean esPreviaCurso) {
 		
 		JButton previaJB = new MiBoton(nombre, Colores.COLOR_BG_PREVIA, Colores.COLOR_BG_PREVIA_OVER, Colores.COLOR_BG_PREVIA_PRESIONADO);
 		previaJB.setFont(Fuente.buttonPrevia());
+		previaJB.setBackground(Colores.COLOR_BG_PREVIA);
+		previaJB.setForeground(Colores.COLOR_FG_PREVIA);
 		
-		ActionListener metodoBoton = new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
-				removerPrevia(nombre);
-		    }
-		};
-		previaJB.addActionListener(metodoBoton);
+		
+		previaJB.addActionListener(crearActionListenerPrevia(nombre, esPreviaCurso));
 		
 		return previaJB;
 	}
 	
-	public void removerPrevia(String nombre) {
+	public ActionListener crearActionListenerPrevia(String nombre, Boolean esPreviaCurso) {
+		ActionListener metodoBoton = null;
+		if (esPreviaCurso) {
+			metodoBoton = new ActionListener() {
+				public void actionPerformed (ActionEvent e) {
+					removerPreviaCurso(nombre);
+			    }
+			};
+		}
+		else {
+			metodoBoton = new ActionListener() {
+				public void actionPerformed (ActionEvent e) {
+					removerPreviaTodo(nombre);
+			    }
+			};
+		}
+		
+		return metodoBoton;
+	}
+	
+	public void removerPreviaCurso(String nombre) {
 		boolean existeAsignatura = false;
 		int pos = -1;
-		for (JButton asignatura : getPreviasAL()) {
+		for (JButton asignatura : getPreviasCursoAL()) {
 			pos++;
 			if (asignatura.getText().equals(nombre)) {
 				existeAsignatura = true;
@@ -581,35 +732,63 @@ public class ModificarAsignatura extends JPanel{
 			}
 		}
 		if (existeAsignatura) {
-			getPreviasAL().remove(pos);
-			actualizarPreviasJP();
+			getPreviasCursoAL().remove(pos);
+			actualizarPreviasCursoJP();
 		}
 		else
 			MostrarMensaje.errorImposible();
 	}
 	
-	public void agregarAsignaturasCarrera() {
+	public void removerPreviaTodo(String nombre) {
+		boolean existeAsignatura = false;
+		int pos = -1;
+		for (JButton asignatura : getPreviasTodoAL()) {
+			pos++;
+			if (asignatura.getText().equals(nombre)) {
+				existeAsignatura = true;
+				break;
+			}
+		}
+		if (existeAsignatura) {
+			getPreviasTodoAL().remove(pos);
+			actualizarPreviasTodoJP();
+		}
+		else
+			MostrarMensaje.errorImposible();
+	}
+	
+	public void agregarAsignaturasCarrera(JComboBox<String> asignaturas) {
 		Carrera c = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString());
 		
-		getAsignaturasPreviasJCB().setSelectedIndex(-1);
+		asignaturas.setSelectedIndex(-1);
 		
-		ActionListener elegirAsignatura = getAsignaturasPreviasJCB().getActionListeners()[0];
-		getAsignaturasPreviasJCB().removeActionListener(elegirAsignatura);
+		ActionListener elegirAsignatura = asignaturas.getActionListeners()[0];
+		asignaturas.removeActionListener(elegirAsignatura);
 		
 		for (Map.Entry<String, Materia> m : c.getMaterias().entrySet()) {
 			for (Map.Entry<String, Asignatura> a : m.getValue().getAsignaturas().entrySet())
-				getAsignaturasPreviasJCB().addItem(a.getValue().getNombre());
+				asignaturas.addItem(a.getValue().getNombre());
 		}
-		getAsignaturasPreviasJCB().addActionListener(elegirAsignatura);
+		asignaturas.addActionListener(elegirAsignatura);
 	}
 	
-	public void actualizarPreviasJP() {
-		getPreviasJP().removeAll();
-		for (JButton b : getPreviasAL()) {
-			previasJP.add(b);
+	public void actualizarPreviasCursoJP() {
+		getPreviasCursoJP().removeAll();
+		for (JButton b : getPreviasCursoAL()) {
+			previasCursoJP.add(b);
 		}
-		getPreviasJP().revalidate();
-		getPreviasJP().repaint();
+		getPreviasCursoJP().revalidate();
+		getPreviasCursoJP().repaint();
+			
+	}
+	
+	public void actualizarPreviasTodoJP() {
+		getPreviasTodoJP().removeAll();
+		for (JButton b : getPreviasTodoAL()) {
+			previasTodoJP.add(b);
+		}
+		getPreviasTodoJP().revalidate();
+		getPreviasTodoJP().repaint();
 			
 	}
 	
@@ -620,10 +799,33 @@ public class ModificarAsignatura extends JPanel{
 		else
 			estado = true;
 		
-		for (JButton b : getPreviasAL())
+		for (JButton b : getPreviasCursoAL())
+			b.setEnabled(estado);
+		for (JButton b : getPreviasTodoAL())
 			b.setEnabled(estado);
 		
-		actualizarPreviasJP();
+		actualizarPreviasCursoJP();
+		actualizarPreviasTodoJP();
+	}
+
+	public void agregarPreviasCursoAsignatura() {
+		Asignatura asignatura = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString()).getMaterias().get(getMateriasJCB().getSelectedItem().toString()).getAsignaturas().get(getAsignaturasJCB().getSelectedItem().toString());
+		Map<String, Asignatura> previas = asignatura.getPreviasCurso();
+		
+		limpiarAsignaturasCursoAgregadas();
+		for (Map.Entry<String, Asignatura> a : previas.entrySet())
+			agregarPreviaCursoAsignatura(a.getValue().getNombre().toString());
+		actualizarPreviasCursoJP();
+	}
+	
+	public void agregarPreviasTodoAsignatura() {
+		Asignatura asignatura = Controlador.getColeccionCarreras().get(getCarrerasJCB().getSelectedItem().toString()).getMaterias().get(getMateriasJCB().getSelectedItem().toString()).getAsignaturas().get(getAsignaturasJCB().getSelectedItem().toString());
+		Map<String, Asignatura> previas = asignatura.getPreviasTodo();
+		
+		limpiarAsignaturasTodoAgregadas();
+		for (Map.Entry<String, Asignatura> a : previas.entrySet())
+			agregarPreviaTodoAsignatura(a.getValue().getNombre().toString());
+		actualizarPreviasTodoJP();
 	}
 	
 	public void autocompletarValores() {
@@ -645,9 +847,13 @@ public class ModificarAsignatura extends JPanel{
 								cantCreditosJTF.setText(Integer.toString(a.getCantCreditos()));
 								
 								limpiarAsignaturasPreviasJCB();
-								agregarAsignaturasCarrera();
-								limpiarAsignaturasPreviasAgregadas();
-								agregarPreviasAsignatura();
+								limpiarAsignaturasTodoJCB();
+								agregarAsignaturasCarrera(getAsignaturasCursoJCB());
+								agregarAsignaturasCarrera(getAsignaturasTodoJCB());
+								limpiarAsignaturasCursoAgregadas();
+								limpiarAsignaturasTodoAgregadas();
+								agregarPreviasCursoAsignatura();
+								agregarPreviasTodoAsignatura();
 								verifEstadoTienePrevias();
 							}
 						}
