@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +25,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -335,39 +335,67 @@ public class SeleccionarCarrera extends JPanel{
 	public JRadioButton crearRadioButtonAsignatura(JLabel asignatura, String estado) {
 		
 		JRadioButton rb = new JRadioButton(estado);
-		//rb.setFont(Fuente.radioButton());
 		
 		if (tienePrevias(asignatura.getText()))
 			rb.setEnabled(false);
 		if (estado.equals(ESTADO_SIN_APROBAR))
 			rb.setSelected(true);
 		
-		ChangeListener cambiarEstado = new ChangeListener() {
-			public void stateChanged (ChangeEvent e) {
-				if (rb.isSelected()) {
-					if (estado.equals(ESTADO_CURSO_Y_EXAMEN_APROBADO)) {
+		rb.addItemListener(crearItemListenerRadioButton(rb, asignatura));
+		
+		return rb;
+	}
+	
+	public ItemListener crearItemListenerRadioButton(JRadioButton rb, JLabel asignatura) {
+		ItemListener cambiarEstado = new ItemListener() {
+			public void itemStateChanged (ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+
+					if (rb.getText().equals(ESTADO_CURSO_Y_EXAMEN_APROBADO)) {	
+						if (asignaturaAgregada(asignatura.getText())) {
+							//Modificar lo que dice la columna 'Aprobado' en la tabla con asignaturas seleccionadas (NO QUITAR Y AGREGAR
+							//YA QUE AL QUITARLA SE QUITAN TAMBIEN TODAS LAS ASIGNATURAS QUE LA TIENEN COMO PREVIA Y LUEGO AL AGREGARLA ESTAS
+							//NO SE AGREGAN
+							if (obtenerEstadoAprobacion(asignatura.getText()).equals(ESTADO_CURSO_APROBADO))
+								agregarCreditosMateriaYCarrera(asignatura.getText());
+							cambiarEstadoAprobado(asignatura.getText(), ESTADO_CURSO_Y_EXAMEN_APROBADO);
+						}
+						else {
+							agregarAsignaturaSeleccionada(asignatura.getText(), ESTADO_CURSO_Y_EXAMEN_APROBADO);
+							agregarCreditosMateriaYCarrera(asignatura.getText());
+						}
+						
 						verifHabilitarAsignaturas();
-						agregarCreditosMateriaYCarrera(asignatura.getText());
-						agregarAsignaturaSeleccionada(asignatura.getText());
+							
 					}
-					else if (estado.equals(ESTADO_CURSO_APROBADO)) {
+					else if (rb.getText().equals(ESTADO_CURSO_APROBADO)) {
+						if (asignaturaAgregada(asignatura.getText())) {
+							if (obtenerEstadoAprobacion(asignatura.getText()).equals(ESTADO_CURSO_Y_EXAMEN_APROBADO))
+								quitarCreditosMateriaYCarrera(asignatura.getText());
+							cambiarEstadoAprobado(asignatura.getText(), ESTADO_CURSO_APROBADO);
+						}
+						else
+							agregarAsignaturaSeleccionada(asignatura.getText(), ESTADO_CURSO_APROBADO);
+						
+						verifDeshabilitarAsignaturas(asignatura.getText(), ESTADO_CURSO_APROBADO);
 						verifHabilitarAsignaturas();
-						quitarCreditosMateriaYCarrera(asignatura.getText());
-						agregarAsignaturaSeleccionada(asignatura.getText());
 					}
 					else {
-						verifDeshabilitarAsignaturas(asignatura.getText());
-						quitarCreditosMateriaYCarrera(asignatura.getText());
-						quitarAsignaturaSeleccionada(asignatura.getText());
+						if (asignaturaAgregada(asignatura.getText())) {
+							if (obtenerEstadoAprobacion(asignatura.getText()).equals(ESTADO_CURSO_Y_EXAMEN_APROBADO))
+								quitarCreditosMateriaYCarrera(asignatura.getText());
+							quitarAsignaturaSeleccionada(asignatura.getText());
+						}
+						verifDeshabilitarAsignaturas(asignatura.getText(), ESTADO_SIN_APROBAR);
 					}
 					verifCambiarMensajes();
 					verifCambiarEstadoMateria();
 				}
 		    }
 		};
-		rb.addChangeListener(cambiarEstado);
+		rb.addItemListener(cambiarEstado);
 		
-		return rb;
+		return cambiarEstado;
 	}
 	
 	/*public ArrayList<JCheckBox> getAsignaturasJCB() {
@@ -378,7 +406,15 @@ public class SeleccionarCarrera extends JPanel{
 		}
 		return asignaturasJCB;
 	}*/
-
+	
+	public void cambiarEstadoAprobado(String nombreAsignatura, String estado) {
+		for (int i = 0; i < getAsignaturasSelectedJT().getRowCount(); i++) {
+			if (getAsignaturasSelectedJT().getValueAt(i, 0).toString().equals(nombreAsignatura)) {
+				getAsignaturasSelectedJT().setValueAt(estado, i, 1);
+			}
+		}
+	}
+	
 	public JLabel getAsignaturasSelectedJL() {
 		if (asignaturasSelectedJL == null) {
 			asignaturasSelectedJL = new JLabel("Asignaturas seleccionadas");
@@ -401,7 +437,7 @@ public class SeleccionarCarrera extends JPanel{
 		if (asignaturasSelectedJT == null) {
 
 			String[][] tabla = null;
-			String[] columnas = {"Asignatura", "Créditos", "Materia"};
+			String[] columnas = {"Asignatura", "Aprobado", "Créditos", "Materia"};
 			asignaturasSelectedJT = new MyJTable(new DefaultTableModel(tabla, columnas));
 			
 			asignaturasSelectedJT.setCellSelectionEnabled(true);  
@@ -796,23 +832,24 @@ public class SeleccionarCarrera extends JPanel{
 		}
 	}
 	
-	public void agregarAsignaturaSeleccionada(String nombreAsignatura) {
-		actualizarAsignaturasSeleccionadas(nombreAsignatura, true);
+	public void agregarAsignaturaSeleccionada(String nombreAsignatura, String estadoAprobado) {
+		actualizarAsignaturasSeleccionadas(nombreAsignatura, true, estadoAprobado);
 	}
 	
 	public void quitarAsignaturaSeleccionada(String nombreAsignatura) {
-		actualizarAsignaturasSeleccionadas(nombreAsignatura, false);
+		actualizarAsignaturasSeleccionadas(nombreAsignatura, false, ESTADO_SIN_APROBAR);
 	}
 	
-	public void actualizarAsignaturasSeleccionadas(String nombreAsignatura, boolean agregar) {
+	public void actualizarAsignaturasSeleccionadas(String nombreAsignatura, boolean agregar, String estadoAprobado) {
 		Asignatura asig = asignaturasCarrera.get(nombreAsignatura);
 		String creditosAsignatura = Integer.toString(asig.getCantCreditos());
 		String nombreMateria = asig.getNombreMateria();
 		
 		DefaultTableModel model = (DefaultTableModel) asignaturasSelectedJT.getModel();
 		
-		if (agregar)
-			model.addRow(new Object[]{nombreAsignatura, creditosAsignatura, nombreMateria});
+		if (agregar) {
+			model.addRow(new Object[]{nombreAsignatura, estadoAprobado, creditosAsignatura, nombreMateria});
+		}
 		else {
 			for (int i = 0; i < getAsignaturasSelectedJT().getRowCount(); i++) {
 				if (getAsignaturasSelectedJT().getValueAt(i, 0).toString().equals(nombreAsignatura)) {
@@ -823,20 +860,46 @@ public class SeleccionarCarrera extends JPanel{
 	}
 	
 	public void verifHabilitarAsignaturas() {
-		Map<String, String> asignaturasNoSeleccionadas = obtenerAsignaturasNoSeleccionadas();
+		Map<String, String> asignaturasNoSeleccionadas = obtenerAsignaturasNoSeleccionadas();	//Las que no estan habilitadas o estan sin aprobar
 		Map<String, String> asignaturasNoHabilitadas = obtenerAsignaturasNoHabilitadas();
+		
+		System.out.println("ASIGNATURAS NO SELECCIONADAS");
+		for (Map.Entry<String, String> a : asignaturasNoSeleccionadas.entrySet()) {
+			System.out.println(a.getKey());
+		}
+		System.out.println("_______________________________________________");
+		
+		System.out.println("ASIGNATURAS NO HABILITADAS");
+		for (Map.Entry<String, String> a : asignaturasNoHabilitadas.entrySet()) {
+			System.out.println(a.getKey());
+		}
+		System.out.println("_______________________________________________");
 		
 		for (Map.Entry<String, String> a : asignaturasNoHabilitadas.entrySet()) {
 			Asignatura asig = asignaturasCarrera.get(a.getKey());
 			
 			boolean tienePreviasSinSeleccionar = false;
 			for (Map.Entry<String, String> asignaturaNoSeleccionada : asignaturasNoSeleccionadas.entrySet()) {
-				if (asig.getPreviasCurso().containsKey(asignaturaNoSeleccionada.getKey())) {	//asignatura no habilitada tiene previa sin habilitar?
+				if (asig.getPreviasCurso().containsKey(asignaturaNoSeleccionada.getKey()) ||
+					asig.getPreviasTodo().containsKey(asignaturaNoSeleccionada.getKey())) {	//asignatura no habilitada tiene previa sin habilitar?
+					
 					tienePreviasSinSeleccionar = true;
 					break;
 				}
+				for (Map.Entry<String, String> aac : obtenerAsignaturasAprobadoCurso().entrySet()) {
+					if (asig.getPreviasTodo().containsKey(aac.getKey())) {
+						tienePreviasSinSeleccionar = true;
+						break;
+					}
+				}
+				if (tienePreviasSinSeleccionar)
+					break;
 			}
 			if (!tienePreviasSinSeleccionar) {	//habilitar si todas las previas estan habilitadas
+				System.out.println("##################################################");
+				System.out.println("nombre asignatura: " + asig.getNombre());
+				System.out.println("!tienePreviasSinSeleccionar");
+				System.out.println("##################################################");
 				int pos = 0;
 				for (JLabel item : getAsignaturasUnselectedJL()) {
 					if (item.getText().equals(asig.getNombre())) {
@@ -846,14 +909,15 @@ public class SeleccionarCarrera extends JPanel{
 						getEstadosAsignaturasALJRB().get(pos)[0].setSelected(true);
 						//item.setEnabled(true);
 						//item.setSelected(false);
+						break;
 					}
-					pos += 1;
+					pos++;
 				}
 			}
 		}
 	}
 	
-	public void verifDeshabilitarAsignaturas(String nombreAsignaturaDeseleccionada) {
+	public void verifDeshabilitarAsignaturas(String nombreAsignaturaDeseleccionada, String estadoActual) {
 		Map<String, String> asignaturasHabilitadas = obtenerAsignaturasHabilitadas();
 		
 		boolean yaEsta = false;
@@ -861,7 +925,8 @@ public class SeleccionarCarrera extends JPanel{
 			yaEsta = true;
 			for (Map.Entry<String, String> a : asignaturasHabilitadas.entrySet()) {
 				Asignatura asig = asignaturasCarrera.get(a.getKey());
-				if (asig.getPreviasCurso().containsKey(nombreAsignaturaDeseleccionada)) {
+				if ((asig.getPreviasCurso().containsKey(nombreAsignaturaDeseleccionada) && !estadoActual.equals(ESTADO_CURSO_APROBADO)) ||
+					asig.getPreviasTodo().containsKey(nombreAsignaturaDeseleccionada)) {
 					
 					int pos = 0;
 					for (JLabel item : getAsignaturasUnselectedJL()) {
@@ -869,14 +934,16 @@ public class SeleccionarCarrera extends JPanel{
 							
 							if (getEstadosAsignaturasALJRB().get(pos)[2].isSelected()) {
 								quitarCreditosMateriaYCarrera(item.getText());
+								//verifDeshabilitarAsignaturas(asig.getNombre());	//YA SE LLAMA EN EL 'Else' DEL ITEMLISTENER
+							}
+							if (getEstadosAsignaturasALJRB().get(pos)[2].isSelected() || getEstadosAsignaturasALJRB().get(pos)[1].isSelected()) {
 								quitarAsignaturaSeleccionada(item.getText());
-								verifDeshabilitarAsignaturas(asig.getNombre());
 							}
 							
 							getEstadosAsignaturasALJRB().get(pos)[0].setEnabled(false);
 							getEstadosAsignaturasALJRB().get(pos)[1].setEnabled(false);
 							getEstadosAsignaturasALJRB().get(pos)[2].setEnabled(false);
-							getEstadosAsignaturasALJRB().get(pos)[0].setSelected(false);
+							getEstadosAsignaturasALJRB().get(pos)[0].setSelected(true);
 							
 							//item.setEnabled(false);
 							//item.setSelected(false);
@@ -910,20 +977,40 @@ public class SeleccionarCarrera extends JPanel{
 		int pos = 0;
 		for (JLabel item : getAsignaturasUnselectedJL()) {
 			boolean estadosHabilitados = this.getEstadosAsignaturasALJRB().get(pos)[0].isEnabled();
+			
 			if (!estadosHabilitados)
 				asignaturasNoHabilitadas.put(item.getText(), item.getText());
-			pos += 1;
+			pos++;
 		}
 		return asignaturasNoHabilitadas;
+	}
+	
+	public Map<String, String> obtenerAsignaturasAprobadoCurso(){
+		Map<String, String> asignaturasCurso = new HashMap<String, String>();
+		int pos = 0;
+		for (JLabel item : getAsignaturasUnselectedJL()) {
+			boolean estadosHabilitados = this.getEstadosAsignaturasALJRB().get(pos)[0].isEnabled();
+			boolean estadoAprobadoCurso = this.getEstadosAsignaturasALJRB().get(pos)[1].isSelected();
+			
+			if (estadosHabilitados && estadoAprobadoCurso)
+				asignaturasCurso.put(item.getText(), item.getText());
+			pos++;
+		}
+		return asignaturasCurso;
 	}
 	
 	public Map<String, String> obtenerAsignaturasNoSeleccionadas() {
 		Map<String, String> asignaturasNoSeleccionadas = new HashMap<String, String>();
 		int pos = 0;
 		for (JLabel item : getAsignaturasUnselectedJL()) {
-			boolean estadoSeleccionadoCursoYExamen = this.getEstadosAsignaturasALJRB().get(pos)[0].isSelected();
-			if (!estadoSeleccionadoCursoYExamen)
+			//boolean estadoCurso = this.getEstadosAsignaturasALJRB().get(pos)[1].isSelected();
+			//boolean estadoCursoExamen = this.getEstadosAsignaturasALJRB().get(pos)[2].isSelected();
+			boolean estadoSinAprobar = this.getEstadosAsignaturasALJRB().get(pos)[0].isSelected();
+			boolean estadosHabilitados = this.getEstadosAsignaturasALJRB().get(pos)[0].isEnabled();
+
+			if (!estadosHabilitados || estadoSinAprobar)
 				asignaturasNoSeleccionadas.put(item.getText(), item.getText());
+			pos++;
 		}
 		return asignaturasNoSeleccionadas;
 	}
@@ -940,5 +1027,26 @@ public class SeleccionarCarrera extends JPanel{
 		}
 		
 		return asignaturasCarrera;
+	}
+	
+	public Map<String, String> obtenerAsignaturasAgregadas() {
+		Map<String, String> asignaturasAgregadas = new HashMap<String, String>();
+		
+		for (int fila = 0; fila < getAsignaturasSelectedJT().getRowCount(); fila++) {
+			asignaturasAgregadas.put(getAsignaturasSelectedJT().getValueAt(fila, 0).toString(), getAsignaturasSelectedJT().getValueAt(fila, 1).toString());
+		}
+		return asignaturasAgregadas;
+	}
+	
+	public boolean asignaturaAgregada(String nombreAsignatura) {
+		Map<String, String> asignaturasAgregadas = obtenerAsignaturasAgregadas();
+		if (asignaturasAgregadas.containsKey(nombreAsignatura))
+			return true;
+		return false;
+	}
+	
+	public String obtenerEstadoAprobacion(String nombreAsignatura) {
+		Map<String, String> asignaturasAgregadas = obtenerAsignaturasAgregadas();
+		return asignaturasAgregadas.get(nombreAsignatura);
 	}
 }
